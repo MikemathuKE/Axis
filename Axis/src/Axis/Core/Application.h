@@ -1,8 +1,6 @@
 #pragma once
 
-/*
-    Application Class defines the main Application abstraction.
-*/
+/*Application Class defines the main Application abstraction.*/
 
 namespace Axis{
 
@@ -15,7 +13,6 @@ namespace Axis{
         void Run();
     };
 
-    //Function to be defined in client
     Application* CreateApplication();
 
 }

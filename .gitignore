@@ -1,8 +1,11 @@
 #directories
 Axis/bin
 Axis/bin-int
+Axis/vendor
 SandBox/bin
 SandBox/bin-int
+SandBox/vendor
+vendor/
 
 #workspace
 *.workspace
@@ -18,3 +21,6 @@ SandBox/bin-int
 
 #build log
 *.html
+
+#text files
+*.txt
