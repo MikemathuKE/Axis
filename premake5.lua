@@ -1,5 +1,5 @@
 workspace "Axis"
-  architecture "x64"
+  architecture "x86_64"
   startproject "SandBox"
   
   configurations
@@ -8,6 +8,11 @@ workspace "Axis"
     "Release",
     "Dist"
   }
+  
+  flags
+	{
+		"MultiProcessorCompile"
+	}
   
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -25,8 +30,8 @@ project "Axis"
  targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
  objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
  
- pchheader "%{prj.name}/src/axispch.h"
- pchsource "%{prj.name}/src/axispch.cpp"
+ pchheader "axispch.h"
+ pchsource "Axis/src/axispch.cpp"
  
  files
  {
@@ -42,11 +47,6 @@ project "Axis"
  
  filter "system:window"
   systemversion "latest"
-  
-  defines
-  {
-    "AXIS_PLATFORM_WINDOWS"
-  }
   
  filter "configurations:Debug"
   defines "AXIS_DEBUG"

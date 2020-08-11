@@ -1,5 +1,14 @@
-#ifndef AXIS_PCH_AXIS_H
-#define AXIS_PCH_AXIS_H
+#pragma once
+
+//Alphabetically arranged
+
+#include <initializer_list>
+#include <iostream>
+
+#include <stdint.h>
+#include <sstream>
+#include <string>
 
 
-#endif //AXIS_PCH_AXIS_H
+#include "Axis/Core/Log.h"
+

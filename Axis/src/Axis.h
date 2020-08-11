@@ -28,7 +28,6 @@ SOFTWARE.
 #include "Axis/Core/Log.h"
 
 
-
 //------------Entry Point-----------------------
 #include "Axis/Core/EntryPoint.h"
 //----------------------------------------------
