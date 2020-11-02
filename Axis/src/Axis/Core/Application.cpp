@@ -22,7 +22,7 @@ namespace Axis{
     {
         WindowResizeEvent e(1200, 720);
         printf("Here");
-        AXIS_TRACE("{0}", e.ToString().c_str());
+        AXIS_CORE_TRACE("{0}", e.ToString().c_str());
         if(e.IsInCategory(EventCategoryApplication)){
             printf("true");
         }
