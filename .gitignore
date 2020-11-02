@@ -6,6 +6,15 @@ SandBox/bin
 SandBox/bin-int
 SandBox/vendor
 vendor/
+.vs
+
+#solution
+*.sln
+
+#VS Project Files
+*.vcxproj
+*.filters
+*.user
 
 #workspace
 *.workspace
