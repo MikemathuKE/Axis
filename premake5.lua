@@ -1,18 +1,18 @@
 workspace "Axis"
-  architecture "x86_64"
-  startproject "SandBox"
-  
-  configurations
-  {
-    "Debug",
-    "Release",
-    "Dist"
-  }
-  
-  flags
-	{
-		"MultiProcessorCompile"
-	}
+ architecture "x86_64"
+ startproject "SandBox"
+
+ configurations
+ {
+  "Debug",
+  "Release",
+  "Dist"
+ }
+
+ flags
+ {
+  "MultiProcessorCompile"
+ }
   
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
