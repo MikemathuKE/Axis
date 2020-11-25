@@ -25,5 +25,4 @@ then prints to console and saves in a log file named Axis.log
 Axis is developed by MikeMathuKE, and uses the [GNU General Public License v2.0] (https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 ## Development
-Axis engine is modelled following YouTube tutorials from theCherno and following the design element of Hazel Engine.
-Most of the code design is similar to Hazel's but not exactly the same.
+Axis engine is inspired by Hazel Engine designed by theCherno
