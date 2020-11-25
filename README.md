@@ -12,7 +12,7 @@ Axis currently supports Windows only.
 ## Features
 
 ### Logging
-Axis Engine utilizes spdlog library to handle all logging activities. Axis generates log information
+Axis Engine utilizes spdlog library (https://github.com/gabime/spdlog) to handle all logging activities. Axis generates log information
 then prints to console and saves in a log file named Axis.log
 
 ### Rendering
