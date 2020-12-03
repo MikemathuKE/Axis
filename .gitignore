@@ -33,3 +33,6 @@ vendor/
 
 #text files
 *.txt
+
+#modules
+.modules
