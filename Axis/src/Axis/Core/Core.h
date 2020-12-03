@@ -8,8 +8,10 @@
     #else
         #error "x32 builds not supported!"
     #endif // _WIN64
+#elif defined(__linux__)
+    #define AXIS_PLATFORM_LINUX
 #else
-    #error Axis Only Supports Windows!
+    #error OS NOT SUPPORTED!
 #endif // AXIS_PLATFORM_WINDOWS
 
 #define BIT(x) (1 << x)

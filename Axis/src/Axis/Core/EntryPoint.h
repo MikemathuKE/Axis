@@ -5,7 +5,7 @@
     It is included in the client side.
 */
 
-#ifdef AXIS_PLATFORM_WINDOWS
+#if defined AXIS_PLATFORM_WINDOWS || defined AXIS_PLATFORM_LINUX
 
 extern Axis::Application* Axis::CreateApplication();
 
@@ -17,4 +17,4 @@ int main(int argc, char** argv)
     delete app;
 }
 
-#endif // AXIS_PLATFORM_WINDOWS
+#endif // AXIS_PLATFORM_WINDOWS || AXIS_PLATFORM_LINUX

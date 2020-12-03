@@ -2,12 +2,32 @@
 An open source Game Engine written in C and C++.
 
 ## Platforms
-Axis currently supports Windows only.
+Axis currently supports Windows and Linux(Tested in Ubuntu) only.
 
 ## Building
 
 ### Windows
-- Modify the .bat file to support the specific IDE in use, then run to generate projects.
+- Modify the .bat script to support the specific IDE in use, then run to generate projects.
+
+### Linux
+Axis has extra development depedencies needed for Linux. The following packages are needed to compile the project:
+
+- `libxcursor`
+- `libxrandr`
+- `libxinerama`
+- `libxi`
+- `libglew`
+
+On Debian and Debian derivative distributions, install these packages by running:
+
+`sudo apt install libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libglew-dev`
+
+Axis is then configured and compiled as follows
+- Modify the .sh script to support the specific IDE in use.
+- Open terminal in script folder and enter the following lines of commands
+```
+./LinuxGenProjects.sh
+```
 
 ## Features
 

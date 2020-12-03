@@ -1,5 +1,7 @@
+require "premake-codeblocks/codeblocks"
+
 workspace "Axis"
- architecture "x86_64"
+ architecture "x64"
  startproject "SandBox"
 
  configurations
@@ -45,6 +47,21 @@ project "Axis"
    "%{IncludeDir.spdlog}"
  }
  
+ filter "system:linux"
+  pic "On"
+  cppdialect "C++17"
+  staticruntime "On"
+  systemversion "latest"
+  
+  links
+  {
+   "Xrandr",
+   "Xi",
+   "GLEW",
+   "GL",
+   "X11"
+  }
+ 
  filter "system:window"
   systemversion "latest"
   
@@ -63,8 +80,8 @@ project "Axis"
   runtime "Release"
   optimize "Full"
 
-project "Sandbox"
-  location "Sandbox"
+project "SandBox"
+  location "SandBox"
   kind "ConsoleApp"
   language "C++"
   cppdialect "C++17"
@@ -76,7 +93,7 @@ project "Sandbox"
   files
   {
     "%{prj.name}/src/**.h",
-    "%{prj.name}/src/**.cpp",
+   "%{prj.name}/src/**.cpp"
   }
 
   includedirs
@@ -85,13 +102,26 @@ project "Sandbox"
     "%{IncludeDir.spdlog}"
   }
 
-  links
-  {
-    "Axis"
-  }
+  
+  filter "system:linux"
+    cppdialect "C++17"
+    staticruntime "On"
+    systemversion "latest"
+    
+    links
+    {
+      "Axis:static"
+    }
+    
 
   filter "system:windows"
     systemversion "latest"
+    
+    links
+    {
+      "Axis"
+    }
+    
 
   filter "configurations:Debug"
     defines "AXIS_DEBUG"
