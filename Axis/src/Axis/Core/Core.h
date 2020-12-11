@@ -12,7 +12,21 @@
     #define AXIS_PLATFORM_LINUX
 #else
     #error OS NOT SUPPORTED!
-#endif // AXIS_PLATFORM_WINDOWS
+#endif // _WIN32
+
+#ifdef _MSC_VER
+    #define DEBUG_BREAK __debugbreak()
+#else
+    #define DEBUG_BREAK __builtin_trap
+#endif // _MSC_VER
+
+#ifdef AXIS_DEBUG
+	#define AXIS_ASSERT(x, ...) { if(!(x)) { AXIS_ERROR("Assertion Failed: {0}", __VA_ARGS__); DEBUG_BREAK; } }
+	#define AXIS_CORE_ASSERT(x, ...) { if(!(x)) { AXIS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); DEBUG_BREAK; } }
+#else
+	#define AXIS_ASSERT(x, ...)
+	#define AXIS_CORE_ASSERT(x, ...)
+#endif
 
 #define BIT(x) (1 << x)
 
@@ -22,8 +36,8 @@ namespace Axis {
 
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
-	template<typename T, typename ... Args>
 
+	template<typename T, typename ... Args>
 	constexpr Scope<T> CreateScope(Args&& ... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
@@ -31,8 +45,8 @@ namespace Axis {
 
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
-	template<typename T, typename ... Args>
 
+	template<typename T, typename ... Args>
 	constexpr Ref<T> CreateRef(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);

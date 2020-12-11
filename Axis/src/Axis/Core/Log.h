@@ -23,7 +23,7 @@ namespace Axis{
 }
 
 template<typename... Args>
-static std::string CreateFormatType(const char* str, const int& line, const char* file) 
+static std::string CreateFormatType(const char* str, const int32_t& line, const char* file) 
 {
     std::string buffer;
     buffer = std::string(str);

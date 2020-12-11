@@ -14,7 +14,6 @@ namespace Axis{
 
         inline float GetX() const {return m_MouseX; }
         inline float GetY() const {return m_MouseY; }
-        inline std::initializer_list<float> GetMousePos() const {return {m_MouseX, m_MouseY};}
 
 
         std::string ToString() const override

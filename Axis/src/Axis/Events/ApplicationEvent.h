@@ -13,7 +13,6 @@ namespace Axis{
 
         inline uint32_t GetWidth() const { return m_Width; }
         inline uint32_t GetHeight() const { return m_Height; }
-        inline std::initializer_list<uint32_t> GetSize() const { return {m_Width, m_Height}; }
 
         std::string ToString() const override
         {
@@ -37,7 +36,6 @@ namespace Axis{
 
 		inline int32_t GetXPos() const { return m_XPos; }
 		inline int32_t GetYPos() const { return m_YPos; }
-		inline std::initializer_list<int32_t> GetPos() const { return {m_XPos, m_YPos}; }
 
 		std::string ToString() const override
 		{

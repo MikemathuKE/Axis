@@ -10,23 +10,18 @@ vendor/
 
 #solution
 *.sln
+*.workspace
 
 #VS Project Files
 *.vcxproj
 *.filters
 *.user
 
-#workspace
-*.workspace
-
-#Project File
+#CB Project Files
 *.cbp
-
-#layout
 *.layout
-
-#depend
 *.depend
+Makefile
 
 #build log
 *.html

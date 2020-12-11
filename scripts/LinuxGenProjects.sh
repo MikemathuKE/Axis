@@ -2,4 +2,4 @@
 
 cd ..
 
-vendor/bin/premake5/premake5 codeblocks
+vendor/bin/premake5/premake5 gmake2

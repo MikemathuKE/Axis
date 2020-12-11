@@ -1,1 +1,1 @@
-[11:53:31] [trace] AXIS: WindowResizedEvent: 1200, 720 (:25)  ... D:\Projects\Active Projects\Axis\Axis\src\Axis\Core\Application.cpp
+[11:37:57] [info] AXIS: Creating Window Axis Engine (1280, 720) (:31)  ... D:\Projects\Active Projects\Axis\Axis\src\Platform\Windows\WindowsWindow.cpp

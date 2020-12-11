@@ -1,6 +1,6 @@
 #pragma once
 
-/*Application Class defines the main Application abstraction.*/
+#include "Window.h"
 
 namespace Axis{
 
@@ -11,6 +11,10 @@ namespace Axis{
         virtual ~Application();
 
         void Run();
+
+    private:
+        Scope<Window> m_Window;
+        bool m_Running = true;
     };
 
     Application* CreateApplication();
