@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <sstream>
 #include <string>
-
+#include <vector>
 
 #include "Axis/Core/Log.h"
 

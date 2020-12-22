@@ -25,6 +25,7 @@ SOFTWARE.
 */
 
 #include "Axis/Core/Application.h"
+#include "Axis/Core/Layer.h"
 #include "Axis/Core/Log.h"
 
 

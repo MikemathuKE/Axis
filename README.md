@@ -24,7 +24,7 @@ On Debian and Debian derivative distributions, install these packages by running
 
 Axis is then configured and compiled as follows
 - Modify the .sh script to support the specific IDE in use.
-- Open terminal in script folder and enter the following lines of commands
+- Open terminal in script folder execute the following lines of commands
 ```
 ./LinuxGenProjects.sh
 ```
