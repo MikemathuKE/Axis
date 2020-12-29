@@ -5,6 +5,8 @@
 #include "Axis/Events/KeyEvent.h"
 #include "Axis/Events/MouseEvent.h"
 
+#include <glad/glad.h>
+
 namespace Axis {
 
 	static uint8_t s_GLFWWindowCount = 0;
@@ -61,14 +63,16 @@ namespace Axis {
 			m_VideoMode.blueBits);
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RESIZABLE, m_Data.Resizable);
 
-		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		m_Window = glfwCreateWindow((int32_t)m_Data.Width, (int32_t)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
 
 		glfwMakeContextCurrent(m_Window);
+		int32_t status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		AXIS_CORE_ASSERT(status, "Failed to initialize GLAD!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -254,7 +258,7 @@ namespace Axis {
 		}
 		GLFWmonitor* monitor = nullptr;
 
-		if (mode == WindowMode::BORDERLESS) 
+		if (mode == WindowMode::BORDERLESS)
 		{
 			// For borderless full screen, the new width and height will be the video mode width and height
 			width = m_VideoMode.width;
@@ -268,7 +272,7 @@ namespace Axis {
 			height = m_OldWindowedParams.Height;
 			monitor = nullptr;
 		}
-		else if (mode == WindowMode::FULLSCREEN) 
+		else if (mode == WindowMode::FULLSCREEN)
 		{
 			if (width == 0 || height == 0)
 			{
@@ -302,7 +306,7 @@ namespace Axis {
 	void WindowsWindow::SetIcon(const std::string& path)
 	{
 		//Requires stbi
-		/* 
+		/*
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(true);
 

@@ -5,12 +5,17 @@
 #include "Axis/Events/KeyEvent.h"
 #include "Axis/Core/Log.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Axis{
 
+    Application* Application::s_Instance = nullptr;
+
     Application::Application()
     {
+        AXIS_CORE_ASSERT(!s_Instance, "Application already Exists!");
+        s_Instance = this;
+
         m_Window = (Scope<Window>)Window::Create();
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
     }
@@ -23,19 +28,19 @@ namespace Axis{
     void Application::PushLayer(Layer* layer)
     {
         m_LayerStack.PushLayer(layer);
+        layer->OnAttach();
     }
 
     void Application::PushOverlay(Layer* overlay)
     {
         m_LayerStack.PushOverlay(overlay);
+        overlay->OnAttach();
     }
 
     void Application::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(AXIS_BIND_EVENT_FN(Application::OnWindowClose));
-
-        AXIS_CORE_TRACE("{0}", e);
 
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
@@ -57,7 +62,7 @@ namespace Axis{
 
             m_Window->OnUpdate();
         }
-    } 
+    }
 
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {

@@ -20,8 +20,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["spdlog"] = "%{wks.location}/Axis/vendor/spdlog/include"
 IncludeDir["GLFW"] = "%{wks.location}/Axis/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/Axis/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/Axis/vendor/ImGui"
 
 include "Axis/vendor/GLFW"
+include "Axis/vendor/Glad"
+include "Axis/vendor/ImGui"
 
 project "Axis"
   location "Axis"
@@ -46,12 +50,21 @@ project "Axis"
   {
     "%{prj.name}/src",
     "%{IncludeDir.spdlog}",
-    "%{IncludeDir.GLFW}"
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}",
+    "%{IncludeDir.ImGui}"
   }
   
   links
   {
-    "GLFW"
+    "GLFW",
+    "Glad",
+    "ImGui"
+  }
+  
+  defines
+  {
+    "GLFW_INCLUDE_NONE"
   }
  
   filter "system:linux"
@@ -63,13 +76,12 @@ project "Axis"
     {
       "Xrandr",
       "Xi",
-      "GLEW",
       "GL",
       "X11",
       "OpenGL"
     }
  
-  filter "system:window"
+  filter "system:windows"
     systemversion "latest"
     
     links
@@ -116,7 +128,8 @@ project "SandBox"
   
   links
   {
-    "Axis"
+    "Axis",
+    "ImGui"
   }
     
 
@@ -130,16 +143,12 @@ project "SandBox"
       "dl",
       "pthread",
       "OpenGL",
+      "Glad",
       "GLFW"
     }
     
   filter "system:windows"
     systemversion "latest"
-    
-    links
-    {
-      "opengl32.lib"
-    }
 
   filter "configurations:Debug"
     defines "AXIS_DEBUG"

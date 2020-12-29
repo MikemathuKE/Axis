@@ -5,6 +5,8 @@
 #include "Axis/Events/KeyEvent.h"
 #include "Axis/Events/MouseEvent.h"
 
+#include "glad/glad.h"
+
 namespace Axis {
 
     static uint8_t s_GLFWWindowCount = 0;
@@ -69,6 +71,8 @@ namespace Axis {
 		++s_GLFWWindowCount;
 
 		glfwMakeContextCurrent(m_Window);
+		int32_t status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		AXIS_CORE_ASSERT(status, "Failed to initialize GLAD!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 

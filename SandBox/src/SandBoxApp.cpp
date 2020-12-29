@@ -9,12 +9,10 @@ public:
 
     void OnUpdate() override
     {
-        AXIS_INFO("ExampleLayer::Update");
     }
 
     void OnEvent(Axis::Event& event)
     {
-        AXIS_TRACE("{0}", event);
     }
 };
 
@@ -24,8 +22,11 @@ public:
     SandBox()
     {
         PushLayer(new ExampleLayer());
+        PushLayer(new Axis::ImGuiLayer());
     }
-    ~SandBox() {}
+    ~SandBox()
+    {
+    }
 };
 
 Axis::Application* Axis::CreateApplication()

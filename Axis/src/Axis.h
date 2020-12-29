@@ -28,6 +28,8 @@ SOFTWARE.
 #include "Axis/Core/Layer.h"
 #include "Axis/Core/Log.h"
 
+#include "Axis/ImGui/ImGuiLayer.h"
+
 
 //------------Entry Point-----------------------
 #include "Axis/Core/EntryPoint.h"
