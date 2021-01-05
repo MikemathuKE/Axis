@@ -1,5 +1,7 @@
 #include "axispch.h"
-#include "WindowsWindow.h"
+
+#include "Platform/Windows/WindowsWindow.h"
+#include "Platform/Windows/WindowsInput.h"
 
 #include "Axis/Events/ApplicationEvent.h"
 #include "Axis/Events/KeyEvent.h"
@@ -18,6 +20,8 @@ namespace Axis {
 	}
 
 #ifdef AXIS_PLATFORM_WINDOWS
+	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
+
 	Window* Window::Create(const WindowProps& props)
 	{
 		return new WindowsWindow(props);

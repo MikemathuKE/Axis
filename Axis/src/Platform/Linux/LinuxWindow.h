@@ -19,6 +19,8 @@ namespace Axis {
 		bool IsVSync() const override { return m_Data.VSync; };
 		bool IsResizable() const override { return m_Data.Resizable; }
 
+		virtual void* GetNativeWindow() override { return m_Window; }
+
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		void SetWindowMode(const WindowMode& mode, unsigned int width, unsigned int height) override;

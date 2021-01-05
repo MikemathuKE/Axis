@@ -5,6 +5,8 @@
 #include "Axis/Events/KeyEvent.h"
 #include "Axis/Core/Log.h"
 
+#include "Axis/Core/Input.h"
+
 #include <glad/glad.h>
 
 namespace Axis{
@@ -59,6 +61,9 @@ namespace Axis{
 
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate();
+
+            auto [x, y] = Input::GetMousePosition();
+            AXIS_CORE_TRACE("{0}, {1}", x, y);
 
             m_Window->OnUpdate();
         }

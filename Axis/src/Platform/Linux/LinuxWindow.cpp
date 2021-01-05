@@ -1,5 +1,7 @@
 #include "axispch.h"
-#include "LinuxWindow.h"
+
+#include "Platform/Linux/LinuxWindow.h"
+#include "Platform/Linux/LinuxInput.h"
 
 #include "Axis/Events/ApplicationEvent.h"
 #include "Axis/Events/KeyEvent.h"
@@ -18,6 +20,8 @@ namespace Axis {
 	}
 
 #ifdef AXIS_PLATFORM_LINUX
+    Scope<Input> Input::s_Instance = CreateScope<LinuxInput>();
+
 	Window* Window::Create(const WindowProps& props)
 	{
 		return new LinuxWindow(props);
