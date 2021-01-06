@@ -13,6 +13,11 @@ public:
 
     void OnEvent(Axis::Event& event)
     {
+        if (event.GetEventType() == Axis::EventType::KeyPressed)
+        {
+            Axis::KeyPressedEvent& e = (Axis::KeyPressedEvent&)event;
+            AXIS_TRACE("{0}", (char)e.GetKeyCode());
+        }
     }
 };
 

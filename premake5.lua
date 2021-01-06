@@ -22,6 +22,7 @@ IncludeDir["spdlog"] = "%{wks.location}/Axis/vendor/spdlog/include"
 IncludeDir["GLFW"] = "%{wks.location}/Axis/vendor/GLFW/include"
 IncludeDir["Glad"] = "%{wks.location}/Axis/vendor/Glad/include"
 IncludeDir["ImGui"] = "%{wks.location}/Axis/vendor/ImGui"
+IncludeDir["glm"] = "%{wks.location}/Axis/vendor/glm"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
@@ -54,7 +55,8 @@ project "Axis"
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}",
-    "%{IncludeDir.ImGui}"
+    "%{IncludeDir.ImGui}",
+    "%{IncludeDir.glm}"
   }
   
   links
@@ -125,7 +127,8 @@ project "SandBox"
   includedirs
   {
     "%{wks.location}/Axis/src",
-    "%{IncludeDir.spdlog}"
+    "%{IncludeDir.spdlog}",
+    "%{IncludeDir.glm}"
   }
   
   links

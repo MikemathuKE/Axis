@@ -7,3 +7,6 @@
 [submodule "Axis/vendor/imgui"]
 	path = Axis/vendor/imgui
 	url = https://github.com/MikemathuKE/imgui.git
+[submodule "Axis/vendor/glm"]
+	path = Axis/vendor/glm
+	url = https://github.com/g-truc/glm.git

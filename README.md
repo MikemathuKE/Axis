@@ -35,6 +35,9 @@ Axis is then configured and compiled as follows
 Axis Engine utilizes spdlog library (https://github.com/gabime/spdlog) to handle all logging activities. Axis generates log information
 then prints to console and saves in a log file named Axis.log
 
+### Math
+Axis Engine utilizes glm Math library (https://github.com/g-truc/glm.git) to handle fast Math calculations.
+
 ### Rendering
 
 ### Graphical User Interface
