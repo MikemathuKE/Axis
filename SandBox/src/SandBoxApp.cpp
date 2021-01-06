@@ -5,7 +5,10 @@ class ExampleLayer : public Axis::Layer
 public:
     ExampleLayer()
         :Layer("Example")
-    {}
+    {
+        glm::vec3 vec = { 1, 2, 3 };
+        AXIS_TRACE("{0}", vec);
+    }
 
     void OnUpdate() override
     {
@@ -13,11 +16,6 @@ public:
 
     void OnEvent(Axis::Event& event)
     {
-        if (event.GetEventType() == Axis::EventType::KeyPressed)
-        {
-            Axis::KeyPressedEvent& e = (Axis::KeyPressedEvent&)event;
-            AXIS_TRACE("{0}", (char)e.GetKeyCode());
-        }
     }
 };
 
@@ -27,7 +25,6 @@ public:
     SandBox()
     {
         PushLayer(new ExampleLayer());
-        PushLayer(new Axis::ImGuiLayer());
     }
     ~SandBox()
     {

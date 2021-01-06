@@ -18,16 +18,17 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include Directories
 IncludeDir = {}
+IncludeDir["vendor"] = "%{wks.location}/Axis/vendor"
 IncludeDir["spdlog"] = "%{wks.location}/Axis/vendor/spdlog/include"
 IncludeDir["GLFW"] = "%{wks.location}/Axis/vendor/GLFW/include"
 IncludeDir["Glad"] = "%{wks.location}/Axis/vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/Axis/vendor/ImGui"
+IncludeDir["ImGui"] = "%{wks.location}/Axis/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/Axis/vendor/glm"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
   include "Axis/vendor/Glad"
-  include "Axis/vendor/ImGui"
+  include "Axis/vendor/imgui"
 group ""
 
 project "Axis"
@@ -52,6 +53,7 @@ project "Axis"
   includedirs
   {
     "%{prj.name}/src",
+    "%{IncludeDir.vendor}",
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}",
@@ -127,6 +129,7 @@ project "SandBox"
   includedirs
   {
     "%{wks.location}/Axis/src",
+    "%{IncludeDir.vendor}",
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.glm}"
   }

@@ -20,6 +20,9 @@ namespace Axis{
 
         m_Window = (Scope<Window>)Window::Create();
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
+
+        m_ImGuiLayer = new ImGuiLayer();
+        PushLayer(m_ImGuiLayer);
     }
 
     Application::~Application()
@@ -61,6 +64,11 @@ namespace Axis{
 
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate();
+
+            m_ImGuiLayer->Begin();
+            for (Layer* layer : m_LayerStack)
+                layer->OnImGuiRender();
+            m_ImGuiLayer->End();
 
             m_Window->OnUpdate();
         }

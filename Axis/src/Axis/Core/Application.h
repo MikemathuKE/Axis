@@ -7,6 +7,8 @@
 #include "Axis/Events/Event.h"
 #include "Axis/Events/ApplicationEvent.h"
 
+#include "Axis/ImGui/ImGuiLayer.h"
+
 namespace Axis{
 
     class Application
@@ -30,6 +32,7 @@ namespace Axis{
 
     private:
         Scope<Window> m_Window;
+        ImGuiLayer* m_ImGuiLayer;
         bool m_Running = true;
         LayerStack m_LayerStack;
     

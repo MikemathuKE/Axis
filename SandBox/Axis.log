@@ -1,3 +1,4 @@
-[11:23:06] [info] AXIS: Creating Window Axis Engine (1280, 720)
-[11:23:06] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
-[11:23:07] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[16:44:14] [info] AXIS: Creating Window Axis Engine (1280, 720)
+[16:44:14] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
+[16:44:14] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[16:44:14] [trace] APP: (1, 2, 3)

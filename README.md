@@ -39,8 +39,10 @@ then prints to console and saves in a log file named Axis.log
 Axis Engine utilizes glm Math library (https://github.com/g-truc/glm.git) to handle fast Math calculations.
 
 ### Rendering
+Axis Engine currently uses OpenGL Graphics Library to perform all rendering funtions.
 
 ### Graphical User Interface
+Axis Engine utilises ImGui library (https://github.com/ocornut/imgui.git) to perform immediate mode graphical user interface functions.
 
 ### Audio
 
