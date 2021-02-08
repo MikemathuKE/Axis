@@ -42,6 +42,6 @@ namespace Axis {
 	{
 		auto [x, y] = GetMousePositionImpl();
 		return y;
-	}	
+	}
 
-} 
+}

@@ -148,7 +148,6 @@ project "SandBox"
     {
       "dl",
       "pthread",
-      "OpenGL",
       "Glad",
       "GLFW"
     }

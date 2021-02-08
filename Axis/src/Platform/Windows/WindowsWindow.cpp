@@ -1,3 +1,4 @@
+
 #include "axispch.h"
 
 #include "Platform/Windows/WindowsWindow.h"
@@ -7,7 +8,7 @@
 #include "Axis/Events/KeyEvent.h"
 #include "Axis/Events/MouseEvent.h"
 
-#include <glad/glad.h>
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Axis {
 
@@ -65,18 +66,14 @@ namespace Axis {
 			m_VideoMode.redBits,
 			m_VideoMode.greenBits,
 			m_VideoMode.blueBits);
-
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RESIZABLE, m_Data.Resizable);
 
 		m_Window = glfwCreateWindow((int32_t)m_Data.Width, (int32_t)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		++s_GLFWWindowCount;
 
-		glfwMakeContextCurrent(m_Window);
-		int32_t status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		AXIS_CORE_ASSERT(status, "Failed to initialize GLAD!");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
+
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -233,7 +230,7 @@ namespace Axis {
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

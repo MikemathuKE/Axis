@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Axis/Core/Window.h"
+#include "Axis/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
-	
+
 namespace Axis {
-	
+
 	class WindowsWindow : public Window
 	{
 	public:
@@ -26,12 +27,13 @@ namespace Axis {
 		void SetWindowMode(const WindowMode& mode, unsigned int width, unsigned int height) override;
 		void SetIcon(const std::string& path) override;
 
-	private:
+	protected:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
-	private:
+	protected:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 		GLFWmonitor* m_PrimaryMonitor;
 		GLFWvidmode m_VideoMode;
 

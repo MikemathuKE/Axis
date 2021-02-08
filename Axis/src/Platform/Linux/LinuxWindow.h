@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Axis/Core/Window.h"
+#include "Axis/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
 
@@ -16,7 +17,7 @@ namespace Axis {
 
 		uint32_t GetWidth() const override { return m_Data.Width; }
 		uint32_t GetHeight() const override { return m_Data.Height; }
-		bool IsVSync() const override { return m_Data.VSync; };
+		bool IsVSync() const override { return m_Data.VSync; }
 		bool IsResizable() const override { return m_Data.Resizable; }
 
 		virtual void* GetNativeWindow() override { return m_Window; }
@@ -26,12 +27,13 @@ namespace Axis {
 		void SetWindowMode(const WindowMode& mode, unsigned int width, unsigned int height) override;
 		void SetIcon(const std::string& path) override;
 
-	private:
+	protected:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 
-	private:
+	protected:
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
 		GLFWmonitor* m_PrimaryMonitor;
 		GLFWvidmode m_VideoMode;
 
