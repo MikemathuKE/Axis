@@ -6,8 +6,6 @@ public:
     ExampleLayer()
         :Layer("Example")
     {
-        glm::vec3 vec = { 1, 2, 3 };
-        AXIS_TRACE("{0}", vec);
     }
 
     void OnUpdate() override

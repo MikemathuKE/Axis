@@ -36,7 +36,7 @@ project "Axis"
   kind "StaticLib"
   language "C++"
   cppdialect "C++17"
-  staticruntime "On"
+  staticruntime "on"
  
   targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
   objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
@@ -70,12 +70,12 @@ project "Axis"
   
   defines
   {
-    "GLFW_INCLUDE_NONE"
+    "GLFW_INCLUDE_NONE",
+    "_CRT_SECURE_NO_WARNINGS"
   }
  
   filter "system:linux"
-    pic "On"
-    cppdialect "C++17"
+    pic "on"
     systemversion "latest"
   
     links
@@ -98,12 +98,12 @@ project "Axis"
   filter "configurations:Debug"
     defines "AXIS_DEBUG"
     runtime "Debug"
-    symbols "On"
+    symbols "on"
 
   filter "configurations:Release"
     defines "AXIS_RELEASE"
     runtime "Release"
-    optimize "On"
+    optimize "on"
 
   filter "configurations:Dist"
     defines "AXIS_DIST"
@@ -115,7 +115,7 @@ project "SandBox"
   kind "ConsoleApp"
   language "C++"
   cppdialect "C++17"
-  staticruntime "On"
+  staticruntime "on"
 
   targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
   objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
@@ -142,8 +142,6 @@ project "SandBox"
     
 
   filter "system:linux"
-    cppdialect "C++17"
-    staticruntime "On"
     systemversion "latest"
     
     links
@@ -161,12 +159,12 @@ project "SandBox"
   filter "configurations:Debug"
     defines "AXIS_DEBUG"
     runtime "Debug"
-    symbols "On"
+    symbols "on"
 
   filter "configurations:Release"
     defines "AXIS_RELEASE"
     runtime "Release"
-    optimize "On"
+    optimize "on"
 
   filter "configurations:Dist"
     defines "AXIS_DIST"
