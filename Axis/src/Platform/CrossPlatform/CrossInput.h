@@ -4,7 +4,7 @@
 
 namespace Axis {
 
-	class WindowsInput : public Input
+	class CrossInput : public Input
 	{
 	protected:
 		virtual bool IsKeyPressedImpl(KeyCode key) override;

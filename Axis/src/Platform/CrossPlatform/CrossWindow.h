@@ -7,11 +7,11 @@
 
 namespace Axis {
 
-	class WindowsWindow : public Window
+	class CrossWindow : public Window
 	{
 	public:
-		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+		CrossWindow(const WindowProps& props);
+		virtual ~CrossWindow();
 
 		void OnUpdate() override;
 

@@ -1,8 +1,8 @@
 
 #include "axispch.h"
 
-#include "Platform/Windows/WindowsWindow.h"
-#include "Platform/Windows/WindowsInput.h"
+#include "Platform/CrossPlatform/CrossWindow.h"
+#include "Platform/CrossPlatform/CrossInput.h"
 
 #include "Axis/Events/ApplicationEvent.h"
 #include "Axis/Events/KeyEvent.h"
@@ -20,26 +20,26 @@ namespace Axis {
 		AXIS_CORE_ERROR("GLFW Error ({0}) : {1}", error, description);
 	}
 
-#ifdef AXIS_PLATFORM_WINDOWS
-	Scope<Input> Input::s_Instance = CreateScope<WindowsInput>();
+#ifdef AXIS_PLATFORM_WINDOWS || AXIS_PLATFORM_LINUX
+	Scope<Input> Input::s_Instance = CreateScope<CrossInput>();
 
 	Window* Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return new CrossWindow(props);
 	}
-#endif // AXIS_PLATFORM_WINDOWS
+#endif // AXIS_PLATFORM_WINDOWS || AXIS_PLATFORM_LINUX
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	CrossWindow::CrossWindow(const WindowProps& props)
 	{
 		Init(props);
 	}
 
-	WindowsWindow::~WindowsWindow()
+	CrossWindow::~CrossWindow()
 	{
 		Shutdown();
 	}
 
-	void WindowsWindow::Init(const WindowProps& props)
+	void CrossWindow::Init(const WindowProps& props)
 	{
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -222,18 +222,18 @@ namespace Axis {
 
 	}
 
-	void WindowsWindow::Shutdown()
+	void CrossWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
 	}
 
-	void WindowsWindow::OnUpdate()
+	void CrossWindow::OnUpdate()
 	{
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
-	void WindowsWindow::SetVSync(bool enabled)
+	void CrossWindow::SetVSync(bool enabled)
 	{
 		if (enabled)
 			glfwSwapInterval(1);
@@ -243,7 +243,7 @@ namespace Axis {
 		m_Data.VSync = enabled;
 	}
 
-	void WindowsWindow::SetWindowMode(const WindowMode& mode, unsigned int width, unsigned int height)
+	void CrossWindow::SetWindowMode(const WindowMode& mode, unsigned int width, unsigned int height)
 	{
 		if (!m_Window)
 			return;
@@ -304,7 +304,7 @@ namespace Axis {
 		glfwSetWindowMonitor(m_Window, monitor, m_OldWindowedParams.XPos, m_OldWindowedParams.YPos, width, height, m_VideoMode.refreshRate);
 	}
 
-	void WindowsWindow::SetIcon(const std::string& path)
+	void CrossWindow::SetIcon(const std::string& path)
 	{
 		//Requires stbi
 		/*
