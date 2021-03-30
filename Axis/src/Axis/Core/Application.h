@@ -7,6 +7,10 @@
 #include "Axis/Events/Event.h"
 #include "Axis/Events/ApplicationEvent.h"
 
+#include "Axis/Renderer/Shader.h"
+#include "Axis/Renderer/Buffer.h"
+#include "Axis/Renderer/VertexArray.h"
+
 #include "Axis/ImGui/ImGuiLayer.h"
 
 namespace Axis{
@@ -33,8 +37,15 @@ namespace Axis{
     private:
         Scope<Window> m_Window;
         ImGuiLayer* m_ImGuiLayer;
+
         bool m_Running = true;
         LayerStack m_LayerStack;
+
+        Ref<Shader> m_Shader;
+        Ref<VertexArray> m_VertexArray;
+
+        Ref<Shader> m_SquareShader;
+        Ref<VertexArray> m_SquareVA;
     
         static Application* s_Instance;
     };

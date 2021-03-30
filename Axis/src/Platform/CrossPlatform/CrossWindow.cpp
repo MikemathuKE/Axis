@@ -20,7 +20,14 @@ namespace Axis {
 		AXIS_CORE_ERROR("GLFW Error ({0}) : {1}", error, description);
 	}
 
-#ifdef AXIS_PLATFORM_WINDOWS || AXIS_PLATFORM_LINUX
+#ifdef AXIS_PLATFORM_WINDOWS
+	Scope<Input> Input::s_Instance = CreateScope<CrossInput>();
+
+	Window* Window::Create(const WindowProps& props)
+	{
+		return new CrossWindow(props);
+	}
+#elif AXIS_PLATFORM_LINUX
 	Scope<Input> Input::s_Instance = CreateScope<CrossInput>();
 
 	Window* Window::Create(const WindowProps& props)

@@ -22,6 +22,10 @@ namespace Axis {
 		glfwMakeContextCurrent(m_WindowHandle);
 		int32_t status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		AXIS_CORE_ASSERT(status, "Failed to initialize GLAD!");
+		AXIS_CORE_INFO("OpenGL Info:");
+		AXIS_CORE_INFO("  VENDOR : {0}", glGetString(GL_VENDOR));
+		AXIS_CORE_INFO("  RENDERER : {0}", glGetString(GL_RENDERER));
+		AXIS_CORE_INFO("  VERSION : {0}", glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::SwapBuffers()
