@@ -23,6 +23,8 @@ namespace Axis{
 
         m_ImGuiLayer = new ImGuiLayer();
         PushLayer(m_ImGuiLayer);
+        m_NuklearLayer = new NuklearLayer();
+        PushLayer(m_NuklearLayer);
 
         m_VertexArray.reset(VertexArray::Create());
 
@@ -185,8 +187,10 @@ namespace Axis{
                 layer->OnUpdate();
 
             m_ImGuiLayer->Begin();
+            m_NuklearLayer->Begin();
             for (Layer* layer : m_LayerStack)
                 layer->OnGUIRender();
+            m_NuklearLayer->End();
             m_ImGuiLayer->End();
 
             m_Window->OnUpdate();

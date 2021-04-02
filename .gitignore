@@ -1,10 +1,8 @@
 #directories
 Axis/bin
 Axis/bin-int
-Axis/vendor
 SandBox/bin
 SandBox/bin-int
-SandBox/vendor
 vendor/
 .vs
 

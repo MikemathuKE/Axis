@@ -6,7 +6,12 @@
 	url = https://github.com/MikemathuKE/glfw.git
 [submodule "Axis/vendor/imgui"]
 	path = Axis/vendor/imgui
-	url = https://github.com/MikemathuKE/imgui.git
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "Axis/vendor/glm"]
 	path = Axis/vendor/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "Axis/vendor/Nuklear"]
+	path = Axis/vendor/Nuklear
+	url = https://github.com/MikemathuKE/Nuklear.git
+	branch = docking

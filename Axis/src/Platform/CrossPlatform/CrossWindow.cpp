@@ -1,4 +1,3 @@
-
 #include "axispch.h"
 
 #include "Platform/CrossPlatform/CrossWindow.h"

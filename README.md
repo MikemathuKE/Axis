@@ -42,7 +42,7 @@ Axis Engine utilizes glm Math library (https://github.com/g-truc/glm.git) to han
 Axis Engine currently uses OpenGL Graphics Library to perform all rendering funtions.
 
 ### Graphical User Interface
-Axis Engine utilises ImGui library (https://github.com/ocornut/imgui.git) to perform immediate mode graphical user interface functions.
+Axis Engine utilises ImGui library (https://github.com/ocornut/imgui.git) and (https://github.com/MikemathuKE/Nuklear.git) to perform immediate mode graphical user interface functions.
 
 ### Audio
 

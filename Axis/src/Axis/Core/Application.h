@@ -12,6 +12,7 @@
 #include "Axis/Renderer/VertexArray.h"
 
 #include "Axis/ImGui/ImGuiLayer.h"
+#include "Axis/Nuklear/NuklearLayer.h"
 
 namespace Axis{
 
@@ -37,6 +38,7 @@ namespace Axis{
     private:
         Scope<Window> m_Window;
         ImGuiLayer* m_ImGuiLayer;
+        NuklearLayer* m_NuklearLayer;
 
         bool m_Running = true;
         LayerStack m_LayerStack;
