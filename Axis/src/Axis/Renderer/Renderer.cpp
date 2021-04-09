@@ -3,6 +3,15 @@
 
 namespace Axis {
 
-	RendererAPI Renderer::s_RendererAPI = RendererAPI::OpenGL;
+	void Renderer::BeginScene()
+	{}
+
+	void Renderer::EndScene()
+	{}
+
+	void Renderer::Submit(const Ref<VertexArray>& vertexArray)
+	{
+		RenderCommand::DrawIndexed(vertexArray);
+	}
 
 }

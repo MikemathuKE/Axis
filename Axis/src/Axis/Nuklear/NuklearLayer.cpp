@@ -2,7 +2,7 @@
 
 #include "NuklearLayer.h"
 
-#include <Glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define MAX_VERTEX_BUFFER 512 * 1024
@@ -19,10 +19,11 @@
 #define NK_GLFW_GL3_IMPLEMENTATION
 #define NK_KEYSTATE_BASED_INPUT
 
-#include <nuklear/nuklear.h>
+#include <Nuklear/nuklear.h>
 #include "nuklear_glfw_opengl_impl.h"
 
-#include <nuklear/demo/overview.c>
+#include <Nuklear/demo/overview.c>
+#include "nuklear_style.h"
 
 #include "Axis/Core/Application.h"
 
@@ -37,6 +38,7 @@ namespace Axis {
 
 	NuklearLayer::~NuklearLayer()
 	{
+		OnDetach();
 	}
 
 	void NuklearLayer::OnAttach()
@@ -49,23 +51,21 @@ namespace Axis {
 		{
 			struct nk_font_atlas* atlas;
 			nk_glfw3_font_stash_begin(&s_NK_GLFW, &atlas);
-			/*struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);*/
-			/*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 14, 0);*/
-			/*struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../../../extra_font/kenvector_future_thin.ttf", 13, 0);*/
-			/*struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0);*/
-			/*struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0);*/
-			/*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
+			//struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/nuklear/extra_font/DroidSans.ttf", 14, 0);
+			//struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/nuklear/extra_font/Roboto-Regular.ttf", 14, 0);
+			//struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/nuklear/extra_font/kenvector_future_thin.ttf", 13, 0);
+			//struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/nuklear/extra_font/ProggyClean.ttf", 12, 0);
+			//struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/nuklear/extra_font/ProggyTiny.ttf", 10, 0);
+			//struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/nuklear/extra_font/Cousine-Regular.ttf", 13, 0);
 			nk_glfw3_font_stash_end(&s_NK_GLFW);
 			/*nk_style_load_all_cursors(ctx, atlas->cursors);*/
 			/*nk_style_set_font(ctx, &droid->handle);*/
 		}
 
-		#ifdef INCLUDE_STYLE
-		/*set_style(ctx, THEME_WHITE);*/
-		/*set_style(ctx, THEME_RED);*/
-		/*set_style(ctx, THEME_BLUE);*/
-		/*set_style(ctx, THEME_DARK);*/
-		#endif
+		//set_style(m_Context, THEME_WHITE);
+		//set_style(m_Context, THEME_RED);
+		//set_style(m_Context, THEME_BLUE);
+		set_style(m_Context, THEME_AXIS);
 	}
 
 	void NuklearLayer::OnDetach()

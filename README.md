@@ -22,6 +22,10 @@ On Debian and Debian derivative distributions, install these packages by running
 
 `sudo apt install libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libglew-dev`
 
+Alternatively, xorg-dev packages contain all the needed resources. Install by running
+
+'sudo apt install xorg-dev'
+
 Axis is then configured and compiled as follows
 - Modify the .sh script to support the specific IDE in use.
 - Open terminal in script folder execute the following lines of commands

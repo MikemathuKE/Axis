@@ -198,6 +198,9 @@ nk_glfw3_device_destroy(struct nk_glfw* glfw)
 NK_API void
 nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer)
 {
+    /* Restore Dockspace State */
+    nk_dockspace_restore(&glfw->ctx);
+
     struct nk_glfw_device *dev = &glfw->ogl;
     struct nk_buffer vbuf, ebuf;
     GLfloat ortho[4][4] = {
@@ -490,6 +493,7 @@ nk_glfw3_new_frame(struct nk_glfw* glfw)
 NK_API
 void nk_glfw3_shutdown(struct nk_glfw* glfw)
 {
+    nk_dockspace_end(&glfw->ctx);
     nk_font_atlas_clear(&glfw->atlas);
     nk_free(&glfw->ctx);
     nk_glfw3_device_destroy(glfw);
