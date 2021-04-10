@@ -66,6 +66,14 @@ NK_API void                 nk_gflw3_resize_callback(GLFWwindow* win, int width,
  */
 #ifdef NK_GLFW_GL3_IMPLEMENTATION
 
+static struct nk_glfw s_NK_GLFW;
+
+static nk_bool g_InstalledCallbacks = false;
+static GLFWcharfun          g_PrevUserCallbackChar = NULL;
+static GLFWscrollfun        g_PrevUserCallbackScroll = NULL;
+static GLFWmousebuttonfun   g_PrevUserCallbackMousebutton = NULL;
+static GLFWwindowsizefun    g_PrevUserCallbackWindowResize = NULL;
+
 #ifndef NK_GLFW_DOUBLE_CLICK_LO
 #define NK_GLFW_DOUBLE_CLICK_LO 0.02
 #endif
@@ -301,7 +309,10 @@ nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_b
 NK_API void
 nk_glfw3_char_callback(GLFWwindow *win, unsigned int codepoint)
 {
-    struct nk_glfw* glfw = (struct nk_glfw*)glfwGetWindowUserPointer(win);
+    struct nk_glfw* glfw = &s_NK_GLFW;
+    if (g_PrevUserCallbackChar != NULL && glfw->win == win)
+        g_PrevUserCallbackChar(win, codepoint);
+
     if (glfw->text_len < NK_GLFW_TEXT_MAX)
         glfw->text[glfw->text_len++] = codepoint;
 }
@@ -309,7 +320,10 @@ nk_glfw3_char_callback(GLFWwindow *win, unsigned int codepoint)
 NK_API void
 nk_gflw3_scroll_callback(GLFWwindow *win, double xoff, double yoff)
 {
-    struct nk_glfw* glfw = (struct nk_glfw*)glfwGetWindowUserPointer(win);
+    struct nk_glfw* glfw = &s_NK_GLFW;
+    if (g_PrevUserCallbackScroll != NULL && glfw->win == win)
+        g_PrevUserCallbackScroll(win, xoff, yoff);
+
     (void)xoff;
     glfw->scroll.x += (float)xoff;
     glfw->scroll.y += (float)yoff;
@@ -318,7 +332,10 @@ nk_gflw3_scroll_callback(GLFWwindow *win, double xoff, double yoff)
 NK_API void
 nk_gflw3_resize_callback(GLFWwindow* win, int width, int height)
 {
-    struct nk_glfw* glfw = (struct nk_glfw*)glfwGetWindowUserPointer(win);
+    struct nk_glfw* glfw = &s_NK_GLFW;
+    if (g_PrevUserCallbackWindowResize != NULL && glfw->win == win)
+        g_PrevUserCallbackWindowResize(win, width, height);
+
     int w, h;
     glfwGetFramebufferSize(win, &w, &h);
     nk_dockspace_adjust(&glfw->ctx, w, h);
@@ -327,9 +344,13 @@ nk_gflw3_resize_callback(GLFWwindow* win, int width, int height)
 NK_API void
 nk_glfw3_mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
+    struct nk_glfw* glfw = &s_NK_GLFW;
+    if (g_PrevUserCallbackMousebutton != NULL && glfw->win == win)
+        g_PrevUserCallbackMousebutton(win, button, action, mods);
+
     double x, y;
-    if (button != GLFW_MOUSE_BUTTON_LEFT) return;
-    struct nk_glfw* glfw = (struct nk_glfw*)glfwGetWindowUserPointer(win);
+    if (button != GLFW_MOUSE_BUTTON_LEFT) return;    
+
     glfwGetCursorPos(win, &x, &y);
     if (action == GLFW_PRESS)  {
         double dt = glfwGetTime() - glfw->last_button_click;
@@ -368,11 +389,17 @@ NK_API struct nk_context*
 nk_glfw3_init(struct nk_glfw* glfw, GLFWwindow *win, enum nk_glfw_init_state init_state)
 {
     glfw->win = win;
+
+    g_PrevUserCallbackChar = NULL;
+    g_PrevUserCallbackScroll = NULL;
+    g_PrevUserCallbackMousebutton = NULL;
+    g_PrevUserCallbackWindowResize = NULL;
     if (init_state == NK_GLFW3_INSTALL_CALLBACKS) {
-        glfwSetScrollCallback(win, nk_gflw3_scroll_callback);
-        glfwSetCharCallback(win, nk_glfw3_char_callback);
-        glfwSetMouseButtonCallback(win, nk_glfw3_mouse_button_callback);
-        glfwSetWindowSizeCallback(win, nk_gflw3_resize_callback);
+        g_InstalledCallbacks = true;
+        g_PrevUserCallbackScroll = glfwSetScrollCallback(win, nk_gflw3_scroll_callback);
+        g_PrevUserCallbackChar = glfwSetCharCallback(win, nk_glfw3_char_callback);
+        g_PrevUserCallbackMousebutton = glfwSetMouseButtonCallback(win, nk_glfw3_mouse_button_callback);
+        g_PrevUserCallbackWindowResize = glfwSetWindowSizeCallback(win, nk_gflw3_resize_callback);
     }
     nk_init_default(&glfw->ctx, 0);
 
@@ -493,6 +520,14 @@ nk_glfw3_new_frame(struct nk_glfw* glfw)
 NK_API
 void nk_glfw3_shutdown(struct nk_glfw* glfw)
 {
+    if(g_InstalledCallbacks)
+    {
+        glfwSetMouseButtonCallback(glfw->win, g_PrevUserCallbackMousebutton);
+        glfwSetScrollCallback(glfw->win, g_PrevUserCallbackScroll);
+        glfwSetCharCallback(glfw->win, g_PrevUserCallbackChar);
+        glfwSetWindowSizeCallback(glfw->win, g_PrevUserCallbackWindowResize);
+        g_InstalledCallbacks = false;
+    }
     nk_dockspace_end(&glfw->ctx);
     nk_font_atlas_clear(&glfw->atlas);
     nk_free(&glfw->ctx);

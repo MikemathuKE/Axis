@@ -27,8 +27,6 @@
 
 #include "Axis/Core/Application.h"
 
-static struct nk_glfw s_NK_GLFW;
-
 namespace Axis {
 
 	NuklearLayer::NuklearLayer()
@@ -45,7 +43,7 @@ namespace Axis {
 	{
 		GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		//* GUI */
-		m_Context = nk_glfw3_init(&s_NK_GLFW, window, NK_GLFW3_DEFAULT);
+		m_Context = nk_glfw3_init(&s_NK_GLFW, window, NK_GLFW3_INSTALL_CALLBACKS);
 		/* Load Fonts: if none of these are loaded a default font will be used  */
 		/* Load Cursor: if you uncomment cursor loading please hide the cursor */
 		{
