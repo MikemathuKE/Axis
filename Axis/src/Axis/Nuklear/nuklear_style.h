@@ -1,6 +1,6 @@
 #pragma once
 
-enum theme { THEME_BLACK, THEME_WHITE, THEME_RED, THEME_BLUE, THEME_DARK, THEME_AXIS };
+enum theme { THEME_NONE, THEME_WHITE, THEME_RED, THEME_LIGHT, THEME_DARK, THEME_AXIS, THEME_BLACK };
 
 static void
 set_style(struct nk_context* ctx, enum theme theme)
@@ -8,13 +8,13 @@ set_style(struct nk_context* ctx, enum theme theme)
     struct nk_color table[NK_COLOR_COUNT];
     if (theme == THEME_WHITE) {
         table[NK_COLOR_TEXT] = nk_rgba(70, 70, 70, 255);
-        table[NK_COLOR_WINDOW] = nk_rgba(175, 175, 175, 255);
+        table[NK_COLOR_WINDOW] = nk_rgba(225, 225, 225, 255);
         table[NK_COLOR_HEADER] = nk_rgba(175, 175, 175, 255);
         table[NK_COLOR_BORDER] = nk_rgba(0, 0, 0, 255);
         table[NK_COLOR_BUTTON] = nk_rgba(185, 185, 185, 255);
         table[NK_COLOR_BUTTON_HOVER] = nk_rgba(170, 170, 170, 255);
         table[NK_COLOR_BUTTON_ACTIVE] = nk_rgba(160, 160, 160, 255);
-        table[NK_COLOR_TOGGLE] = nk_rgba(150, 150, 150, 255);
+        table[NK_COLOR_TOGGLE] = nk_rgba(0, 0, 0, 255);
         table[NK_COLOR_TOGGLE_HOVER] = nk_rgba(120, 120, 120, 255);
         table[NK_COLOR_TOGGLE_CURSOR] = nk_rgba(175, 175, 175, 255);
         table[NK_COLOR_SELECT] = nk_rgba(190, 190, 190, 255);
@@ -68,7 +68,7 @@ set_style(struct nk_context* ctx, enum theme theme)
         table[NK_COLOR_TAB_HEADER] = nk_rgba(181, 45, 69, 220);
         nk_style_from_table(ctx, table);
     }
-    else if (theme == THEME_BLUE) {
+    else if (theme == THEME_LIGHT) {
         table[NK_COLOR_TEXT] = nk_rgba(20, 20, 20, 255);
         table[NK_COLOR_WINDOW] = nk_rgba(202, 212, 214, 215);
         table[NK_COLOR_HEADER] = nk_rgba(137, 182, 224, 220);
