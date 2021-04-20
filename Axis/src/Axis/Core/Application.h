@@ -10,9 +10,11 @@
 #include "Axis/Renderer/Shader.h"
 #include "Axis/Renderer/Buffer.h"
 #include "Axis/Renderer/VertexArray.h"
+#include "Axis/Renderer/OrthographicCamera.h"
 
 #include "Axis/ImGui/ImGuiLayer.h"
 #include "Axis/Nuklear/NuklearLayer.h"
+
 
 namespace Axis{
 
@@ -48,6 +50,8 @@ namespace Axis{
 
         Ref<Shader> m_SquareShader;
         Ref<VertexArray> m_SquareVA;
+
+        OrthographicCamera m_Camera;
     
         static Application* s_Instance;
     };

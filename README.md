@@ -24,7 +24,7 @@ On Debian and Debian derivative distributions, install these packages by running
 
 Alternatively, xorg-dev packages contain all the needed resources. Install by running
 
-'sudo apt install xorg-dev'
+`sudo apt install xorg-dev`
 
 Axis is then configured and compiled as follows
 - Modify the .sh script to support the specific IDE in use.
