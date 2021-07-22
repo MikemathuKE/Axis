@@ -5,6 +5,11 @@
 
 namespace Axis {
 
+	void OpenGLRendererAPI::Init()
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
 	{
 		glClearColor(color.r, color.g, color.b, color.a);

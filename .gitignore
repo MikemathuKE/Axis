@@ -4,7 +4,7 @@ Axis/bin-int
 SandBox/bin
 SandBox/bin-int
 vendor/
-.vs
+*.vs
 
 #solution
 *.sln
@@ -28,4 +28,10 @@ Makefile
 *.txt
 
 #modules
-.modules
+*.modules
+
+#json
+*.json
+
+#ini files
+*.ini

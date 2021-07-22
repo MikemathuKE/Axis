@@ -23,11 +23,11 @@ namespace Axis {
 		const glm::mat4& GetProjectionMatrix() { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewProjectionMatrix() { return m_ViewProjectionMatrix; }
 	protected:
-		virtual void RecalculateViewMatrix() = 0;
+		void RecalculateViewMatrix();
 	protected:
-		glm::mat4 m_ViewMatrix;
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewProjectionMatrix;
+		glm::mat4 m_ViewMatrix;
 
 		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 m_Rotation = { 0.0f, 0.0f, 0.0f };

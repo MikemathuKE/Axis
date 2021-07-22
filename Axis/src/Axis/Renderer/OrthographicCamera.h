@@ -10,8 +10,7 @@ namespace Axis {
 		OrthographicCamera(float left, float right, float bottom, float top);
 		virtual ~OrthographicCamera();
 
-	protected:
-		virtual void RecalculateViewMatrix() override;
+		void SetRotation(float rotation) { m_Rotation = { 0.0f, 0.0f, rotation }; RecalculateViewMatrix(); }
 	};
 
 }
