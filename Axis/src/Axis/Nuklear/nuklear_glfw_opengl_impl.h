@@ -57,6 +57,9 @@ NK_API void                 nk_gflw3_scroll_callback(GLFWwindow *win, double xof
 NK_API void                 nk_glfw3_mouse_button_callback(GLFWwindow *win, int button, int action, int mods);
 NK_API void                 nk_gflw3_resize_callback(GLFWwindow* win, int width, int height);
 
+NK_API void                 nk_glfw3_set_cursor_position(GLFWwindow* win, double xoff, double yoff);
+NK_API void                 nk_glfw3_get_cursor_position(GLFWwindow* win, double* x, double* y);
+
 /*
  * ==============================================================
  *
@@ -66,7 +69,7 @@ NK_API void                 nk_gflw3_resize_callback(GLFWwindow* win, int width,
  */
 #ifdef NK_GLFW_GL3_IMPLEMENTATION
 
-static struct nk_glfw s_NK_GLFW;
+static struct nk_glfw s_NKStruct;
 
 static nk_bool g_InstalledCallbacks = false;
 static GLFWcharfun          g_PrevUserCallbackChar = NULL;
@@ -90,7 +93,7 @@ struct nk_glfw_vertex {
 #ifdef __APPLE__
   #define NK_SHADER_VERSION "#version 150\n"
 #else
-  #define NK_SHADER_VERSION "#version 300 es\n"
+  #define NK_SHADER_VERSION "#version 440 core\n"
 #endif
 
 NK_API void
@@ -207,7 +210,7 @@ NK_API void
 nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_buffer, int max_element_buffer)
 {
     /* Restore Dockspace State */
-    nk_dockspace_restore(&glfw->ctx);
+    NK_RESTORE_DOCKSPACE(&glfw->ctx);
 
     struct nk_glfw_device *dev = &glfw->ogl;
     struct nk_buffer vbuf, ebuf;
@@ -309,7 +312,7 @@ nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_b
 NK_API void
 nk_glfw3_char_callback(GLFWwindow *win, unsigned int codepoint)
 {
-    struct nk_glfw* glfw = &s_NK_GLFW;
+    struct nk_glfw* glfw = &s_NKStruct;
     if (g_PrevUserCallbackChar != NULL && glfw->win == win)
         g_PrevUserCallbackChar(win, codepoint);
 
@@ -320,7 +323,7 @@ nk_glfw3_char_callback(GLFWwindow *win, unsigned int codepoint)
 NK_API void
 nk_gflw3_scroll_callback(GLFWwindow *win, double xoff, double yoff)
 {
-    struct nk_glfw* glfw = &s_NK_GLFW;
+    struct nk_glfw* glfw = &s_NKStruct;
     if (g_PrevUserCallbackScroll != NULL && glfw->win == win)
         g_PrevUserCallbackScroll(win, xoff, yoff);
 
@@ -332,7 +335,7 @@ nk_gflw3_scroll_callback(GLFWwindow *win, double xoff, double yoff)
 NK_API void
 nk_gflw3_resize_callback(GLFWwindow* win, int width, int height)
 {
-    struct nk_glfw* glfw = &s_NK_GLFW;
+    struct nk_glfw* glfw = &s_NKStruct;
     if (g_PrevUserCallbackWindowResize != NULL && glfw->win == win)
         g_PrevUserCallbackWindowResize(win, width, height);
 
@@ -342,9 +345,22 @@ nk_gflw3_resize_callback(GLFWwindow* win, int width, int height)
 }
 
 NK_API void
+nk_glfw3_set_cursor_position(GLFWwindow* win, double x, double y)
+{
+    struct nk_glfw* glfw = &s_NKStruct;
+    glfwSetCursorPos(win, x, y);
+}
+
+NK_API void
+nk_glfw3_get_cursor_position(GLFWwindow* win, double *x, double *y)
+{
+    glfwGetCursorPos(win, x, y);
+}
+
+NK_API void
 nk_glfw3_mouse_button_callback(GLFWwindow* win, int button, int action, int mods)
 {
-    struct nk_glfw* glfw = &s_NK_GLFW;
+    struct nk_glfw* glfw = &s_NKStruct;
     if (g_PrevUserCallbackMousebutton != NULL && glfw->win == win)
         g_PrevUserCallbackMousebutton(win, button, action, mods);
 
@@ -405,7 +421,7 @@ nk_glfw3_init(struct nk_glfw* glfw, GLFWwindow *win, enum nk_glfw_init_state ini
 
     int width, height;
     glfwGetFramebufferSize(win, &width, &height);
-    nk_dockspace_init(&glfw->ctx, &width, &height);
+    nk_dockspace_init(&glfw->ctx, width, height);
     glfwSetWindowSize(win, width, height);
 
     glfw->ctx.clip.copy = nk_glfw3_clipboard_copy;
@@ -457,7 +473,7 @@ nk_glfw3_new_frame(struct nk_glfw* glfw)
         nk_input_unicode(ctx, glfw->text[i]);
 
 #ifdef NK_GLFW_GL3_MOUSE_GRABBING
-    /* optional grabbing behavior */
+    // optional grabbing behavior 
     if (ctx->input.mouse.grab)
         glfwSetInputMode(glfw.win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     else if (ctx->input.mouse.ungrab)
@@ -513,6 +529,7 @@ nk_glfw3_new_frame(struct nk_glfw* glfw)
     nk_input_button(ctx, NK_BUTTON_RIGHT, (int)x, (int)y, glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
     nk_input_button(ctx, NK_BUTTON_DOUBLE, (int)glfw->double_click_pos.x, (int)glfw->double_click_pos.y, glfw->is_double_click_down);
     nk_input_scroll(ctx, glfw->scroll);
+
     nk_input_end(&glfw->ctx);
     glfw->text_len = 0;
     glfw->scroll = nk_vec2(0,0);

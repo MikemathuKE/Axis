@@ -2,6 +2,9 @@
 
 #include "Axis/Core/Layer.h"
 
+#include "Axis/Events/KeyEvent.h"
+#include "Axis/Events/MouseEvent.h"
+
 struct nk_context;
 namespace Axis {
 

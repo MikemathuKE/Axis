@@ -123,22 +123,25 @@ public:
         m_SquareShader = Axis::CreateScope<Axis::Shader>(squareVertexSrc, squareFragmentSrc);
     }
 
-    void OnUpdate() override
+    void OnUpdate(Axis::Timestep ts) override
     {
+        AXIS_TRACE("Fps : {0}s", 1.0f / ts.GetSeconds());
+        float time = ts;
+
         if (Axis::Input::IsKeyPressed(AXIS_KEY_A) )
-            m_CameraPosition.x -= m_CameraSpeed;
+            m_CameraPosition.x -= m_CameraSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_D))
-            m_CameraPosition.x += m_CameraSpeed;
+            m_CameraPosition.x += m_CameraSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_W))
-            m_CameraPosition.y -= m_CameraSpeed;
+            m_CameraPosition.y -= m_CameraSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_S))
-            m_CameraPosition.y += m_CameraSpeed;
+            m_CameraPosition.y += m_CameraSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_Q))
-            m_CameraRotation += m_CameraRotationSpeed;
+            m_CameraRotation += m_CameraRotationSpeed * time;
         if (Axis::Input::IsKeyPressed(AXIS_KEY_E))
-            m_CameraRotation -= m_CameraRotationSpeed;
+            m_CameraRotation -= m_CameraRotationSpeed * time;
 
 
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
@@ -164,9 +167,9 @@ private:
 
     Axis::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
-    float m_CameraSpeed = 0.01f;
+    float m_CameraSpeed = 5.0f;
     float m_CameraRotation = 0.0f;
-    float m_CameraRotationSpeed = 2.0f;
+    float m_CameraRotationSpeed = 180.0f;
 };
 
 class ExampleLayer3D : public Axis::Layer
@@ -231,37 +234,39 @@ public:
         m_SquareShader = Axis::CreateScope<Axis::Shader>(squareVertexSrc, squareFragmentSrc);
     }
 
-    void OnUpdate() override
+    void OnUpdate(Axis::Timestep ts) override
     {
+        float time = ts;
+
         if (Axis::Input::IsKeyPressed(AXIS_KEY_A))
-            m_CameraPosition.x -= m_CameraSpeed;
+            m_CameraPosition.x -= m_CameraSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_D))
-            m_CameraPosition.x += m_CameraSpeed;
+            m_CameraPosition.x += m_CameraSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_W))
-            m_CameraPosition.y -= m_CameraSpeed;
+            m_CameraPosition.y -= m_CameraSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_S))
-            m_CameraPosition.y += m_CameraSpeed;
+            m_CameraPosition.y += m_CameraSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_UP))
-            m_CameraPosition.z -= m_CameraSpeed;
+            m_CameraPosition.z -= m_CameraSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_DOWN))
-            m_CameraPosition.z += m_CameraSpeed;
+            m_CameraPosition.z += m_CameraSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_Q))
-            m_CameraRotation.z += m_CameraRotationSpeed;
+            m_CameraRotation.z += m_CameraRotationSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_E))
-            m_CameraRotation.z -= m_CameraRotationSpeed;
+            m_CameraRotation.z -= m_CameraRotationSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_J))
-            m_CameraRotation.y += m_CameraRotationSpeed;
+            m_CameraRotation.y += m_CameraRotationSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_L))
-            m_CameraRotation.y -= m_CameraRotationSpeed;
+            m_CameraRotation.y -= m_CameraRotationSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_I))
-            m_CameraRotation.x += m_CameraRotationSpeed;
+            m_CameraRotation.x += m_CameraRotationSpeed * time;
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_K))
-            m_CameraRotation.x -= m_CameraRotationSpeed;
+            m_CameraRotation.x -= m_CameraRotationSpeed * time;
 
 
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
@@ -283,9 +288,9 @@ private:
 
     Axis::PerspectiveCamera m_Camera;
     glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 2.0f };
-    float m_CameraSpeed = 0.01f;
+    float m_CameraSpeed = 5.0f;
     glm::vec3 m_CameraRotation = glm::vec3(0.0f);
-    float m_CameraRotationSpeed = 2.0f;
+    float m_CameraRotationSpeed = 180.0f;
 };
 
 class SandBox : public Axis::Application

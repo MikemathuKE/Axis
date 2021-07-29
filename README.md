@@ -46,7 +46,7 @@ Axis Engine utilizes glm Math library (https://github.com/g-truc/glm.git) to han
 Axis Engine currently uses OpenGL Graphics Library to perform all rendering funtions.
 
 ### Graphical User Interface
-Axis Engine utilises ImGui library (https://github.com/ocornut/imgui.git) and (https://github.com/MikemathuKE/Nuklear.git) to perform immediate mode graphical user interface functions.
+Axis Engine utilises ImGui library (https://github.com/ocornut/imgui.git) and Nuklear Library (https://github.com/MikemathuKE/Nuklear.git) to perform immediate mode graphical user interface functions.
 
 ### Audio
 
@@ -54,4 +54,4 @@ Axis Engine utilises ImGui library (https://github.com/ocornut/imgui.git) and (h
 Axis is developed by MikeMathuKE, and uses the [GNU General Public License v2.0] (https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 ## Development
-Axis engine is inspired by Hazel Engine designed by theCherno
+Axis engine is inspired by Hazel Engine designed by theCherno. 

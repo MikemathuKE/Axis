@@ -27,15 +27,15 @@ namespace Axis
 	}
 }
 
-#define AXIS_MOUSE_BUTTON_0      ::Hazel::Mouse::Button0
-#define AXIS_MOUSE_BUTTON_1      ::Hazel::Mouse::Button1
-#define AXIS_MOUSE_BUTTON_2      ::Hazel::Mouse::Button2
-#define AXIS_MOUSE_BUTTON_3      ::Hazel::Mouse::Button3
-#define AXIS_MOUSE_BUTTON_4      ::Hazel::Mouse::Button4
-#define AXIS_MOUSE_BUTTON_5      ::Hazel::Mouse::Button5
-#define AXIS_MOUSE_BUTTON_6      ::Hazel::Mouse::Button6
-#define AXIS_MOUSE_BUTTON_7      ::Hazel::Mouse::Button7
-#define AXIS_MOUSE_BUTTON_LAST   ::Hazel::Mouse::ButtonLast
-#define AXIS_MOUSE_BUTTON_LEFT   ::Hazel::Mouse::ButtonLeft
-#define AXIS_MOUSE_BUTTON_RIGHT  ::Hazel::Mouse::ButtonRight
-#define AXIS_MOUSE_BUTTON_MIDDLE ::Hazel::Mouse::ButtonMiddle
+#define AXIS_MOUSE_BUTTON_0      ::Axis::Mouse::Button0
+#define AXIS_MOUSE_BUTTON_1      ::Axis::Mouse::Button1
+#define AXIS_MOUSE_BUTTON_2      ::Axis::Mouse::Button2
+#define AXIS_MOUSE_BUTTON_3      ::Axis::Mouse::Button3
+#define AXIS_MOUSE_BUTTON_4      ::Axis::Mouse::Button4
+#define AXIS_MOUSE_BUTTON_5      ::Axis::Mouse::Button5
+#define AXIS_MOUSE_BUTTON_6      ::Axis::Mouse::Button6
+#define AXIS_MOUSE_BUTTON_7      ::Axis::Mouse::Button7
+#define AXIS_MOUSE_BUTTON_LAST   ::Axis::Mouse::ButtonLast
+#define AXIS_MOUSE_BUTTON_LEFT   ::Axis::Mouse::ButtonLeft
+#define AXIS_MOUSE_BUTTON_RIGHT  ::Axis::Mouse::ButtonRight
+#define AXIS_MOUSE_BUTTON_MIDDLE ::Axis::Mouse::ButtonMiddle

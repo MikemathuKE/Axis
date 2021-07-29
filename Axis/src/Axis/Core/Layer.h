@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Axis/Core/Timestep.h"
 #include "Axis/Events/Event.h"
 
 namespace Axis {
@@ -12,7 +13,7 @@ namespace Axis {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnGUIRender() {}
 		virtual void OnEvent(Event& event) {}
 

@@ -2,6 +2,7 @@
 
 /* Core */
 #include "Axis/Core/Application.h"
+#include "Axis/Core/Timestep.h"
 
 /* Input */
 #include "Axis/Core/Input.h"

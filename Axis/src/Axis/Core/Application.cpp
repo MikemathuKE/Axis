@@ -8,6 +8,9 @@
 #include "Axis/Core/Input.h"
 #include "Axis/Renderer/Renderer.h"
 
+#include "Axis/Core/Timestep.h"
+
+#include <glfw/glfw3.h>
 #include <glad/glad.h>
 
 namespace Axis{
@@ -27,6 +30,8 @@ namespace Axis{
         PushLayer(m_ImGuiLayer);
         m_NuklearLayer = new NuklearLayer();
         PushLayer(m_NuklearLayer);
+
+        RenderCommand::Init();
     }
 
     Application::~Application()
@@ -60,9 +65,13 @@ namespace Axis{
     void Application::Run()
     {
         while (m_Running)
-        {            
+        {
+            float time = (float)glfwGetTime();
+            Timestep ts = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
             for (Layer* layer : m_LayerStack)
-                layer->OnUpdate();
+                layer->OnUpdate(ts);
             
             m_ImGuiLayer->Begin();
             m_NuklearLayer->Begin();
