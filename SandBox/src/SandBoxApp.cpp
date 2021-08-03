@@ -1,5 +1,7 @@
 #include <Axis.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 class ExampleLayer2D : public Axis::Layer
 {
 public:
@@ -40,6 +42,7 @@ public:
             layout(location = 1) in vec4 a_Color;
 
             uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
             
             out vec3 v_Position;
             out vec4 v_Color;
@@ -48,7 +51,7 @@ public:
             {
                 v_Position = a_Position;
                 v_Color = a_Color;
-                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
             }
         )";
 
@@ -98,13 +101,14 @@ public:
             layout(location = 0) in vec3 a_Position;
 
             uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
 
             out vec3 v_Position;
             
             void main() 
             {
                 v_Position = a_Position;
-                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
             }
         )";
 
@@ -125,7 +129,6 @@ public:
 
     void OnUpdate(Axis::Timestep ts) override
     {
-        AXIS_TRACE("Fps : {0}s", 1.0f / ts.GetSeconds());
         float time = ts;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_A) )
@@ -143,6 +146,16 @@ public:
         if (Axis::Input::IsKeyPressed(AXIS_KEY_E))
             m_CameraRotation -= m_CameraRotationSpeed * time;
 
+        if (Axis::Input::IsKeyPressed(AXIS_KEY_J))
+            m_SquarePosition.x -= m_SquareSpeed * time;
+        else if (Axis::Input::IsKeyPressed(AXIS_KEY_L))
+            m_SquarePosition.x += m_SquareSpeed * time;
+
+        if (Axis::Input::IsKeyPressed(AXIS_KEY_K))
+            m_SquarePosition.y -= m_SquareSpeed * time;
+        else if (Axis::Input::IsKeyPressed(AXIS_KEY_I))
+            m_SquarePosition.y += m_SquareSpeed * time;
+
 
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
         Axis::RenderCommand::Clear();
@@ -152,7 +165,8 @@ public:
 
         Axis::Renderer::BeginScene(m_Camera);
 
-        Axis::Renderer::Submit(m_SquareShader, m_SquareVA);
+        glm::mat4 translation = glm::translate(glm::mat4(1.0f), m_SquarePosition);
+        Axis::Renderer::Submit(m_SquareShader, m_SquareVA, translation);
         Axis::Renderer::Submit(m_Shader, m_VertexArray);
 
         Axis::Renderer::EndScene();
@@ -170,6 +184,9 @@ private:
     float m_CameraSpeed = 5.0f;
     float m_CameraRotation = 0.0f;
     float m_CameraRotationSpeed = 180.0f;
+
+    glm::vec3 m_SquarePosition = glm::vec3(0.0f);
+    float m_SquareSpeed = 2.0f;
 };
 
 class ExampleLayer3D : public Axis::Layer
@@ -209,13 +226,14 @@ public:
             layout(location = 0) in vec3 a_Position;
 
             uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
 
             out vec3 v_Position;
             
             void main() 
             {
                 v_Position = a_Position;
-                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
             }
         )";
 
