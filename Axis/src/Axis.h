@@ -16,6 +16,8 @@
 
 /* Layers */
 #include "Axis/Core/Layer.h"
+#include "Axis/ImGui/ImGuiLayer.h"
+#include "Axis/Nuklear/NuklearLayer.h"
 
 /* Logging */
 #include "Axis/Core/Log.h"

@@ -1,6 +1,10 @@
 #include <Axis.h>
 
+#include <imgui/imgui.h>
+#include <Nuklear/nuklear.h>
+
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class ExampleLayer2D : public Axis::Layer
 {
@@ -10,18 +14,17 @@ public:
     {
         m_VertexArray.reset(Axis::VertexArray::Create());
 
-        float vertices[7 * 3] = {
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-             0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-             0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+        float vertices[3 * 3] = {
+            -0.5f, -0.5f, 0.0f, 
+             0.0f,  0.5f, 0.0f, 
+             0.5f, -0.5f, 0.0f
         };
         Axis::Ref<Axis::VertexBuffer> vbo;
         vbo.reset(Axis::VertexBuffer::Create(vertices, sizeof(vertices)));
 
         {
             Axis::BufferLayout layout = {
-               { Axis::ShaderDataType::Float3, "a_Position" },
-               { Axis::ShaderDataType::Float4, "a_Color" }
+               { Axis::ShaderDataType::Float3, "a_Position" }
             };
 
             vbo->SetLayout(layout);
@@ -39,10 +42,11 @@ public:
             #version 330 core
 
             layout(location = 0) in vec3 a_Position;
-            layout(location = 1) in vec4 a_Color;
 
             uniform mat4 u_ViewProjection;
             uniform mat4 u_Transform;
+
+            uniform vec4 u_Color;
             
             out vec3 v_Position;
             out vec4 v_Color;
@@ -50,7 +54,7 @@ public:
             void main() 
             {
                 v_Position = a_Position;
-                v_Color = a_Color;
+                v_Color = u_Color;
                 gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
             }
         )";
@@ -68,7 +72,7 @@ public:
             }
         )";
 
-        m_Shader = Axis::CreateScope<Axis::Shader>(vertexSrc, fragmentSrc);
+        m_Shader.reset(Axis::Shader::Create(vertexSrc, fragmentSrc));
 
         m_SquareVA.reset(Axis::VertexArray::Create());
 
@@ -124,7 +128,7 @@ public:
             }
         )";
 
-        m_SquareShader = Axis::CreateScope<Axis::Shader>(squareVertexSrc, squareFragmentSrc);
+        m_SquareShader.reset(Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
     }
 
     void OnUpdate(Axis::Timestep ts) override
@@ -167,9 +171,37 @@ public:
 
         glm::mat4 translation = glm::translate(glm::mat4(1.0f), m_SquarePosition);
         Axis::Renderer::Submit(m_SquareShader, m_SquareVA, translation);
+
+        m_Shader->Bind();
+        m_Shader->SetFloat4("u_Color", m_TriangleColor);
         Axis::Renderer::Submit(m_Shader, m_VertexArray);
 
         Axis::Renderer::EndScene();
+    }
+
+    void OnGUIRender() override
+    {
+        ImGui::Begin("Settings");
+        ImGui::ColorEdit4("TriangleColor", glm::value_ptr(m_TriangleColor));
+        ImGui::End();
+
+        struct nk_context* ctx = Axis::NuklearLayer::GetContext();
+        if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
+            NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
+            nk_layout_row_dynamic(ctx, 120, 1);
+
+            nk_colorf color;
+            color.r = m_TriangleColor.r;
+            color.g = m_TriangleColor.g;
+            color.b = m_TriangleColor.b;
+            color.a = m_TriangleColor.a;
+            nk_color_pick(ctx, &color, NK_RGBA);
+            m_TriangleColor.r = color.r;
+            m_TriangleColor.g = color.g;
+            m_TriangleColor.b = color.b;
+            m_TriangleColor.a = color.a;
+        }
+        nk_end(ctx);
     }
 
 private:
@@ -187,6 +219,8 @@ private:
 
     glm::vec3 m_SquarePosition = glm::vec3(0.0f);
     float m_SquareSpeed = 2.0f;
+
+    glm::vec4 m_TriangleColor = { 0.9f, 0.8f, 0.1f, 1.0f };
 };
 
 class ExampleLayer3D : public Axis::Layer
@@ -249,7 +283,7 @@ public:
             }
         )";
 
-        m_SquareShader = Axis::CreateScope<Axis::Shader>(squareVertexSrc, squareFragmentSrc);
+        m_SquareShader.reset(Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
     }
 
     void OnUpdate(Axis::Timestep ts) override

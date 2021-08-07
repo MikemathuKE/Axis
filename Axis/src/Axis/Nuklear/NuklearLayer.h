@@ -14,6 +14,8 @@ namespace Axis {
 		NuklearLayer();
 		~NuklearLayer();
 
+		static struct nk_context* GetContext();
+
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
@@ -21,8 +23,6 @@ namespace Axis {
 
 		void Begin();
 		void End();
-	protected:
-		struct nk_context* m_Context;		
 	};
 
 }

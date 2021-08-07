@@ -27,6 +27,7 @@
 #include "nuklear_style.h"
 
 #include "Axis/Core/Application.h"
+static struct nk_context* s_Context;
 
 namespace Axis {
 
@@ -40,11 +41,16 @@ namespace Axis {
 		OnDetach();
 	}
 
+	struct nk_context* NuklearLayer::GetContext()
+	{
+		return s_Context;
+	}
+
 	void NuklearLayer::OnAttach()
 	{
 		GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		//* GUI */
-		m_Context = nk_glfw3_init(&s_NKStruct, window, NK_GLFW3_INSTALL_CALLBACKS);
+		s_Context = nk_glfw3_init(&s_NKStruct, window, NK_GLFW3_INSTALL_CALLBACKS);
 		/* Load Fonts: if none of these are loaded a default font will be used  */
 		/* Load Cursor: if you uncomment cursor loading please hide the cursor */
 		{
@@ -59,11 +65,11 @@ namespace Axis {
 			//struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/Cousine-Regular.ttf", 13, 0);
 			nk_glfw3_font_stash_end(&s_NKStruct);
 			
-			nk_style_load_all_cursors(m_Context, atlas->cursors);
+			nk_style_load_all_cursors(s_Context, atlas->cursors);
 			//nk_style_set_font(m_Context, &tiny->handle);
 		}
 
-		set_style(m_Context, THEME_AXIS);
+		set_style(s_Context, THEME_AXIS);
 	}
 
 	void NuklearLayer::OnDetach()
@@ -78,7 +84,7 @@ namespace Axis {
 
 	void NuklearLayer::OnGUIRender()
 	{
-		overview(m_Context);
+		overview(s_Context);
 	}
 
 	void NuklearLayer::End()
