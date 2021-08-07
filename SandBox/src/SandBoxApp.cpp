@@ -12,7 +12,7 @@ public:
     ExampleLayer2D()
         :Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
     {
-        m_VertexArray.reset(Axis::VertexArray::Create());
+        m_VertexArray = Axis::VertexArray::Create();
 
         float vertices[3 * 3] = {
             -0.5f, -0.5f, 0.0f, 
@@ -20,7 +20,7 @@ public:
              0.5f, -0.5f, 0.0f
         };
         Axis::Ref<Axis::VertexBuffer> vbo;
-        vbo.reset(Axis::VertexBuffer::Create(vertices, sizeof(vertices)));
+        vbo = (Axis::VertexBuffer::Create(vertices, sizeof(vertices)));
 
         {
             Axis::BufferLayout layout = {
@@ -35,7 +35,7 @@ public:
             0, 1, 2
         };
         Axis::Ref<Axis::IndexBuffer> ibo;
-        ibo.reset(Axis::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        ibo = (Axis::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(ibo);
 
         std::string vertexSrc = R"(
@@ -72,9 +72,9 @@ public:
             }
         )";
 
-        m_Shader.reset(Axis::Shader::Create(vertexSrc, fragmentSrc));
+        m_Shader = (Axis::Shader::Create(vertexSrc, fragmentSrc));
 
-        m_SquareVA.reset(Axis::VertexArray::Create());
+        m_SquareVA = Axis::VertexArray::Create();
 
         float squareVertices[3 * 4] = {
            -0.75f, -0.75f, 0.0f,
@@ -84,7 +84,7 @@ public:
         };
 
         Axis::Ref<Axis::VertexBuffer> squareVB;
-        squareVB.reset(Axis::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        squareVB = (Axis::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
         squareVB->SetLayout({
                { Axis::ShaderDataType::Float3, "a_Position" }
@@ -96,7 +96,7 @@ public:
             2, 3, 0
         };
         Axis::Ref<Axis::IndexBuffer> squareIB;
-        squareIB.reset(Axis::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        squareIB = (Axis::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
 
         std::string squareVertexSrc = R"(
@@ -128,7 +128,7 @@ public:
             }
         )";
 
-        m_SquareShader.reset(Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
+        m_SquareShader = (Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
     }
 
     void OnUpdate(Axis::Timestep ts) override
@@ -229,7 +229,7 @@ public:
     ExampleLayer3D()
         :Layer("Example"), m_Camera( glm::radians(60.0f), 16.0f/9.0f, 1.0f, 10.0f)
     {
-        m_SquareVA.reset(Axis::VertexArray::Create());
+        m_SquareVA = (Axis::VertexArray::Create());
         float squareVertices[3 * 4 * 2] = {
             -1.0f, -1.0f, -1.0f,     -1.0f,  1.0f, -1.0f,
              1.0f,  1.0f, -1.0f,      1.0f, -1.0f, -1.0f,
@@ -238,7 +238,7 @@ public:
         };
 
         Axis::Ref<Axis::VertexBuffer> squareVB;
-        squareVB.reset(Axis::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        squareVB = (Axis::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
         squareVB->SetLayout({
                { Axis::ShaderDataType::Float3, "a_Position" }
@@ -251,7 +251,7 @@ public:
             7, 6, 2,    2, 1, 7,    0, 3, 5,    5, 4, 0
         };
         Axis::Ref<Axis::IndexBuffer> squareIB;
-        squareIB.reset(Axis::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        squareIB = (Axis::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
 
         std::string squareVertexSrc = R"(
@@ -283,7 +283,7 @@ public:
             }
         )";
 
-        m_SquareShader.reset(Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
+        m_SquareShader = (Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
     }
 
     void OnUpdate(Axis::Timestep ts) override
