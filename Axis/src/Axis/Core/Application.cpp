@@ -24,6 +24,7 @@ namespace Axis{
 
         m_Window = (Scope<Window>)Window::Create();
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
+        m_Window->SetIcon("assets/textures/AxisLogo.png");
 
         m_ImGuiLayer = new ImGuiLayer();
         PushLayer(m_ImGuiLayer);

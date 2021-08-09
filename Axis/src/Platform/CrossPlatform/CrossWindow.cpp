@@ -8,6 +8,7 @@
 #include "Axis/Events/MouseEvent.h"
 
 #include "Platform/OpenGL/OpenGLContext.h"
+#include <stb_image/stb_image.h>
 
 namespace Axis {
 
@@ -305,10 +306,7 @@ namespace Axis {
 
 	void CrossWindow::SetIcon(const std::string& path)
 	{
-		//Requires stbi
-		/*
 		int width, height, channels;
-		stbi_set_flip_vertically_on_load(true);
 
 		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 4);
 		AXIS_CORE_ASSERT(channels == 4, "Icon must be RGBA!");
@@ -319,7 +317,6 @@ namespace Axis {
 		images[0].pixels = data;
 		glfwSetWindowIcon(m_Window, 1, images);
 		stbi_image_free(data);
-		*/
 	}
 
 }

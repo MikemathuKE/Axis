@@ -76,18 +76,19 @@ public:
 
         m_SquareVA = Axis::VertexArray::Create();
 
-        float squareVertices[3 * 4] = {
-           -0.75f, -0.75f, 0.0f,
-            0.75f, -0.75f, 0.0f,
-            0.75f,  0.75f, 0.0f,
-           -0.75f,  0.75f, 0.0f
+        float squareVertices[5 * 4] = {
+           -0.75f, -0.75f, 0.0f, 0.0f, 0.0f,
+            0.75f, -0.75f, 0.0f, 1.0f, 0.0f,
+            0.75f,  0.75f, 0.0f, 1.0f, 1.0f,
+           -0.75f,  0.75f, 0.0f, 0.0f, 1.0f
         };
 
         Axis::Ref<Axis::VertexBuffer> squareVB;
         squareVB = (Axis::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
         squareVB->SetLayout({
-               { Axis::ShaderDataType::Float3, "a_Position" }
+               { Axis::ShaderDataType::Float3, "a_Position" },
+               { Axis::ShaderDataType::Float2, "a_TexCoord" }
             });
         m_SquareVA->AddVertexBuffer(squareVB);
 
@@ -100,35 +101,43 @@ public:
         m_SquareVA->SetIndexBuffer(squareIB);
 
         std::string squareVertexSrc = R"(
-            #version 330 core
+            #version 450 core
 
             layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec2 a_TexCoord;
 
             uniform mat4 u_ViewProjection;
             uniform mat4 u_Transform;
 
-            out vec3 v_Position;
+            out vec2 v_TexCoord;
             
             void main() 
             {
-                v_Position = a_Position;
+                v_TexCoord = a_TexCoord;
                 gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
             }
         )";
 
         std::string squareFragmentSrc = R"(
-            #version 330 core
+            #version 450 core
 
             layout(location = 0) out vec4 color;
-            in vec3 v_Position;
+
+            in vec2 v_TexCoord;
+
+            uniform sampler2D u_Texture;
+            uniform float u_TilingFactor = 1.0f;
             
             void main() 
             {
-                color = vec4(v_Position * 0.5 + 0.5, 1.0);
+                color = texture(u_Texture, v_TexCoord * u_TilingFactor);
             }
         )";
 
         m_SquareShader = (Axis::Shader::Create(squareVertexSrc, squareFragmentSrc));
+        m_Texture = Axis::Texture2D::Create("assets/textures/AxisLogo.png");
+        m_SquareShader->Bind();
+        m_SquareShader->SetInt("u_Texture", 0);
     }
 
     void OnUpdate(Axis::Timestep ts) override
@@ -140,9 +149,9 @@ public:
         else if (Axis::Input::IsKeyPressed(AXIS_KEY_D))
             m_CameraPosition.x += m_CameraSpeed * time;
 
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_W))
+        if (Axis::Input::IsKeyPressed(AXIS_KEY_S))
             m_CameraPosition.y -= m_CameraSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_S))
+        else if (Axis::Input::IsKeyPressed(AXIS_KEY_W))
             m_CameraPosition.y += m_CameraSpeed * time;
 
         if (Axis::Input::IsKeyPressed(AXIS_KEY_Q))
@@ -170,6 +179,7 @@ public:
         Axis::Renderer::BeginScene(m_Camera);
 
         glm::mat4 translation = glm::translate(glm::mat4(1.0f), m_SquarePosition);
+        m_Texture->Bind();
         Axis::Renderer::Submit(m_SquareShader, m_SquareVA, translation);
 
         m_Shader->Bind();
@@ -210,6 +220,8 @@ private:
 
     Axis::Ref<Axis::Shader> m_SquareShader;
     Axis::Ref<Axis::VertexArray> m_SquareVA;
+
+    Axis::Ref<Axis::Texture2D> m_Texture;
 
     Axis::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };

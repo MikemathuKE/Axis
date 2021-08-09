@@ -47,7 +47,8 @@ project "Axis"
   files
   {
     "%{prj.name}/src/**.h",
-    "%{prj.name}/src/**.cpp"
+    "%{prj.name}/src/**.cpp",
+    "%{prj.name}/vendor/stb_image/stb_image.cpp"
   }
  
   includedirs

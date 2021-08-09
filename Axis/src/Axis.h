@@ -26,6 +26,7 @@
 /* Renderer */
 #include "Axis/Renderer/RenderCommand.h"
 #include "Axis/Renderer/Renderer.h"
+#include "Axis/Renderer/Texture.h"
 #include "Axis/Renderer/Shader.h"
 #include "Axis/Renderer/OrthographicCamera.h"
 #include "Axis/Renderer/PerspectiveCamera.h"
