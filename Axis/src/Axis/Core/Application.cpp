@@ -31,7 +31,7 @@ namespace Axis{
         m_NuklearLayer = new NuklearLayer();
         PushLayer(m_NuklearLayer);
 
-        RenderCommand::Init();
+        Renderer::Init();
         m_Window->SetVSync(true);
     }
 

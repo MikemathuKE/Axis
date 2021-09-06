@@ -5,6 +5,11 @@ namespace Axis {
 
 	Renderer::SceneData* Renderer::m_Scene = new Renderer::SceneData();
 
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
+
 	void Renderer::BeginScene(Camera& camera)
 	{
 		m_Scene->ViewProjectionMatrix = camera.GetViewProjectionMatrix();

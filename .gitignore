@@ -35,3 +35,6 @@ Makefile
 
 #ini files
 *.ini
+
+#log files
+*.log

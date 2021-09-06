@@ -224,6 +224,15 @@ nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_b
     ortho[1][1] /= (GLfloat)glfw->height;
 
     /* setup global state */
+    GLboolean blendEnabled, cullFace, depthTest, scissorTest;
+    GLint blendSrc, blendDst;
+    glGetBooleanv(GL_BLEND, &blendEnabled);
+    glGetBooleanv(GL_CULL_FACE, &cullFace);
+    glGetBooleanv(GL_DEPTH_TEST, &depthTest);
+    glGetBooleanv(GL_SCISSOR_TEST, &scissorTest);
+    glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrc);
+    glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDst);
+
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -305,8 +314,20 @@ nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_b
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    glDisable(GL_BLEND);
-    glDisable(GL_SCISSOR_TEST);
+
+    if (blendEnabled)
+        glBlendFunc(blendSrc, blendDst);
+    else
+        glDisable(GL_BLEND);
+
+    if (!scissorTest)
+        glDisable(GL_SCISSOR_TEST);
+
+    if (depthTest)
+        glEnable(GL_DEPTH_TEST);
+
+    if (cullFace)
+        glEnable(GL_CULL_FACE);
 }
 
 NK_API void
