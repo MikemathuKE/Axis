@@ -2,7 +2,7 @@
 
 #include "Axis/Renderer/Texture.h"
 
-#include <Glad/glad.h>
+#include <glad/glad.h>
 
 namespace Axis {
     class OpenGLTexture2D : public Texture2D

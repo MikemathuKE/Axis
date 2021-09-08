@@ -10,7 +10,7 @@
 
 #include "Axis/Core/Timestep.h"
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 namespace Axis{
@@ -73,14 +73,14 @@ namespace Axis{
 
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate(ts);
-            
+
             m_ImGuiLayer->Begin();
             m_NuklearLayer->Begin();
             for (Layer* layer : m_LayerStack)
                 layer->OnGUIRender();
             m_NuklearLayer->End();
             m_ImGuiLayer->End();
-            
+
             m_Window->OnUpdate();
         }
     }

@@ -1,40 +1,56 @@
-#pragma once
+#ifndef OPENGL_SHADER_AXIS_H
+#define OPENGL_SHADER_AXIS_H
 
-#include "Axis/Renderer/Shader.h"
+/* OpenGL Shaders */
 
-namespace Axis {
+#include <Axis/Renderer/Shader.h>
+#include <glm/glm.hpp>
 
-	class OpenGLShader : public Shader
-	{
-	public:
-		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
-		virtual ~OpenGLShader();
+//TODO remove
+typedef unsigned int GLenum;
 
-		virtual void Bind() const override;
-		virtual void UnBind() const override;
+namespace Axis{
 
-		virtual void SetMat4(const std::string& name, const glm::mat4& matrix) override { UploadUniformMat4(name, matrix); }
-		virtual void SetMat3(const std::string& name, const glm::mat3& matrix)  override { UploadUniformMat3(name, matrix); };
+    class OpenGLShader : public Shader
+    {
+    public:
+          OpenGLShader(const std::string& filePath);
+          OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+          virtual ~OpenGLShader();
 
-		virtual void SetFloat4(const std::string& name, const glm::vec4& values) override { UploadUniformFloat4(name, values); }
-		virtual void SetFloat3(const std::string& name, const glm::vec3& values) override { UploadUniformFloat3(name, values); }
-		virtual void SetFloat2(const std::string& name, const glm::vec2& values) override { UploadUniformFloat2(name, values); }
-		virtual void SetFloat(const std::string& name, const float value) override { UploadUniformFloat(name, value); }
+          virtual void Bind() const override;
+          virtual void Unbind() const override;
 
-		virtual void SetInt(const std::string& name, const int value) override { UploadUniformInt(name, value); }
+          virtual void SetMat4(const std::string name, const glm::mat4& value) override;
+          virtual void SetFloat4(const std::string name, const glm::vec4& value) override;
+          virtual void SetFloat3(const std::string name, const glm::vec3& value) override;
+          virtual void SetFloat(const std::string name, const float& value) override;
+          virtual void SetInt(const std::string name, int value) override;
 
-	private:
-		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
-		void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
 
-		void UploadUniformFloat4(const std::string& name, const glm::vec4& values);
-		void UploadUniformFloat3(const std::string& name, const glm::vec3& values);
-		void UploadUniformFloat2(const std::string& name, const glm::vec2& values);
-		void UploadUniformFloat(const std::string& name, const float value);
+          virtual const std::string& GetName() const override {return m_Name;}
 
-		void UploadUniformInt(const std::string& name, const int value);
-	private:
-		uint32_t m_RendererID;
-	};
+          //void UploadUniformInt(const std::string& name, int value);
+          void UploadUniformInt(const std::string& name, const int& value);
+
+          //void UploadUniformFloat(const std::string& name, float value);
+          void UploadUniformFloat(const std::string& name, const float& value);
+          void UploadUniformFloat2(const std::string& name, const glm::vec2& value);
+          void UploadUniformFloat3(const std::string& name, const glm::vec3& value);
+          void UploadUniformFloat4(const std::string& name, const glm::vec4& value);
+
+          void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
+          void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
+    private:
+        std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+        std::string ReadFile(const std::string& filePath);
+        void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
+    private:
+        uint32_t m_RendererID;
+        std::string m_Name;
+    };
 
 }
+
+#endif // OPENGL_SHADER_AXIS_H
+
