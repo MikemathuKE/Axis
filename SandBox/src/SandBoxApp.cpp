@@ -1,10 +1,15 @@
 #include <Axis.h>
-
+#include <Axis/Core/EntryPoint.h>
+ 
 #include <imgui/imgui.h>
 #include <Nuklear/nuklear.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Sandbox2D.h"
+#include "Sandbox3D.h"
+
 
 class ExampleLayer2D : public Axis::Layer
 {
@@ -74,8 +79,6 @@ public:
 
     void OnUpdate(Axis::Timestep ts) override
     {
-        float time = ts;
-
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
         Axis::RenderCommand::Clear();
 
@@ -224,7 +227,8 @@ class SandBox : public Axis::Application
 public:
     SandBox()
     {
-        PushLayer(new ExampleLayer2D());
+        //PushLayer(new ExampleLayer2D());
+        PushLayer(new Sandbox2D());
     }
     ~SandBox()
     {

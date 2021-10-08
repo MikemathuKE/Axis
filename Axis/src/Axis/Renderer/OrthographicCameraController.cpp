@@ -42,7 +42,6 @@ namespace Axis {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(AXIS_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolledEvent));
 		dispatcher.Dispatch<WindowResizeEvent>(AXIS_BIND_EVENT_FN(OrthographicCameraController::OnWindowResize));
-		dispatcher.Dispatch<KeyPressedEvent>(AXIS_BIND_EVENT_FN(OrthographicCameraController::OnKeyPressedEvent));
 	}
 
 	bool OrthographicCameraController::OnMouseScrolledEvent(MouseScrolledEvent& e)
@@ -59,22 +58,6 @@ namespace Axis {
 		m_AspectRatio = (float)e.GetWidth()/(float)e.GetHeight() ;
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 
-		return false;
-	}
-
-	bool OrthographicCameraController::OnKeyPressedEvent(KeyPressedEvent& e)
-	{
-		switch (e.GetKeyCode())
-		{
-		case AXIS_KEY_PAGE_UP:
-			m_ZoomLevel -= 0.1;
-			break;
-		case AXIS_KEY_PAGE_DOWN:
-			m_ZoomLevel += 0.1;
-			break;
-		}
-		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}
 

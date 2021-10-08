@@ -22,7 +22,6 @@ namespace Axis {
 	private:
 		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
 	private:
 		float m_ZoomLevel = 1.0f;
 		float m_AspectRatio;

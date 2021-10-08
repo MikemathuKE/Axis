@@ -32,7 +32,3 @@
 #include "Axis/Renderer/OrthographicCameraController.h"
 #include "Axis/Renderer/PerspectiveCameraController.h"
 #include "Axis/Renderer/PerspectiveCamera.h"
-
-//------------Entry Point-----------------------
-#include "Axis/Core/EntryPoint.h"
-//----------------------------------------------

@@ -1,0 +1,22 @@
+#pragma once
+
+#include <glm/glm.hpp>
+#include <Nuklear/nuklear.h>
+
+inline glm::vec4& operator<<(glm::vec4& vec, const nk_colorf& color)
+{
+	vec.r = color.r;
+	vec.g = color.g;
+	vec.b = color.b;
+	vec.a = color.a;
+	return vec;
+}
+
+inline nk_colorf& operator<<(nk_colorf& color, const glm::vec4& vec)
+{
+	color.r = vec.r;
+	color.g = vec.g;
+	color.b = vec.b;
+	color.a = vec.a;
+	return color;
+}
