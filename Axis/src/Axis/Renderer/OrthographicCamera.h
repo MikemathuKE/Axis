@@ -27,7 +27,7 @@ namespace Axis {
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 
 		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
-		float m_Rotation;
+		float m_Rotation = 0.0f;
 	};
 
 }

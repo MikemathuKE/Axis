@@ -14,7 +14,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-    
+    m_Texture = Axis::Texture2D::Create("assets/textures/AxisLogo.png");
 }
 
 void Sandbox2D::OnDetach()
@@ -31,8 +31,10 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
 
     Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-    Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor );
-    Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 90.0f, { 0.2f, 0.3f, 0.8f, 1.0f });
+    Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.3f, 0.3f }, m_SquareColor );
+    Axis::Renderer2D::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_Texture, 2.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
+    Axis::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 0.25f, 0.5f }, 45.0f, m_SquareColor);
+    Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 90.0f, m_Texture, 0.5f, { 1.0f, 1.0f, 1.0f, 1.0f });
 
     Axis::Renderer2D::EndScene();
 }

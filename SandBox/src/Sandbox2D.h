@@ -17,9 +17,8 @@ public:
 private:
 	Axis::OrthographicCameraController m_CameraController;
 
-	// Temp
-	Axis::Ref<Axis::Shader> m_FlatColorShader;
-	Axis::Ref<Axis::VertexArray> m_SquareVA;
+	//Temp
+	Axis::Ref<Axis::Texture2D> m_Texture;
 
 	glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 };
