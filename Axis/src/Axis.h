@@ -29,6 +29,8 @@
 #include "Axis/Renderer/Texture.h"
 #include "Axis/Renderer/Shader.h"
 #include "Axis/Renderer/OrthographicCamera.h"
+#include "Axis/Renderer/OrthographicCameraController.h"
+#include "Axis/Renderer/PerspectiveCameraController.h"
 #include "Axis/Renderer/PerspectiveCamera.h"
 
 //------------Entry Point-----------------------

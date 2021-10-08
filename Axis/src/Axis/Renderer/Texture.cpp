@@ -2,7 +2,7 @@
 
 #include "Axis/Renderer/Texture.h"
 
-#include "Renderer.h"
+#include "Axis/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 
 #include "Axis/Core/Application.h"

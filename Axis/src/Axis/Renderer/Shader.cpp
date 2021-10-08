@@ -1,7 +1,7 @@
 #include "axispch.h"
-#include "Shader.h"
+#include "Axis/Renderer/Shader.h"
 
-#include "Renderer.h"
+#include "Axis/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
 #include "Axis/Core/Application.h"

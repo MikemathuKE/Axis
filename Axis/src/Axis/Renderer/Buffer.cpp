@@ -1,8 +1,7 @@
 #include "axispch.h"
-#include "Buffer.h"
+#include "Axis/Renderer/Buffer.h"
 
-#include "Renderer.h"
-
+#include "Axis/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Axis {

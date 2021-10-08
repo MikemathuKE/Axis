@@ -1,7 +1,7 @@
 #include "axispch.h"
-#include "VertexArray.h"
+#include "Axis/Renderer/VertexArray.h"
 
-#include "Renderer.h"
+#include "Axis/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace Axis {

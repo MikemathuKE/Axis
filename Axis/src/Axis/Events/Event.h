@@ -1,6 +1,5 @@
 #pragma once
 
-#include "axispch.h"
 #include "Axis/Core/Core.h"
 
 namespace Axis{

@@ -10,7 +10,7 @@ class ExampleLayer2D : public Axis::Layer
 {
 public:
     ExampleLayer2D()
-        :Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
+        :Layer("Example"), m_CameraController(16.0f/9.0f, true)
     {
         m_VertexArray = Axis::VertexArray::Create();
 
@@ -76,39 +76,12 @@ public:
     {
         float time = ts;
 
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_A) )
-            m_CameraPosition.x -= m_CameraSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_D))
-            m_CameraPosition.x += m_CameraSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_S))
-            m_CameraPosition.y -= m_CameraSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_W))
-            m_CameraPosition.y += m_CameraSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_Q))
-            m_CameraRotation += m_CameraRotationSpeed * time;
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_E))
-            m_CameraRotation -= m_CameraRotationSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_J))
-            m_SquarePosition.x -= m_SquareSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_L))
-            m_SquarePosition.x += m_SquareSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_K))
-            m_SquarePosition.y -= m_SquareSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_I))
-            m_SquarePosition.y += m_SquareSpeed * time;
-
-
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
         Axis::RenderCommand::Clear();
 
-        m_Camera.SetPosition(m_CameraPosition);
-        m_Camera.SetRotation(m_CameraRotation);
+        m_CameraController.OnUpdate(ts);
 
-        Axis::Renderer::BeginScene(m_Camera);
+        Axis::Renderer::BeginScene(m_CameraController.GetCamera());
 
         glm::mat4 translation = glm::translate(glm::mat4(1.0f), m_SquarePosition);
         m_Texture->Bind();
@@ -154,6 +127,11 @@ public:
         nk_end(ctx);
     }
 
+    void OnEvent(Axis::Event& e) override
+    {
+        m_CameraController.OnEvent(e);
+    }
+
 private:
     Axis::Ref<Axis::Shader> m_Shader;
     Axis::Ref<Axis::VertexArray> m_VertexArray;
@@ -163,7 +141,7 @@ private:
 
     Axis::Ref<Axis::Texture2D> m_Texture;
 
-    Axis::OrthographicCamera m_Camera;
+    Axis::OrthographicCameraController m_CameraController;
     glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
     float m_CameraSpeed = 5.0f;
     float m_CameraRotation = 0.0f;
@@ -179,7 +157,7 @@ class ExampleLayer3D : public Axis::Layer
 {
 public:
     ExampleLayer3D()
-        :Layer("Example"), m_Camera( glm::radians(60.0f), 16.0f/9.0f, 1.0f, 10.0f)
+        :Layer("Example"), m_CameraController( 60.0f, 16.0f/9.0f, 0.1f, 10.0f)
     {
         m_SquareVA = (Axis::VertexArray::Create());
         float squareVertices[3 * 4 * 2] = {
@@ -206,62 +184,35 @@ public:
         squareIB = (Axis::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
 
-        m_SquareShader = (Axis::Shader::Create("assets/textures/FlatColor.glsl"));
+        m_SquareShader = (Axis::Shader::Create("assets/shaders/FlatColor.glsl"));
     }
 
     void OnUpdate(Axis::Timestep ts) override
     {
-        float time = ts;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_A))
-            m_CameraPosition.x -= m_CameraSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_D))
-            m_CameraPosition.x += m_CameraSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_W))
-            m_CameraPosition.y -= m_CameraSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_S))
-            m_CameraPosition.y += m_CameraSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_UP))
-            m_CameraPosition.z -= m_CameraSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_DOWN))
-            m_CameraPosition.z += m_CameraSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_Q))
-            m_CameraRotation.z += m_CameraRotationSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_E))
-            m_CameraRotation.z -= m_CameraRotationSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_J))
-            m_CameraRotation.y += m_CameraRotationSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_L))
-            m_CameraRotation.y -= m_CameraRotationSpeed * time;
-
-        if (Axis::Input::IsKeyPressed(AXIS_KEY_I))
-            m_CameraRotation.x += m_CameraRotationSpeed * time;
-        else if (Axis::Input::IsKeyPressed(AXIS_KEY_K))
-            m_CameraRotation.x -= m_CameraRotationSpeed * time;
-
+        m_CameraController.OnUpdate(ts);
 
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
         Axis::RenderCommand::Clear();
 
-        m_Camera.SetPosition(m_CameraPosition);
-        m_Camera.SetRotation(m_CameraRotation);
+        Axis::Renderer::BeginScene(m_CameraController.GetCamera());
 
-        Axis::Renderer::BeginScene(m_Camera);
-
+        m_SquareShader->Bind();
+        m_SquareShader->SetFloat4("u_Color", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
         Axis::Renderer::Submit(m_SquareShader, m_SquareVA);
 
         Axis::Renderer::EndScene();
+    }
+
+    void OnEvent(Axis::Event& e)
+    {
+        m_CameraController.OnEvent(e);
     }
 
 private:
     Axis::Ref<Axis::Shader> m_SquareShader;
     Axis::Ref<Axis::VertexArray> m_SquareVA;
 
-    Axis::PerspectiveCamera m_Camera;
+    Axis::PerspectiveCameraController m_CameraController;
     glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 2.0f };
     float m_CameraSpeed = 5.0f;
     glm::vec3 m_CameraRotation = glm::vec3(0.0f);

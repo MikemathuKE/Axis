@@ -1,18 +1,29 @@
 #include "axispch.h"
-#include "PerspectiveCamera.h"
+#include "Axis/Renderer/PerspectiveCamera.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Axis {
 
 	PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float n, float f)
-		: Camera()
+		: Camera(), m_FOV(fov), m_AspectRatio(aspectRatio), m_Near(n), m_Far(f)
 	{
-		m_ProjectionMatrix = glm::perspective(fov, aspectRatio, n, f);
+		m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Direction, m_Up);
+		m_ProjectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, n, f);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 
 	PerspectiveCamera::~PerspectiveCamera()
 	{}
+
+	void PerspectiveCamera::RecalculateViewMatrix() {
+		m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Direction, m_Up);
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	}
+
+	void PerspectiveCamera::RecalculateProjectionMatrix() {
+		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_Near, m_Far);
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+	}
 
 }

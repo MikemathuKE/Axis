@@ -1,7 +1,6 @@
 #pragma once
 
-#include <memory>
-#include "Buffer.h"
+#include "Axis/Renderer/Buffer.h"
 
 namespace Axis {
 

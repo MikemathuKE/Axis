@@ -54,6 +54,7 @@ namespace Axis{
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(AXIS_BIND_EVENT_FN(Application::OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(AXIS_BIND_EVENT_FN(Application::OnWindowResize));
 
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
         {
@@ -71,15 +72,18 @@ namespace Axis{
             Timestep ts = time - m_LastFrameTime;
             m_LastFrameTime = time;
 
-            for (Layer* layer : m_LayerStack)
-                layer->OnUpdate(ts);
+            if (!m_Minimized) {
+                for (Layer* layer : m_LayerStack)
+                    layer->OnUpdate(ts);
 
+            }
             m_ImGuiLayer->Begin();
             m_NuklearLayer->Begin();
             for (Layer* layer : m_LayerStack)
                 layer->OnGUIRender();
             m_NuklearLayer->End();
             m_ImGuiLayer->End();
+
 
             m_Window->OnUpdate();
         }
@@ -89,6 +93,20 @@ namespace Axis{
     {
         m_Running = false;
         return true;
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent& e)
+    {
+        if (e.GetWidth() == 0 || e.GetHeight() == 0)
+        {
+            m_Minimized = true;
+            return false;
+        }
+
+        m_Minimized = false;
+        Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+        return false;
     }
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Camera.h"
+#include "Axis/Renderer/Camera.h"
 
 namespace Axis {
 
@@ -8,9 +8,17 @@ namespace Axis {
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
+		void SetProjection(float left, float right, float bottom, float top);
 		virtual ~OrthographicCamera();
 
-		void SetRotation(float rotation) { m_Rotation = { 0.0f, 0.0f, rotation }; RecalculateViewMatrix(); }
+		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
+		void SetRotation(float rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
+
+		const float GetRotation() { return m_Rotation; }
+	private:
+		void RecalculateViewMatrix();
+	private:
+		float m_Rotation;
 	};
 
 }
