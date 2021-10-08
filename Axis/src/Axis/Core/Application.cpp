@@ -36,7 +36,9 @@ namespace Axis{
     }
 
     Application::~Application()
-    {}
+    {
+        Renderer::Shutdown();
+    }
 
     void Application::PushLayer(Layer* layer)
     {

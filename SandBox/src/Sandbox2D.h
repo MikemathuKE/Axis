@@ -21,5 +21,5 @@ private:
 	Axis::Ref<Axis::Shader> m_FlatColorShader;
 	Axis::Ref<Axis::VertexArray> m_SquareVA;
 
-	glm::vec4 m_SquareColor = { 0.9f, 0.8f, 0.1f, 1.0f };
+	glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 };
