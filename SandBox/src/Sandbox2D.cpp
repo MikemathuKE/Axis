@@ -14,6 +14,8 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
+    AXIS_PROFILE_FUNCTION();
+
     m_Texture = Axis::Texture2D::Create("assets/textures/AxisLogo.png");
 }
 
@@ -24,23 +26,33 @@ void Sandbox2D::OnDetach()
 
 void Sandbox2D::OnUpdate(Axis::Timestep ts)
 {
-    Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
-    Axis::RenderCommand::Clear();
+    AXIS_PROFILE_FUNCTION();
 
     m_CameraController.OnUpdate(ts);
 
-    Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
+    {
+        AXIS_PROFILE_SCOPE("Renderer Prep");
+        Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
+        Axis::RenderCommand::Clear();
+    }
 
-    Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.3f, 0.3f }, m_SquareColor );
-    Axis::Renderer2D::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_Texture, 2.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
-    Axis::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 0.25f, 0.5f }, 45.0f, m_SquareColor);
-    Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 90.0f, m_Texture, 0.5f, { 1.0f, 1.0f, 1.0f, 1.0f });
+    {
+        AXIS_PROFILE_SCOPE("Renderer Draw");
+        Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-    Axis::Renderer2D::EndScene();
+        Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.3f, 0.3f }, m_SquareColor);
+        Axis::Renderer2D::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_Texture, 2.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
+        Axis::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 0.25f, 0.5f }, 45.0f, m_SquareColor);
+        Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 90.0f, m_Texture, 0.5f, { 1.0f, 1.0f, 1.0f, 1.0f });
+
+        Axis::Renderer2D::EndScene();
+    }
 }
 
 void Sandbox2D::OnGUIRender()
 {
+    AXIS_PROFILE_FUNCTION();
+
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("TriangleColor", glm::value_ptr(m_SquareColor));
     ImGui::End();

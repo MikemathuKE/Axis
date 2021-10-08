@@ -9,6 +9,8 @@ namespace Axis {
 
 	void Renderer::Init()
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		RenderCommand::Init();
 		Renderer2D::Init();
 	}

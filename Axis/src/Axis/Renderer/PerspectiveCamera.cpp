@@ -8,6 +8,8 @@ namespace Axis {
 	PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, float n, float f)
 		: Camera(), m_FOV(fov), m_AspectRatio(aspectRatio), m_Near(n), m_Far(f)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Direction, m_Up);
 		m_ProjectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, n, f);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
@@ -17,11 +19,15 @@ namespace Axis {
 	{}
 
 	void PerspectiveCamera::RecalculateViewMatrix() {
+		AXIS_PROFILE_FUNCTION();
+
 		m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Direction, m_Up);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
 
 	void PerspectiveCamera::RecalculateProjectionMatrix() {
+		AXIS_PROFILE_FUNCTION();
+
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_Near, m_Far);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}

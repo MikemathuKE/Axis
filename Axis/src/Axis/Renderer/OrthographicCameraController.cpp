@@ -14,6 +14,8 @@ namespace Axis {
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		if (Input::IsKeyPressed(AXIS_KEY_A))
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
 		else if (Input::IsKeyPressed(AXIS_KEY_D))
@@ -46,6 +48,8 @@ namespace Axis {
 
 	bool OrthographicCameraController::OnMouseScrolledEvent(MouseScrolledEvent& e)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		m_ZoomLevel -= e.GetYOffset();
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
@@ -55,6 +59,8 @@ namespace Axis {
 
 	bool OrthographicCameraController::OnWindowResize(WindowResizeEvent& e)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		m_AspectRatio = (float)e.GetWidth()/(float)e.GetHeight() ;
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 

@@ -23,6 +23,8 @@ namespace Axis{
 
     OpenGLShader::OpenGLShader(const std::string& filePath)
     {
+        AXIS_PROFILE_FUNCTION();
+
         auto lastSlash = filePath.find_last_of("/\\");
         lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
         auto lastDot = filePath.rfind(".");
@@ -37,6 +39,8 @@ namespace Axis{
     OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
         :m_Name(name)
     {
+        AXIS_PROFILE_FUNCTION();
+
         std::unordered_map<GLenum, std::string> sources;
         sources[GL_VERTEX_SHADER] = vertexSrc;
         sources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -45,11 +49,15 @@ namespace Axis{
 
     OpenGLShader::~OpenGLShader()
     {
+        AXIS_PROFILE_FUNCTION();
+
         glDeleteProgram(m_RendererID);
     }
 
     std::string OpenGLShader::ReadFile(const std::string& filePath)
     {
+        AXIS_PROFILE_FUNCTION();
+
         std::string result;
         std::ifstream in(filePath, std::ios::in | std::ios::binary);
 
@@ -69,6 +77,8 @@ namespace Axis{
 
     std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
     {
+        AXIS_PROFILE_FUNCTION();
+
         std::unordered_map<GLenum, std::string> shaderSources;
 
         const char* typeToken = "#type";
@@ -94,6 +104,8 @@ namespace Axis{
 
     void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
     {
+        AXIS_PROFILE_FUNCTION();
+
         GLuint program = glCreateProgram();
         AXIS_CORE_ASSERT((shaderSources.size() <= 2), "Only 2Shaders supported currently!");
         std::array<GLenum, 2> glShaderIDs;
@@ -158,6 +170,8 @@ namespace Axis{
 
     void OpenGLShader::Bind() const
     {
+        AXIS_PROFILE_FUNCTION();
+
         glUseProgram(m_RendererID);
     }
 
@@ -168,26 +182,36 @@ namespace Axis{
 
     void OpenGLShader::SetMat4(const std::string name, const glm::mat4& value)
     {
+        AXIS_PROFILE_FUNCTION();
+
         UploadUniformMat4(name, value);
     }
 
     void OpenGLShader::SetFloat4(const std::string name, const glm::vec4& value)
     {
+        AXIS_PROFILE_FUNCTION();
+
         UploadUniformFloat4(name, value);
     }
 
     void OpenGLShader::SetFloat3(const std::string name, const glm::vec3& value)
     {
+        AXIS_PROFILE_FUNCTION();
+
         UploadUniformFloat3(name, value);
     }
 
     void OpenGLShader::SetFloat(const std::string name, const float& value)
     {
+        AXIS_PROFILE_FUNCTION();
+
         UploadUniformFloat(name, value);
     }
 
     void OpenGLShader::SetInt(const std::string name, int value)
     {
+        AXIS_PROFILE_FUNCTION();
+
         UploadUniformInt(name, value);
     }
 

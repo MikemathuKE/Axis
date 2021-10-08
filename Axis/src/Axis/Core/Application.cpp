@@ -19,6 +19,8 @@ namespace Axis{
 
     Application::Application()
     {
+        AXIS_PROFILE_FUNCTION();
+        
         AXIS_CORE_ASSERT(!s_Instance, "Application already Exists!");
         s_Instance = this;
 
@@ -42,18 +44,24 @@ namespace Axis{
 
     void Application::PushLayer(Layer* layer)
     {
+        AXIS_PROFILE_FUNCTION();
+
         m_LayerStack.PushLayer(layer);
         layer->OnAttach();
     }
 
     void Application::PushOverlay(Layer* overlay)
     {
+        AXIS_PROFILE_FUNCTION();
+
         m_LayerStack.PushOverlay(overlay);
         overlay->OnAttach();
     }
 
     void Application::OnEvent(Event& e)
     {
+        AXIS_PROFILE_FUNCTION();
+
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(AXIS_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(AXIS_BIND_EVENT_FN(Application::OnWindowResize));
@@ -68,23 +76,33 @@ namespace Axis{
 
     void Application::Run()
     {
+        AXIS_PROFILE_FUNCTION();
+
         while (m_Running)
         {
+            AXIS_PROFILE_SCOPE("RunLoop");
+
             float time = (float)glfwGetTime();
             Timestep ts = time - m_LastFrameTime;
             m_LastFrameTime = time;
 
             if (!m_Minimized) {
-                for (Layer* layer : m_LayerStack)
-                    layer->OnUpdate(ts);
-
+                {
+                    AXIS_PROFILE_SCOPE("LayerStack OnUpdate");
+                    for (Layer* layer : m_LayerStack)
+                        layer->OnUpdate(ts);
+                }
+                m_ImGuiLayer->Begin();
+                m_NuklearLayer->Begin();
+                {
+                    AXIS_PROFILE_SCOPE("GUI Rendering");
+                    for (Layer* layer : m_LayerStack)
+                        layer->OnGUIRender();
+                }
+                m_NuklearLayer->End();
+                m_ImGuiLayer->End();
             }
-            m_ImGuiLayer->Begin();
-            m_NuklearLayer->Begin();
-            for (Layer* layer : m_LayerStack)
-                layer->OnGUIRender();
-            m_NuklearLayer->End();
-            m_ImGuiLayer->End();
+            
 
 
             m_Window->OnUpdate();
@@ -99,6 +117,8 @@ namespace Axis{
 
     bool Application::OnWindowResize(WindowResizeEvent& e)
     {
+        AXIS_PROFILE_FUNCTION();
+
         if (e.GetWidth() == 0 || e.GetHeight() == 0)
         {
             m_Minimized = true;

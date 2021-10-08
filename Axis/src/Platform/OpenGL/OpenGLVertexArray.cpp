@@ -27,26 +27,36 @@ namespace Axis {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &m_RendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		AXIS_PROFILE_FUNCTION();
+		
 		glBindVertexArray(m_RendererID);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		AXIS_PROFILE_FUNCTION();
+		
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		AXIS_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer Has no layout!");
 		
 		glBindVertexArray(m_RendererID);
@@ -70,6 +80,8 @@ namespace Axis {
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 

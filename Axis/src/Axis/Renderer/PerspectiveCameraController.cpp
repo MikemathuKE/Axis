@@ -18,6 +18,8 @@ namespace Axis {
 
 	void PerspectiveCameraController::OnUpdate(Timestep ts)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		glm::vec3 cameraPosition = m_Camera.GetPosition();
 		glm::vec3 cameraFront = m_Camera.GetDirection();
 		glm::vec3 cameraUp = m_Camera.GetUp();
@@ -66,7 +68,9 @@ namespace Axis {
 	}
 
 	bool PerspectiveCameraController::OnMouseScrolledEvent(MouseScrolledEvent& e)
-	{		
+	{
+		AXIS_PROFILE_FUNCTION();
+
 		float zoom = m_Camera.GetFieldOfView();
 		printf("%f\n", zoom);
 		zoom -= (float)e.GetYOffset() * m_CameraZoomSpeed;

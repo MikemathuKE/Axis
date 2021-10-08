@@ -13,5 +13,6 @@
 #include <vector>
 
 #include "Axis/Core/Log.h"
+#include "Axis/Debug/Instrumentor.h"
 
 #endif // AXIS_PCH_FILE

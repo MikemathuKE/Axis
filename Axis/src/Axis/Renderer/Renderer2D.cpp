@@ -21,6 +21,8 @@ namespace Axis {
 
 	void Renderer2D::Init()
 	{
+        AXIS_PROFILE_FUNCTION();
+
         s_Data = new Renderer2DStorage();
         s_Data->QuadVertexArray = VertexArray::Create();
 
@@ -60,22 +62,28 @@ namespace Axis {
 
 	void Renderer2D::Shutdown()
 	{
+        AXIS_PROFILE_FUNCTION();
+
         delete s_Data;
 	}
 
 	void Renderer2D::BeginScene(OrthographicCamera& camera)
 	{
+        AXIS_PROFILE_FUNCTION();
+
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndScene()
 	{
-
+        AXIS_PROFILE_FUNCTION();
 	}
 
     void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
     {
+        AXIS_PROFILE_FUNCTION();
+        
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetFloat4("u_Color", color);
 
@@ -102,6 +110,8 @@ namespace Axis {
 
     void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotation, const glm::vec4& color)
     {
+        AXIS_PROFILE_FUNCTION();
+
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetFloat4("u_Color", color);
 
@@ -124,6 +134,8 @@ namespace Axis {
 
     void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tintColor)
     {
+        AXIS_PROFILE_FUNCTION();
+
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetFloat4("u_Color", tintColor);
 
@@ -145,6 +157,8 @@ namespace Axis {
 
     void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotation, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tintColor)
     {
+        AXIS_PROFILE_FUNCTION();
+
         s_Data->TextureShader->Bind();
         s_Data->TextureShader->SetFloat4("u_Color", tintColor);
 

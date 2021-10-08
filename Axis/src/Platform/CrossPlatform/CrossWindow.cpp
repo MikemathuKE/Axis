@@ -31,6 +31,8 @@ namespace Axis {
 
 	CrossWindow::CrossWindow(const WindowProps& props)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		Init(props);
 	}
 
@@ -41,6 +43,8 @@ namespace Axis {
 
 	void CrossWindow::Init(const WindowProps& props)
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -224,17 +228,22 @@ namespace Axis {
 
 	void CrossWindow::Shutdown()
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 	}
 
 	void CrossWindow::OnUpdate()
 	{
+		AXIS_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void CrossWindow::SetVSync(bool enabled)
 	{
+		AXIS_PROFILE_FUNCTION();
 		if (enabled)
 			glfwSwapInterval(1);
 		else
@@ -245,6 +254,7 @@ namespace Axis {
 
 	void CrossWindow::SetWindowMode(const WindowMode& mode, unsigned int width, unsigned int height)
 	{
+		AXIS_PROFILE_FUNCTION();
 		if (!m_Window)
 			return;
 		if (mode == m_Data.Mode)
@@ -306,6 +316,7 @@ namespace Axis {
 
 	void CrossWindow::SetIcon(const std::string& path)
 	{
+		AXIS_PROFILE_FUNCTION();
 		int width, height, channels;
 
 		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 4);

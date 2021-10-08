@@ -15,6 +15,7 @@ namespace Axis {
 
 	void OpenGLContext::Init()
 	{
+		AXIS_PROFILE_FUNCTION();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -30,6 +31,7 @@ namespace Axis {
 
 	void OpenGLContext::SwapBuffers()
 	{
+		AXIS_PROFILE_FUNCTION();
 		glfwSwapBuffers(m_WindowHandle);
 	}
 
