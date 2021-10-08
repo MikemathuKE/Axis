@@ -7,6 +7,8 @@
 #include "Axis/Events/MouseEvent.h"
 #include "Axis/Events/KeyEvent.h"
 
+#include <glm/glm.hpp>
+
 namespace Axis {
 
 	class OrthographicCameraController

@@ -1,7 +1,6 @@
-[11:58:52] [info] AXIS: Creating Window Axis Engine (1280, 720)
-[11:58:52] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
-[11:58:52] [info] AXIS: OpenGL Info:
-[11:58:52] [info] AXIS:   VENDOR : Intel
-[11:58:52] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
-[11:58:52] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854
-[11:58:52] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[13:35:53] [info] AXIS: Creating Window Axis Engine (1280, 720)
+[13:35:53] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
+[13:35:53] [info] AXIS: OpenGL Info:
+[13:35:53] [info] AXIS:   VENDOR : Intel
+[13:35:53] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
+[13:35:53] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854

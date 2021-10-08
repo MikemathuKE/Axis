@@ -1,6 +1,8 @@
 #include "axispch.h"
 #include "Axis/Renderer/Renderer.h"
 
+#include "Axis/Renderer/Renderer2D.h"
+
 namespace Axis {
 
 	Renderer::SceneData* Renderer::m_Scene = new Renderer::SceneData();
@@ -8,7 +10,14 @@ namespace Axis {
 	void Renderer::Init()
 	{
 		RenderCommand::Init();
+		Renderer2D::Init();
 	}
+
+	void Renderer::Shutdown()
+	{
+		Renderer2D::Shutdown();
+	}
+
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
 	{
 		RenderCommand::SetViewport(0, 0, width, height);

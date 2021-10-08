@@ -1,7 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <Nuklear/nuklear.h>
+// Include glm.hpp and nuklear.h before this header
 
 inline glm::vec4& operator<<(glm::vec4& vec, const nk_colorf& color)
 {

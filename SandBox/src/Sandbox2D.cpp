@@ -14,33 +14,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-    m_SquareVA = Axis::VertexArray::Create();
-
-    float squareVertices[5 * 4] = {
-       -0.75f, -0.75f, 0.0f,
-        0.75f, -0.75f, 0.0f,
-        0.75f,  0.75f, 0.0f,
-       -0.75f,  0.75f, 0.0f
-    };
-
-    Axis::Ref<Axis::VertexBuffer> squareVB;
-    squareVB = (Axis::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
-
-    squareVB->SetLayout({
-           { Axis::ShaderDataType::Float3, "a_Position" }
-        });
-    m_SquareVA->AddVertexBuffer(squareVB);
-
-    uint32_t squareIndices[6] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-    Axis::Ref<Axis::IndexBuffer> squareIB;
-    squareIB = (Axis::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
-    m_SquareVA->SetIndexBuffer(squareIB);
-
-    m_FlatColorShader = (Axis::Shader::Create("assets/shaders/FlatColor.glsl"));
-    m_FlatColorShader->Bind();
+    
 }
 
 void Sandbox2D::OnDetach()
@@ -55,13 +29,11 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
 
     m_CameraController.OnUpdate(ts);
 
-    Axis::Renderer::BeginScene(m_CameraController.GetCamera());
+    Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-    m_FlatColorShader->Bind();
-    m_FlatColorShader->SetFloat4("u_Color", m_SquareColor);
-    Axis::Renderer::Submit(m_FlatColorShader, m_SquareVA);
+    Axis::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 
-    Axis::Renderer::EndScene();
+    Axis::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnGUIRender()
