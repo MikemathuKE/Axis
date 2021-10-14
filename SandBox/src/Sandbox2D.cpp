@@ -1,6 +1,8 @@
 #include "Sandbox2D.h"
 
 #include <imgui/imgui.h>
+
+#define NK_INCLUDE_STANDARD_VARARGS
 #include <Nuklear/nuklear.h>
 #include <Axis/Nuklear/NuklearUtils.h>
 
@@ -29,7 +31,7 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
     AXIS_PROFILE_FUNCTION();
 
     m_CameraController.OnUpdate(ts);
-
+    Axis::Renderer2D::ResetStats();
     {
         AXIS_PROFILE_SCOPE("Renderer Prep");
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
@@ -40,11 +42,19 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
         AXIS_PROFILE_SCOPE("Renderer Draw");
         Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-        Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
+        Axis::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
         Axis::Renderer2D::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_Texture, 2.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
-        Axis::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 0.25f, 0.5f }, 45.0f, m_SquareColor);
-        Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 45.0f, m_Texture, 0.5f, { 1.0f, 1.0f, 1.0f, 1.0f });
+        Axis::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 20.0f, 20.0f }, m_Texture);
 
+        Axis::Renderer2D::EndScene();
+
+        Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        for (float y = -5.0f; y < 5.0f; y += 0.5f) {
+            for (float x = -5.0f; x < 5.0f; x += 0.5f) {
+                glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
+                Axis::Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, color);
+            }
+        }
         Axis::Renderer2D::EndScene();
     }
 }
@@ -53,13 +63,21 @@ void Sandbox2D::OnGUIRender()
 {
     AXIS_PROFILE_FUNCTION();
 
+    auto stats = Axis::Renderer2D::GetStats();
+
     ImGui::Begin("Settings");
+    
+    ImGui::Text("Renderer2DStats:");
+    ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+    ImGui::Text("Quads: %d", stats.QuadCount);
+    ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+    ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
     ImGui::ColorEdit4("TriangleColor", glm::value_ptr(m_SquareColor));
     ImGui::End();
 
     struct nk_context* ctx = Axis::NuklearLayer::GetContext();
-    if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-        NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
+    if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
         nk_colorf color;
         color << m_SquareColor;
         nk_layout_row_dynamic(ctx, 20, 1);
@@ -74,6 +92,12 @@ void Sandbox2D::OnGUIRender()
             nk_combo_end(ctx);
         }
         m_SquareColor << color;
+        
+        nk_label(ctx, "Renderer2D Stats:", NK_TEXT_CENTERED);
+        nk_labelf(ctx, NK_TEXT_LEFT, "Draw Calls: %d", stats.DrawCalls);
+        nk_labelf(ctx, NK_TEXT_LEFT, "Quads: %d", stats.QuadCount);
+        nk_labelf(ctx, NK_TEXT_LEFT, "Vertices: %d", stats.GetTotalVertexCount());
+        nk_labelf(ctx, NK_TEXT_LEFT, "Indices: %d", stats.GetTotalIndexCount());
     }
     nk_end(ctx);
 }

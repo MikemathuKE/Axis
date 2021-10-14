@@ -20,6 +20,7 @@
 
 #ifdef AXIS_DEBUG
 	#define AXIS_ASSERT(x, ...) { if(!(x)) { AXIS_ERROR("Assertion Failed: {0}", __VA_ARGS__); DEBUG_BREAK; } }
+	#define AXIS_ASSERTs(x, str, ...) { if(!(x)) { std::string s = str; std::string finalStr = "Assertion failed: "; finalStr += s; AXIS_CORE_ERROR(finalStr.c_str(), __VA_ARGS__); DEBUG_BREAK; } }
 	#define AXIS_CORE_ASSERT(x, ...) { if(!(x)) { AXIS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); DEBUG_BREAK; } }
 	#define AXIS_CORE_ASSERTs(x, str, ...) { if(!(x)) { std::string s = str; std::string finalStr = "Assertion failed: "; finalStr += s; AXIS_CORE_ERROR(finalStr.c_str(), __VA_ARGS__); DEBUG_BREAK; } }
 #else
