@@ -18,6 +18,7 @@ namespace Axis{
           virtual void SetFloat3(const std::string name, const glm::vec3& value) = 0;
           virtual void SetFloat(const std::string name, const float& value) = 0;
           virtual void SetInt(const std::string name, int value) = 0;
+          virtual void SetIntArray(const std::string name, int* values, int32_t count) = 0;
 
           static Ref<Shader> Create(const std::string& filePath);
           static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
