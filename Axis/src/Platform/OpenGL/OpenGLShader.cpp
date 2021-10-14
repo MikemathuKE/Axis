@@ -133,7 +133,7 @@ namespace Axis{
                 glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
                 glDeleteShader(shader);
-                AXIS_CORE_ASSERT(false, "Shader Compilation failure! {0}", infoLog.data());
+                AXIS_CORE_ASSERTs(false, "Shader Compilation failure! {0}", infoLog.data());
                 break;
 
             }

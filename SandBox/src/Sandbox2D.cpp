@@ -40,10 +40,11 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
         AXIS_PROFILE_SCOPE("Renderer Draw");
         Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-        Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.3f, 0.3f }, m_SquareColor);
-        Axis::Renderer2D::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_Texture, 2.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
-        Axis::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 0.25f, 0.5f }, 45.0f, m_SquareColor);
-        Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 90.0f, m_Texture, 0.5f, { 1.0f, 1.0f, 1.0f, 1.0f });
+        Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
+        Axis::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 1.0f, 1.0f, 1.0f, 1.0f });
+        //Axis::Renderer2D::DrawQuad({ 0.5f, 0.5f }, { 0.5f, 0.5f }, m_Texture, 2.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
+        //Axis::Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 0.25f, 0.5f }, 45.0f, m_SquareColor);
+        //Axis::Renderer2D::DrawRotatedQuad({ 0.5f, -0.5f }, { 0.75f, 0.5f }, 90.0f, m_Texture, 0.5f, { 1.0f, 1.0f, 1.0f, 1.0f });
 
         Axis::Renderer2D::EndScene();
     }
