@@ -28,6 +28,7 @@
 #include "Axis/Renderer/Renderer.h"
 #include "Axis/Renderer/Renderer2D.h"
 #include "Axis/Renderer/Texture.h"
+#include "Axis/Renderer/SubTexture2D.h"
 #include "Axis/Renderer/Shader.h"
 #include "Axis/Renderer/OrthographicCamera.h"
 #include "Axis/Renderer/OrthographicCameraController.h"

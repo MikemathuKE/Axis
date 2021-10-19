@@ -26,6 +26,8 @@
 #else
 	#define AXIS_ASSERT(x, ...)
 	#define AXIS_CORE_ASSERT(x, ...)
+	#define AXIS_CORE_ASSERTs(x, str, ...)
+	#define AXIS_ASSERTs(x, str, ...)
 #endif
 
 #define BIT(x) (1 << x)

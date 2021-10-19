@@ -19,6 +19,18 @@ void Sandbox2D::OnAttach()
     AXIS_PROFILE_FUNCTION();
 
     m_Texture = Axis::Texture2D::Create("assets/textures/AxisLogo.png");
+    m_SpriteSheet = Axis::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
+    m_TextureStairs = Axis::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7, 6 }, { 128, 128 });
+    m_TextureBarrel = Axis::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 8, 2 }, { 128, 128 });
+    m_TextureTree = Axis::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2, 1 }, { 128, 128 }, { 1, 2 });
+
+    m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
+    m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
+    m_Particle.SizeBegin = 0.5f, m_Particle.SizeVariation = 0.3f, m_Particle.SizeEnd = 0.0f;
+    m_Particle.LifeTime = 5.0f;
+    m_Particle.Velocity = { 0.0f, 0.0f };
+    m_Particle.VelocityVariation = { 3.0f, 1.0f };
+    m_Particle.Position = { 0.0f, 0.0f };
 }
 
 void Sandbox2D::OnDetach()
@@ -30,6 +42,8 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
 {
     AXIS_PROFILE_FUNCTION();
 
+    AXIS_INFO("Frame rate: {0}", 1 / (float)ts);
+
     m_CameraController.OnUpdate(ts);
     Axis::Renderer2D::ResetStats();
     {
@@ -37,7 +51,7 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
         Axis::RenderCommand::Clear();
     }
-
+    #if 0
     {
         AXIS_PROFILE_SCOPE("Renderer Draw");
         Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
@@ -56,7 +70,34 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
             }
         }
         Axis::Renderer2D::EndScene();
+
     }
+    #endif
+
+
+    if (Axis::Input::IsMouseButtonPressed(AXIS_MOUSE_BUTTON_LEFT))
+    {
+        auto [x, y] = Axis::Input::GetMousePosition();
+        auto width = Axis::Application::Get().GetWindow().GetWidth();
+        auto height = Axis::Application::Get().GetWindow().GetHeight();
+
+        auto bounds = m_CameraController.GetBounds();
+        auto pos = m_CameraController.GetCamera().GetPosition();
+        x = (x / width) * bounds.GetWidth() - bounds.GetWidth() * 0.5f;
+        y = bounds.GetHeight() * 0.5f - (y / height) * bounds.GetHeight();
+        m_Particle.Position = { x + pos.x, y + pos.y };
+        for (int i = 0; i < 5; i++)
+            m_ParticleSystem.Emit(m_Particle);
+    }
+
+    m_ParticleSystem.OnUpdate(ts);
+    m_ParticleSystem.OnRender(m_CameraController.GetCamera());
+    
+    Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
+    Axis::Renderer2D::DrawQuad({ -1.0f, 0.0f, 1.0f }, { 1.0f, 1.0f }, m_TextureStairs);
+    Axis::Renderer2D::DrawQuad({ 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f }, m_TextureBarrel);
+    Axis::Renderer2D::DrawQuad({ 1.0f, 0.0f, 1.0f }, { 1.0f, 2.0f }, m_TextureTree);
+    Axis::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnGUIRender()

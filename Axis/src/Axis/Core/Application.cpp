@@ -92,6 +92,7 @@ namespace Axis{
                     for (Layer* layer : m_LayerStack)
                         layer->OnUpdate(ts);
                 }
+                /*
                 m_ImGuiLayer->Begin();
                 m_NuklearLayer->Begin();
                 {
@@ -101,6 +102,7 @@ namespace Axis{
                 }
                 m_NuklearLayer->End();
                 m_ImGuiLayer->End();
+                */
             }
             
 
