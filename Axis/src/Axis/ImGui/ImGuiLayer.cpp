@@ -74,8 +74,7 @@ namespace Axis {
 
 	void ImGuiLayer::OnGUIRender()
 	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
+		
 	}
 
 	void ImGuiLayer::End()

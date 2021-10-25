@@ -92,7 +92,7 @@ namespace Axis{
                     for (Layer* layer : m_LayerStack)
                         layer->OnUpdate(ts);
                 }
-                /*
+                
                 m_ImGuiLayer->Begin();
                 m_NuklearLayer->Begin();
                 {
@@ -102,7 +102,7 @@ namespace Axis{
                 }
                 m_NuklearLayer->End();
                 m_ImGuiLayer->End();
-                */
+                
             }
             
 
@@ -115,6 +115,11 @@ namespace Axis{
     {
         m_Running = false;
         return true;
+    }
+
+    void Application::Close()
+    {
+        m_Running = false;
     }
 
     bool Application::OnWindowResize(WindowResizeEvent& e)

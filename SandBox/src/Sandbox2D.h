@@ -24,9 +24,13 @@ private:
 	Axis::Ref<Axis::Texture2D> m_Texture;
 	Axis::Ref<Axis::Texture2D> m_SpriteSheet;
 
+	Axis::Ref<Axis::FrameBuffer> m_FrameBuffer;
+
 	Axis::Ref<Axis::SubTexture2D> m_TextureStairs;
 	Axis::Ref<Axis::SubTexture2D> m_TextureBarrel;
 	Axis::Ref<Axis::SubTexture2D> m_TextureTree;
 
 	glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
+	std::unordered_map<char, Axis::Ref<Axis::SubTexture2D>> s_TextureMap;
+	uint32_t m_MapWidth, m_MapHeight;
 };

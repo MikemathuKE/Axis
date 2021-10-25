@@ -27,6 +27,7 @@
 #include "Axis/Renderer/RenderCommand.h"
 #include "Axis/Renderer/Renderer.h"
 #include "Axis/Renderer/Renderer2D.h"
+#include "Axis/Renderer/FrameBuffer.h"
 #include "Axis/Renderer/Texture.h"
 #include "Axis/Renderer/SubTexture2D.h"
 #include "Axis/Renderer/Shader.h"
