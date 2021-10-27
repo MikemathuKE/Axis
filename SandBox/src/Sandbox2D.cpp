@@ -9,6 +9,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Axis/GUI/GUI.h"
+
 static const char* s_MapTiles =
 "WWWWWWWWWWWWWWWWWWWWWWWW"
 "WWWWWWWWWDDDDWWWWWWWWWWW"
@@ -58,6 +60,8 @@ void Sandbox2D::OnAttach()
     m_FrameBuffer = Axis::FrameBuffer::Create(fbSpec);
 
     m_CameraController.SetZoomLevel(5.0f);
+
+    Axis::GUI::Init();
 }
 
 void Sandbox2D::OnDetach()
@@ -75,7 +79,7 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
     Axis::Renderer2D::ResetStats();
     {
         AXIS_PROFILE_SCOPE("Renderer Prep");
-        m_FrameBuffer->Bind();
+        //m_FrameBuffer->Bind();
         Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
         Axis::RenderCommand::Clear();
     }
@@ -102,7 +106,7 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
     }
     #endif
 
-
+    #if 0
     if (Axis::Input::IsMouseButtonPressed(AXIS_MOUSE_BUTTON_LEFT))
     {
         auto [x, y] = Axis::Input::GetMousePosition();
@@ -139,12 +143,20 @@ void Sandbox2D::OnUpdate(Axis::Timestep ts)
     //Axis::Renderer2D::DrawQuad({ 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f }, m_TextureBarrel);
     //Axis::Renderer2D::DrawQuad({ 1.0f, 0.0f, 1.0f }, { 1.0f, 2.0f }, m_TextureTree);
     Axis::Renderer2D::EndScene();
-    m_FrameBuffer->UnBind();
+    #endif
+    //m_FrameBuffer->UnBind();
+
+    Axis::Renderer2D::BeginScene(m_CameraController.GetCamera());
+    Axis::GUI::Draw();
+    Axis::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnGUIRender()
 {
     AXIS_PROFILE_FUNCTION();
+
+    Axis::GUI::Begin();
+    Axis::GUI::End();
 
     auto stats = Axis::Renderer2D::GetStats();
 
@@ -173,6 +185,7 @@ void Sandbox2D::OnGUIRender()
     }
     nk_end(ctx);
 
+    /*
     static bool dockspace_open = true;
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
@@ -252,6 +265,7 @@ void Sandbox2D::OnGUIRender()
     ImGui::End();
 
     ImGui::End();
+    */
 }
 
 void Sandbox2D::OnEvent(Axis::Event& e)
