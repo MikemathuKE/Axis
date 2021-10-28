@@ -6,7 +6,7 @@
 #include <Nuklear/nuklear.h>
 #include <Axis/Nuklear/NuklearUtils.h>
 
-#define GUI_IMGUI 1
+#define GUI_IMGUI 0
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -200,15 +200,38 @@ namespace Axis {
 
         ImGui::ColorEdit4("TriangleColor", glm::value_ptr(m_SquareColor));
 
-        uint32_t textureID = m_Texture->GetRendererID();
-        ImGui::Image((void*)textureID, ImVec2(1280.0f, 720.0f), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+        ImGui::Begin("Viewport");
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+        {
+            m_FrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+        }
+        uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
+        ImGui::Image((void*)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::End();
+        ImGui::PopStyleVar();
 
         ImGui::End();
 
         #else
 
         struct nk_context* ctx = NuklearLayer::GetContext();
+        if (nk_begin(ctx, "Menu", { 0, 0, 200, 25 }, NK_WINDOW_MOVABLE | NK_WINDOW_NO_SCROLLBAR )) {
+            nk_layout_row_dynamic(ctx, 20, 1);
+            if (nk_menu_begin_label(ctx, "MENU", NK_TEXT_LEFT, nk_vec2(120, 200)))
+            {
+                nk_layout_row_dynamic(ctx, 25, 1);
+                if (nk_menu_item_label(ctx, "Exit", NK_TEXT_LEFT))
+                    Application::Get().Close();
+                nk_menu_end(ctx);
+            }
+        }
+        nk_end(ctx);
+
         if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
             nk_colorf color;
             color << m_SquareColor;
@@ -230,8 +253,17 @@ namespace Axis {
             nk_labelf(ctx, NK_TEXT_LEFT, "Quads: %d", stats.QuadCount);
             nk_labelf(ctx, NK_TEXT_LEFT, "Vertices: %d", stats.GetTotalVertexCount());
             nk_labelf(ctx, NK_TEXT_LEFT, "Indices: %d", stats.GetTotalIndexCount());
+        }
+        nk_end(ctx);
 
-            nk_layout_row_static(ctx, 720, 1280, 1);
+        if (nk_begin(ctx, "Viewport", { 25, 25, 1280, 720 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR )) {
+            auto viewportPanelSize = nk_window_get_content_region_size(ctx);
+            if (m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
+            {
+                m_FrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
+                m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+            }
+            nk_layout_row_static(ctx, (float)m_ViewportSize.y, (float)m_ViewportSize.x, 1);
             nk_image(ctx, nk_image_id(m_FrameBuffer->GetColorAttachmentRendererID()));
         }
         nk_end(ctx);

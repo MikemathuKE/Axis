@@ -2,7 +2,7 @@
 
 #include "Axis/Renderer/Renderer.h"
 #include "Axis/Renderer/FrameBuffer.h"
-#include "Platform/OpenGL/OpenGLFramBuffer.h"
+#include "Platform/OpenGL/OpenGLFrameBuffer.h"
 
 namespace Axis {
 

@@ -29,6 +29,8 @@ namespace Axis {
 		Ref<Axis::SubTexture2D> m_TextureBarrel;
 		Ref<Axis::SubTexture2D> m_TextureTree;
 
+		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+
 		glm::vec4 m_SquareColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 		std::unordered_map<char, Axis::Ref<SubTexture2D>> s_TextureMap;
 		uint32_t m_MapWidth, m_MapHeight;

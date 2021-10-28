@@ -85,7 +85,7 @@ namespace Axis {
 
 	void NuklearLayer::OnGUIRender()
 	{
-		//overview(s_Context);
+		overview(s_Context);
 	}
 
 	void NuklearLayer::End()

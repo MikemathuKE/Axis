@@ -14,6 +14,12 @@ vendor/
 *.vcxproj
 *.filters
 *.user
+*.ilk
+*.tlog
+*.obj
+*.idb
+*.pdb
+*.exe
 
 #CB Project Files
 *.cbp

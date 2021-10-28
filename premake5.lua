@@ -1,6 +1,6 @@
 workspace "Axis"
   architecture "x64"
-  startproject "SandBox"
+  startproject "Axis-Editor"
 
   configurations
   {
