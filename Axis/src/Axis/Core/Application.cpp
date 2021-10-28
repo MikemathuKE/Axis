@@ -17,16 +17,15 @@ namespace Axis{
 
     Application* Application::s_Instance = nullptr;
 
-    Application::Application()
+    Application::Application(const std::string& name)
     {
         AXIS_PROFILE_FUNCTION();
         
         AXIS_CORE_ASSERT(!s_Instance, "Application already Exists!");
         s_Instance = this;
 
-        m_Window = (Scope<Window>)Window::Create();
+        m_Window = (Scope<Window>)Window::Create(WindowProps(name));
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
-        m_Window->SetIcon("assets/textures/AxisLogo.png");
 
         m_ImGuiLayer = new ImGuiLayer();
         PushLayer(m_ImGuiLayer);

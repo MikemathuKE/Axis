@@ -170,3 +170,63 @@ project "SandBox"
     defines "AXIS_DIST"
     runtime "Release"
     optimize "Full"
+    
+  
+project "Axis-Editor"
+  location "Axis-Editor"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("%{prj.location}/bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("%{prj.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+   "%{prj.name}/src/**.cpp"
+  }
+
+  includedirs
+  {
+    "%{wks.location}/Axis/src",
+    "%{IncludeDir.vendor}",
+    "%{IncludeDir.spdlog}",
+    "%{IncludeDir.glm}"
+  }
+  
+  links
+  {
+    "Axis"
+  }
+    
+
+  filter "system:linux"
+    systemversion "latest"
+    
+    links
+    {
+      "dl",
+      "pthread",
+      "Glad",
+      "GLFW"
+    }
+    
+  filter "system:windows"
+    systemversion "latest"
+
+  filter "configurations:Debug"
+    defines "AXIS_DEBUG"
+    runtime "Debug"
+    symbols "on"
+
+  filter "configurations:Release"
+    defines "AXIS_RELEASE"
+    runtime "Release"
+    optimize "on"
+
+  filter "configurations:Dist"
+    defines "AXIS_DIST"
+    runtime "Release"
+    optimize "Full"

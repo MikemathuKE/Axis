@@ -15,7 +15,7 @@ namespace Axis{
     class Application
     {
     public:
-        Application();
+        Application(const std::string& name = "Axis App");
         virtual ~Application();
 
         void Run();

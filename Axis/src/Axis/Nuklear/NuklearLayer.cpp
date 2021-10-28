@@ -65,6 +65,7 @@ namespace Axis {
 			//struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/Cousine-Regular.ttf", 13, 0);
 			nk_glfw3_font_stash_end(&s_NKStruct);
 			
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			nk_style_load_all_cursors(s_Context, atlas->cursors);
 			//nk_style_set_font(m_Context, &tiny->handle);
 		}
@@ -84,7 +85,7 @@ namespace Axis {
 
 	void NuklearLayer::OnGUIRender()
 	{
-		overview(s_Context);
+		//overview(s_Context);
 	}
 
 	void NuklearLayer::End()

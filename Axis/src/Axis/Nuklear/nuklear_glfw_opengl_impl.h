@@ -496,7 +496,7 @@ nk_glfw3_new_frame(struct nk_glfw* glfw)
 #ifdef NK_GLFW_GL3_MOUSE_GRABBING
     // optional grabbing behavior 
     if (ctx->input.mouse.grab)
-        glfwSetInputMode(glfw.win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetInputMode(glfw->win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     else if (ctx->input.mouse.ungrab)
         glfwSetInputMode(glfw->win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 #endif
