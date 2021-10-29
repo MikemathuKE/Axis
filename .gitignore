@@ -3,6 +3,8 @@ Axis/bin
 Axis/bin-int
 SandBox/bin
 SandBox/bin-int
+Axis-Editor/bin
+Axis-Editor/bin-int
 vendor/
 *.vs
 

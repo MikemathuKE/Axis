@@ -1,13 +1,13 @@
 #include "axispch.h"
 
-#include "Platform/CrossPlatform/CrossInput.h"
+#include "Axis/Core/Input.h"
 
 #include <GLFW/glfw3.h>
 #include "Axis/Core/Application.h"
 
 namespace Axis {
 
-	bool CrossInput::IsKeyPressedImpl(KeyCode key)
+	bool Input::IsKeyPressed(KeyCode key)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		auto state = glfwGetKey(window, static_cast<int32_t>(key));
@@ -15,7 +15,7 @@ namespace Axis {
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
-	bool CrossInput::IsMouseButtonPressedImpl(MouseCode button)
+	bool Input::IsMouseButtonPressed(MouseCode button)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
@@ -23,7 +23,7 @@ namespace Axis {
 		return state == GLFW_PRESS;
 	}
 
-	std::pair<float, float> CrossInput::GetMousePositionImpl()
+	std::pair<float, float> Input::GetMousePosition()
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		double xPos, yPos;
@@ -32,15 +32,15 @@ namespace Axis {
 		return { (float)xPos, (float)yPos };
 	}
 
-	float CrossInput::GetMousePosXImpl()
+	float Input::GetMousePosX()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return x;
 	}
 
-	float CrossInput::GetMousePosYImpl()
+	float Input::GetMousePosY()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return y;
 	}
 

@@ -1,7 +1,6 @@
 #include "axispch.h"
 
 #include "Platform/CrossPlatform/CrossWindow.h"
-#include "Platform/CrossPlatform/CrossInput.h"
 
 #include "Axis/Events/ApplicationEvent.h"
 #include "Axis/Events/KeyEvent.h"
@@ -21,8 +20,6 @@ namespace Axis {
 	}
 
 #ifdef AXIS_PLATFORM_WINDOWS || AXIS_PLATFORM_LINUX
-	Scope<Input> Input::s_Instance = CreateScope<CrossInput>();
-
 	Window* Window::Create(const WindowProps& props)
 	{
 		return new CrossWindow(props);

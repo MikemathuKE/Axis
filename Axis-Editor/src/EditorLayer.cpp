@@ -67,7 +67,8 @@ namespace Axis {
 
         //AXIS_TRACE("Frame rate: {0}fps", 1 / (float)ts);
 
-        m_CameraController.OnUpdate(ts);
+        if (m_ViewportFocused)
+            m_CameraController.OnUpdate(ts);
         Renderer2D::ResetStats();
 
         {
@@ -204,6 +205,11 @@ namespace Axis {
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
         ImGui::Begin("Viewport");
+
+        m_ViewportFocused = ImGui::IsWindowFocused();
+        m_ViewportHovered = ImGui::IsWindowHovered();
+        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
         {
@@ -220,7 +226,8 @@ namespace Axis {
         #else
 
         struct nk_context* ctx = NuklearLayer::GetContext();
-        if (nk_begin(ctx, "Menu", { 0, 0, 200, 25 }, NK_WINDOW_MOVABLE | NK_WINDOW_NO_SCROLLBAR )) {
+        if (nk_begin(ctx, "Menu", { 0, 0, 200, 25 }, NK_WINDOW_DOCK_MENU )) 
+        {
             nk_layout_row_dynamic(ctx, 20, 1);
             if (nk_menu_begin_label(ctx, "MENU", NK_TEXT_LEFT, nk_vec2(120, 200)))
             {
@@ -232,7 +239,8 @@ namespace Axis {
         }
         nk_end(ctx);
 
-        if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
+        if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) 
+        {
             nk_colorf color;
             color << m_SquareColor;
             nk_layout_row_dynamic(ctx, 20, 1);
@@ -256,7 +264,12 @@ namespace Axis {
         }
         nk_end(ctx);
 
-        if (nk_begin(ctx, "Viewport", { 25, 25, 1280, 720 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR )) {
+        if (nk_begin(ctx, "Viewport", { 25, 25, 1280, 720 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR )) 
+        {
+            m_ViewportFocused = nk_window_has_focus(ctx);
+            m_ViewportHovered = nk_window_is_hovered(ctx);
+            Application::Get().GetNuklearLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
             auto viewportPanelSize = nk_window_get_content_region_size(ctx);
             if (m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
             {

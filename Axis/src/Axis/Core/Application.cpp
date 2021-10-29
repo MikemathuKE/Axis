@@ -28,9 +28,9 @@ namespace Axis{
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
 
         m_ImGuiLayer = new ImGuiLayer();
-        PushLayer(m_ImGuiLayer);
+        PushOverlay(m_ImGuiLayer);
         m_NuklearLayer = new NuklearLayer();
-        PushLayer(m_NuklearLayer);
+        PushOverlay(m_NuklearLayer);
 
         Renderer::Init();
         m_Window->SetVSync(true);

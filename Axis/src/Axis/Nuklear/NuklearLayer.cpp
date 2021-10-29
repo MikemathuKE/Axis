@@ -78,6 +78,14 @@ namespace Axis {
 		nk_glfw3_shutdown(&s_NKStruct);
 	}
 
+	void NuklearLayer::OnEvent(Event& event)
+	{
+		if (m_BlockEvents)
+			event.Handled = true;
+		else
+			event.Handled = false;
+	}
+
 	void NuklearLayer::Begin()
 	{
 		nk_glfw3_new_frame(&s_NKStruct);
@@ -85,7 +93,6 @@ namespace Axis {
 
 	void NuklearLayer::OnGUIRender()
 	{
-		overview(s_Context);
 	}
 
 	void NuklearLayer::End()
