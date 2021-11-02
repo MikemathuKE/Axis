@@ -36,8 +36,8 @@ namespace Axis {
 
 		float newX = Input::GetMousePosX();
 		float newY = Input::GetMousePosY();
-
-		if (Input::IsMouseButtonPressed(AXIS_MOUSE_BUTTON_MIDDLE)) {
+		if(Input::IsMouseButtonPressed(AXIS_MOUSE_BUTTON_MIDDLE))
+		{
 			m_Yaw += (newX - m_MouseX) * m_CameraRotationSpeed;
 			m_Pitch += (newY - m_MouseY) * m_CameraRotationSpeed;
 
@@ -72,7 +72,6 @@ namespace Axis {
 		AXIS_PROFILE_FUNCTION();
 
 		float zoom = m_Camera.GetFieldOfView();
-		printf("%f\n", zoom);
 		zoom -= (float)e.GetYOffset() * m_CameraZoomSpeed;
 		if (zoom < 1.0f)
 			zoom = 1.0f;

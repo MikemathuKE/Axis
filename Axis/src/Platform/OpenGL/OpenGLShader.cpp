@@ -21,6 +21,17 @@ namespace Axis{
         return 0;
     }
 
+    static std::string ShaderTypeToString(const GLenum type)
+    {
+        if (type == GL_VERTEX_SHADER)
+            return "Vertex";
+        if (type == GL_FRAGMENT_SHADER)
+            return "Fragment";
+
+        AXIS_CORE_ASSERT(false, "Unknown Shader type!");
+        return 0;
+    }
+
     OpenGLShader::OpenGLShader(const std::string& filePath)
     {
         AXIS_PROFILE_FUNCTION();
@@ -133,7 +144,7 @@ namespace Axis{
                 glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
                 glDeleteShader(shader);
-                AXIS_CORE_ASSERTs(false, "Shader Compilation failure! {0}", infoLog.data());
+                AXIS_CORE_ASSERTs(false, " {0} Shader Compilation failure! {1}", ShaderTypeToString(type), infoLog.data());
                 break;
 
             }

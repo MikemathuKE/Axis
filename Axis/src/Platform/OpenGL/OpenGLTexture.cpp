@@ -39,7 +39,7 @@ namespace Axis
             data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         }
 
-        AXIS_CORE_ASSERT(data, "Failed to load image! {s}.", path.c_str());
+        AXIS_CORE_ASSERTs(data, "Failed to load image! {0}.", path.c_str());
         m_Width = width;
         m_Height = height;
 
@@ -55,7 +55,7 @@ namespace Axis
         m_InternalFormat = internalFormat;
         m_DataFormat = dataFormat;
 
-        AXIS_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+        AXIS_CORE_ASSERTs(internalFormat & dataFormat, "Image Format not supported! - ({0})", path.c_str());
 
         glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
         glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);

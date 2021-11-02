@@ -26,7 +26,7 @@ namespace Axis {
 			s_RendererAPI->Clear();
 		}
 
-		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)
+		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 		{
 			s_RendererAPI->DrawIndexed(vertexArray, indexCount);
 		}

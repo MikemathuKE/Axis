@@ -216,7 +216,7 @@ private:
     Axis::Ref<Axis::VertexArray> m_SquareVA;
 
     Axis::PerspectiveCameraController m_CameraController;
-    glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 2.0f };
+    glm::vec3 m_CameraPosition = { 0.0f, 0.0f, -1.0f };
     float m_CameraSpeed = 5.0f;
     glm::vec3 m_CameraRotation = glm::vec3(0.0f);
     float m_CameraRotationSpeed = 180.0f;
@@ -227,8 +227,8 @@ class SandBox : public Axis::Application
 public:
     SandBox()
     {
-        //PushLayer(new ExampleLayer2D());
-        PushLayer(new Sandbox2D());
+        //PushLayer(new ExampleLayer3D());
+        PushLayer(new Sandbox3D());
     }
     ~SandBox()
     {

@@ -35,3 +35,7 @@
 #include "Axis/Renderer/OrthographicCameraController.h"
 #include "Axis/Renderer/PerspectiveCameraController.h"
 #include "Axis/Renderer/PerspectiveCamera.h"
+
+/* Renderable */
+#include "Axis/Renderable/Mesh.h"
+#include "Axis/Renderable/Model.h"

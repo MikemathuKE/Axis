@@ -17,6 +17,12 @@ public:
 private:
 	Axis::PerspectiveCameraController m_CameraController;
 
+	Axis::Ref<Axis::Shader> m_LightShader;
 	Axis::Ref<Axis::Shader> m_FlatColorShader;
-	Axis::Ref<Axis::VertexArray> m_VertexArray;
+
+	Axis::Ref<Axis::Mesh> m_Mesh;
+	Axis::Ref<Axis::Model> m_Model;
+
+	glm::vec3 m_LightPosition = { 2.0f, 1.0f, 3.0f };
+	glm::vec3 m_LightColor = { 1.0f, 1.0f, 1.0f };
 };

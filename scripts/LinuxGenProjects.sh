@@ -2,4 +2,4 @@
 
 cd ..
 
-vendor/bin/premake5/premake5 gmake2
+vendor/premake/bin/premake5/premake5 gmake2

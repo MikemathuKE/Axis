@@ -362,7 +362,8 @@ nk_gflw3_resize_callback(GLFWwindow* win, int width, int height)
 
     int w, h;
     glfwGetFramebufferSize(win, &w, &h);
-    nk_dockspace_adjust(&glfw->ctx, (float)w, (float)h);
+    if (width != 0 || height != 0)
+        nk_dockspace_adjust(&glfw->ctx, (float)w, (float)h);
 }
 
 NK_API void

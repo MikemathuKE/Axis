@@ -1,7 +1,14 @@
-[09:40:50] [info] AXIS: Creating Window Axis App (1280, 720)
-[09:40:50] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
-[09:40:50] [info] AXIS: OpenGL Info:
-[09:40:50] [info] AXIS:   VENDOR : Intel
-[09:40:50] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
-[09:40:50] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854
-[09:40:50] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[12:14:03] [info] AXIS: Creating Window Axis App (1280, 720)
+[12:14:03] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
+[12:14:04] [info] AXIS: OpenGL Info:
+[12:14:04] [info] AXIS:   VENDOR : Intel
+[12:14:04] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
+[12:14:04] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854
+[12:14:04] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[12:14:05] [info] APP: Mesh Processed!
+[12:14:05] [info] APP: Mesh Processed!
+[12:14:06] [info] APP: Mesh Processed!
+[12:14:06] [info] APP: Mesh Processed!
+[12:14:06] [info] APP: Mesh Processed!
+[12:14:06] [info] APP: Mesh Processed!
+[12:14:06] [info] APP: Mesh Processed!

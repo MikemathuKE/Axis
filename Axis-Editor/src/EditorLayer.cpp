@@ -228,8 +228,8 @@ namespace Axis {
         struct nk_context* ctx = NuklearLayer::GetContext();
         if (nk_begin(ctx, "Menu", { 0, 0, 200, 25 }, NK_WINDOW_DOCK_MENU )) 
         {
-            nk_layout_row_dynamic(ctx, 20, 1);
-            if (nk_menu_begin_label(ctx, "MENU", NK_TEXT_LEFT, nk_vec2(120, 200)))
+            nk_layout_row_static(ctx, 20, 45, 1);
+            if (nk_menu_begin_label(ctx, "MENU", NK_TEXT_CENTERED, nk_vec2(120, 200)))
             {
                 nk_layout_row_dynamic(ctx, 25, 1);
                 if (nk_menu_item_label(ctx, "Exit", NK_TEXT_LEFT))
