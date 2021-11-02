@@ -4,6 +4,8 @@
 vendor/
 *.vs
 */models
+Axis-Editor/bin/
+Axis-Editor/bin-int/
 
 #solution
 *.sln
@@ -13,12 +15,6 @@ vendor/
 *.vcxproj
 *.filters
 *.user
-*.ilk
-*.tlog
-*.obj
-*.idb
-*.pdb
-*.exe
 
 #CB Project Files
 *.cbp
