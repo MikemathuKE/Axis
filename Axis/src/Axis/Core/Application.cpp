@@ -27,10 +27,8 @@ namespace Axis{
         m_Window = (Scope<Window>)Window::Create(WindowProps(name));
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
 
-        m_ImGuiLayer = new ImGuiLayer();
-        PushOverlay(m_ImGuiLayer);
-        m_NuklearLayer = new NuklearLayer();
-        PushOverlay(m_NuklearLayer);
+        m_GUILayer = GUILayer::Create(GUIBackend::Nuklear);
+        PushOverlay(m_GUILayer);
 
         Renderer::Init();
         m_Window->SetVSync(true);
@@ -92,15 +90,13 @@ namespace Axis{
                         layer->OnUpdate(ts);
                 }
                 
-                m_ImGuiLayer->Begin();
-                m_NuklearLayer->Begin();
+                m_GUILayer->Begin();
                 {
                     AXIS_PROFILE_SCOPE("GUI Rendering");
                     for (Layer* layer : m_LayerStack)
                         layer->OnGUIRender();
                 }
-                m_NuklearLayer->End();
-                m_ImGuiLayer->End();
+                m_GUILayer->End();
                 
             }
             

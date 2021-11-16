@@ -16,6 +16,7 @@
 
 /* Layers */
 #include "Axis/Core/Layer.h"
+#include "Axis/Core/GUILayer.h"
 #include "Axis/ImGui/ImGuiLayer.h"
 #include "Axis/Nuklear/NuklearLayer.h"
 
@@ -39,3 +40,7 @@
 /* Renderable */
 #include "Axis/Renderable/Mesh.h"
 #include "Axis/Renderable/Model.h"
+
+/* Scene */
+#include "Axis/Scene/Scene.h"
+#include "Axis/Scene/Components.h"

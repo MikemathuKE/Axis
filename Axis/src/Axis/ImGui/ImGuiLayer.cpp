@@ -14,7 +14,7 @@
 namespace Axis {
 
 	ImGuiLayer::ImGuiLayer()
-		:Layer("ImGuiLayer")
+		:GUILayer("ImGuiLayer")
 	{
 	}
 

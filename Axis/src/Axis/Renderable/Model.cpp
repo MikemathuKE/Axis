@@ -120,7 +120,7 @@ namespace Axis {
 			aiString str;
 			mat->GetTexture(type, i, &str);
 			Axis::TextureData texture;
-			texture.Texture = Axis::Texture2D::Create(m_Directory + std::string(str.C_Str()));
+			texture.Texture = Axis::Texture2D::Create(std::string(str.C_Str()));
 			texture.Type = typeName;
 			textures.push_back(texture);
 		}

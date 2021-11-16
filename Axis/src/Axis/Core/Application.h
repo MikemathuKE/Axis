@@ -7,8 +7,7 @@
 #include "Axis/Events/Event.h"
 #include "Axis/Events/ApplicationEvent.h"
 
-#include "Axis/ImGui/ImGuiLayer.h"
-#include "Axis/Nuklear/NuklearLayer.h"
+#include "Axis/Core/GUILayer.h"
 
 namespace Axis{
 
@@ -28,8 +27,7 @@ namespace Axis{
 
         inline Window& GetWindow() { return *m_Window; }
 
-        ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
-        NuklearLayer* GetNuklearLayer() { return m_NuklearLayer; }
+        GUILayer* GetGUILayer() { return m_GUILayer; }
 
         inline static Application& Get() { return *s_Instance; }
     private:
@@ -38,8 +36,7 @@ namespace Axis{
 
     private:
         Scope<Window> m_Window;
-        ImGuiLayer* m_ImGuiLayer;
-        NuklearLayer* m_NuklearLayer;
+        GUILayer* m_GUILayer;
 
         bool m_Running = true;
         bool m_Minimized = false;

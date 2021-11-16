@@ -25,6 +25,7 @@ IncludeDir["Glad"] = "%{wks.location}/Axis/vendor/Glad/include"
 IncludeDir["ImGui"] = "%{wks.location}/Axis/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/Axis/vendor/glm"
 IncludeDir["assimp"] = "%{wks.location}/Axis/vendor/assimp/include"
+IncludeDir["entt"] = "%{wks.location}/Axis/vendor/entt/include"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
@@ -62,7 +63,8 @@ project "Axis"
     "%{IncludeDir.Glad}",
     "%{IncludeDir.ImGui}",
     "%{IncludeDir.glm}",
-    "%{IncludeDir.assimp}"
+    "%{IncludeDir.assimp}",
+    "%{IncludeDir.entt}"
   }
   
   links
@@ -137,7 +139,8 @@ project "SandBox"
     "%{IncludeDir.vendor}",
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.glm}",
-    "%{IncludeDir.assimp}"
+    "%{IncludeDir.assimp}",
+    "%{IncludeDir.entt}"
   }
   
   links
@@ -199,7 +202,8 @@ project "Axis-Editor"
     "%{IncludeDir.vendor}",
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.glm}",
-    "%{IncludeDir.assimp}"
+    "%{IncludeDir.assimp}",
+    "%{IncludeDir.entt}"
   }
   
   links

@@ -32,7 +32,7 @@ static struct nk_context* s_Context;
 namespace Axis {
 
 	NuklearLayer::NuklearLayer()
-		:Layer("NuklearLayer")
+		:GUILayer("NuklearLayer")
 	{
 	}
 

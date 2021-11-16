@@ -4,8 +4,6 @@
 vendor/
 *.vs
 */models
-Axis-Editor/bin/
-Axis-Editor/bin-int/
 
 #solution
 *.sln

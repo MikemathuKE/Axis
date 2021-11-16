@@ -241,6 +241,8 @@ nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_b
     glEnable(GL_SCISSOR_TEST);
     glActiveTexture(GL_TEXTURE0);
 
+    glClear(GL_COLOR_BUFFER_BIT);
+
     /* setup program */
     glUseProgram(dev->prog);
     glUniform1i(dev->uniform_tex, 0);
@@ -287,7 +289,7 @@ nk_glfw3_render(struct nk_glfw* glfw, enum nk_anti_aliasing AA, int max_vertex_b
             /* setup buffers to load vertices and elements */
             nk_buffer_init_fixed(&vbuf, vertices, (size_t)max_vertex_buffer);
             nk_buffer_init_fixed(&ebuf, elements, (size_t)max_element_buffer);
-            nk_convert(&glfw->ctx, &dev->cmds, &vbuf, &ebuf, &config);
+            nk_convert(&glfw->ctx, &dev->cmds, &vbuf, &ebuf, &config, 0);
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);

@@ -68,7 +68,7 @@ void Sandbox3D::OnAttach()
     };
 
     m_Mesh = Axis::Mesh::Create(squareVertices, squareIndices, textures);
-    m_Model = Axis::Model::Create("assets/models/nano_textured/nanosuit.obj");
+    m_Model = Axis::Model::Create("assets/models/surface/surface.obj");
 
     m_LightShader = (Axis::Shader::Create("assets/shaders/Light.glsl"));
     m_FlatColorShader = (Axis::Shader::Create("assets/shaders/FlatColor.glsl"));

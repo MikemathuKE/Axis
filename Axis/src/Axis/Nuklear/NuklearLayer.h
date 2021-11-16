@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Axis/Core/Layer.h"
+#include "Axis/Core/GUILayer.h"
 
 #include "Axis/Events/KeyEvent.h"
 #include "Axis/Events/MouseEvent.h"
@@ -8,7 +8,7 @@
 struct nk_context;
 namespace Axis {
 
-	class NuklearLayer : public Layer
+	class NuklearLayer : public GUILayer
 	{
 	public:
 		NuklearLayer();
@@ -22,10 +22,10 @@ namespace Axis {
 
 		virtual void OnGUIRender() override;
 
-		void Begin();
-		void End();
+		virtual void Begin() override;
+		virtual void End() override;
 
-		void BlockEvents(bool block) { m_BlockEvents = block; }
+		virtual void BlockEvents(bool block) override { m_BlockEvents = block; }
 	private:
 		bool m_BlockEvents = false;
 	};
