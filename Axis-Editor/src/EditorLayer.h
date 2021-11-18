@@ -20,7 +20,7 @@ namespace Axis {
 		OrthographicCameraController m_CameraController;
 
 		Ref<Scene> m_ActiveScene;
-		entt::entity m_SquareEntity;
+		Entity m_SquareEntity;
 		//Temp
 		Ref<Texture2D> m_Texture;
 		Ref<Texture2D> m_SpriteSheet;

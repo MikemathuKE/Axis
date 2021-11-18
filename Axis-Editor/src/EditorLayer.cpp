@@ -53,15 +53,12 @@ namespace Axis {
 
         m_CameraController.SetZoomLevel(5.0f);
 
-        m_ActiveScene = std::make_shared<Scene>();
-        auto square =  m_ActiveScene->CreateEntity();
-        m_ActiveScene->Reg().emplace<TransformComponent>(square);
-        m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+        m_ActiveScene = CreateRef<Scene>();
+        
+        Entity square =  m_ActiveScene->CreateEntity("square");
 
-        m_SquareEntity = m_ActiveScene->CreateEntity();
-        m_ActiveScene->Reg().emplace<TransformComponent>(m_SquareEntity);
-        m_ActiveScene->Reg().emplace<SpriteRendererComponent>(m_SquareEntity, glm::vec4{ 0.8f, 0.2f, 0.3f, 1.0f });
-
+        square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+        m_SquareEntity = square;
     }
 
     void EditorLayer::OnDetach()
@@ -88,19 +85,6 @@ namespace Axis {
 
         // Update Scene
         m_ActiveScene->OnUpdate(ts);
-        #if 0
-        for (uint32_t y = 0; y < m_MapHeight; y++) {
-            for (uint32_t x = 0; x < m_MapWidth; x++) {
-                char tileType = s_MapTiles[x + y * m_MapWidth];
-                Ref<SubTexture2D> texture;
-                if (s_TextureMap.find(tileType) != s_TextureMap.end())
-                    texture = s_TextureMap[tileType];
-                else
-                    texture = m_TextureBarrel;
-                Renderer2D::DrawQuad({ x - m_MapWidth / 2.0f, y - m_MapHeight / 2.0f, 1.0f }, { 1.0f, 1.0f }, texture);
-            }
-        }
-        #endif
 
         Renderer2D::EndScene();
         m_FrameBuffer->UnBind();
@@ -189,8 +173,15 @@ namespace Axis {
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-            auto& squareColor = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
-            ImGui::ColorEdit4("TriangleColor", glm::value_ptr(squareColor));
+            if (m_SquareEntity) {
+                ImGui::Separator();
+                auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
+                ImGui::Text("%s", tag.c_str());
+
+                auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+                ImGui::ColorEdit4("TriangleColor", glm::value_ptr(squareColor));
+                ImGui::Separator();
+            }
 
             ImGui::End();
 
@@ -233,22 +224,28 @@ namespace Axis {
 
             if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
             {
-                nk_colorf color;
-                auto& squareColor = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
-                color << squareColor;
-                nk_layout_row_dynamic(ctx, 20, 1);
-                if (nk_combo_begin_color(ctx, nk_rgb_cf(color), nk_vec2(nk_widget_width(ctx), 400))) {
-                    nk_layout_row_dynamic(ctx, 120, 1);
-                    color = nk_color_picker(ctx, color, NK_RGBA);
-                    nk_layout_row_dynamic(ctx, 25, 1);
-                    color.r = nk_propertyf(ctx, "#R:", 0, color.r, 1.0f, 0.01f, 0.005f);
-                    color.g = nk_propertyf(ctx, "#G:", 0, color.g, 1.0f, 0.01f, 0.005f);
-                    color.b = nk_propertyf(ctx, "#B:", 0, color.b, 1.0f, 0.01f, 0.005f);
-                    color.a = nk_propertyf(ctx, "#A:", 0, color.a, 1.0f, 0.01f, 0.005f);
-                    nk_combo_end(ctx);
-                }
-                squareColor << color;
+                if (m_SquareEntity) {
+                    nk_layout_row_dynamic(ctx, 20, 1);
+                    auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
+                    nk_label(ctx, tag.c_str(), NK_TEXT_CENTERED);
 
+                    nk_colorf color;
+                    auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
+                    color << squareColor;                    
+                    if (nk_combo_begin_color(ctx, nk_rgb_cf(color), nk_vec2(nk_widget_width(ctx), 400))) {
+                        nk_layout_row_dynamic(ctx, 120, 1);
+                        color = nk_color_picker(ctx, color, NK_RGBA);
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        color.r = nk_propertyf(ctx, "#R:", 0, color.r, 1.0f, 0.01f, 0.005f);
+                        color.g = nk_propertyf(ctx, "#G:", 0, color.g, 1.0f, 0.01f, 0.005f);
+                        color.b = nk_propertyf(ctx, "#B:", 0, color.b, 1.0f, 0.01f, 0.005f);
+                        color.a = nk_propertyf(ctx, "#A:", 0, color.a, 1.0f, 0.01f, 0.005f);
+                        nk_combo_end(ctx);
+                    }
+                    squareColor << color;
+                }
+
+                nk_layout_row_dynamic(ctx, 20, 1);
                 nk_label(ctx, "Renderer2D Stats:", NK_TEXT_CENTERED);
                 nk_labelf(ctx, NK_TEXT_LEFT, "Draw Calls: %d", stats.DrawCalls);
                 nk_labelf(ctx, NK_TEXT_LEFT, "Quads: %d", stats.QuadCount);
@@ -270,7 +267,7 @@ namespace Axis {
                     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
                 }
 
-                nk_layout_row_static(ctx, (float)m_ViewportSize.y, (float)m_ViewportSize.x, 1);
+                nk_layout_row_static(ctx, (float)m_ViewportSize.y, (int)m_ViewportSize.x, 1);
                 nk_image(ctx, nk_image_id(m_FrameBuffer->GetColorAttachmentRendererID()), nk_true);
             }
             nk_end(ctx);

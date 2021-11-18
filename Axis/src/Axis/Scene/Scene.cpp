@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+#include "Axis/Scene/Entity.h"
 #include <Axis/Scene/Components.h>
 #include <Axis/Renderer/Renderer2D.h>
 
@@ -51,9 +52,13 @@ namespace Axis {
 		}
 	}
 
-	entt::entity Scene::CreateEntity()
+	Entity Scene::CreateEntity(const std::string& name)
 	{
-		return m_Registry.create();
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? "Entity" : name;
+		return entity;
 	}
 
 }
