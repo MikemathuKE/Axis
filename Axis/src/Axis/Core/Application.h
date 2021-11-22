@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Axis/Core/Core.h"
+#include "Axis/Core/Base.h"
 
 #include "Axis/Core/Window.h"
 #include "Axis/Core/LayerStack.h"
@@ -14,7 +14,7 @@ namespace Axis{
     class Application
     {
     public:
-        Application(const std::string& name = "Axis App");
+        Application(const std::string& name = "Axis App", GUIBackend backend = GUIBackend::Nuklear);
         virtual ~Application();
 
         void Run();

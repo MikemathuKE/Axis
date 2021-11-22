@@ -14,7 +14,8 @@ namespace Axis {
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(OrthographicCamera& camera);
+		static void BeginScene(OrthographicCamera& camera); // TODO : Remove
+		static void BeginScene(Camera& camera, const glm::mat4& transform);
 		static void EndScene();
 		static void Flush();
 

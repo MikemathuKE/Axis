@@ -45,3 +45,4 @@
 #include "Axis/Scene/Scene.h"
 #include "Axis/Scene/Entity.h"
 #include "Axis/Scene/Components.h"
+#include "Axis/Scene/ScriptableEntity.h"

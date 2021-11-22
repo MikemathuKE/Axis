@@ -8,9 +8,13 @@ namespace Axis {
 	{
 	public:
 		Camera() = default;
+		Camera(const glm::mat4 projection)
+			: m_Projection(projection) {}
 		virtual ~Camera() = default;
 
-		virtual const glm::mat4& GetViewProjectionMatrix() = 0;
+		const glm::mat4& GetProjection() { return m_Projection; }
+	protected:
+		glm::mat4 m_Projection = glm::mat4(1.0f);
 	};
 
 }

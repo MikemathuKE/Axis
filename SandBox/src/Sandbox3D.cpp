@@ -62,7 +62,7 @@ void Sandbox3D::OnAttach()
         30, 31, 32, 33, 34, 35
     };
 
-    std::vector<Axis::TextureData> textures = { 
+    std::vector<Axis::TextureData> textures = {
         {Axis::Texture2D::Create("assets/textures/Container.png"), Axis::TextureType::Diffuse},
         {Axis::Texture2D::Create("assets/textures/Container_Spec.png"), Axis::TextureType::Specular}
     };
@@ -86,7 +86,7 @@ void Sandbox3D::OnUpdate(Axis::Timestep ts)
     Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
     Axis::RenderCommand::Clear();
 
-    Axis::Renderer::BeginScene(m_CameraController.GetCamera());
+    Axis::Renderer::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetCamera().GetViewMatrix());
 
     m_LightShader->Bind();
     m_LightShader->SetFloat("material.shininess", 32.0f);

@@ -158,7 +158,8 @@ project "SandBox"
       "dl",
       "pthread",
       "Glad",
-      "GLFW"
+      "GLFW",
+      "assimp"
     }
     
   filter "system:windows"
@@ -199,6 +200,7 @@ project "Axis-Editor"
   includedirs
   {
     "%{wks.location}/Axis/src",
+    "%{prj.location}/src",
     "%{IncludeDir.vendor}",
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.glm}",
@@ -220,7 +222,8 @@ project "Axis-Editor"
       "dl",
       "pthread",
       "Glad",
-      "GLFW"
+      "GLFW",
+      "imgui"
     }
     
   filter "system:windows"

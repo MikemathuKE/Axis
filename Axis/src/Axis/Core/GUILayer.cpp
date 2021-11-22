@@ -14,8 +14,8 @@ namespace Axis {
 		s_GUIBackend = gui;
 		switch (gui)
 		{
-		case Axis::ImGui: return new ImGuiLayer();
-		case Axis::Nuklear: return new NuklearLayer();
+		case GUIBackend::ImGui: return new ImGuiLayer();
+		case GUIBackend::Nuklear: return new NuklearLayer();
 		}
 		AXIS_CORE_ASSERT(false, "GUI Backend not supported!");
 		return nullptr;

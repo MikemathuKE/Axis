@@ -25,9 +25,9 @@ namespace Axis {
 		RenderCommand::SetViewport(0, 0, width, height);
 	}
 
-	void Renderer::BeginScene(Camera& camera)
+	void Renderer::BeginScene(Camera& camera, const glm::mat4& viewMatrix)
 	{
-		m_Scene->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		m_Scene->ViewProjectionMatrix = camera.GetProjection() * viewMatrix;
 	}
 
 	void Renderer::EndScene()

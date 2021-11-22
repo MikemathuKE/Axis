@@ -4,23 +4,23 @@
 
 namespace Axis {
 
-	enum GUIBackend {
-		ImGui,
-		Nuklear
-	};
+    enum class GUIBackend
+    {
+        ImGui = 0,
+        Nuklear
+    };
 
-	class GUILayer : public Layer
-	{
-	public:
-		GUILayer(const char* layerName) : Layer(layerName) {}
-		~GUILayer() = default;
+    class GUILayer : public Layer
+    {
+    public:
+        virtual ~GUILayer() {}
 
-		virtual void Begin() = 0;
-		virtual void End() = 0;
-		virtual void BlockEvents(bool block) = 0;
+        virtual void Begin() = 0;
+        virtual void End() = 0;
+        virtual void BlockEvents(bool) = 0;
 
-		static GUILayer* Create(GUIBackend gui = GUIBackend::Nuklear);
-		static GUIBackend GetBackend();
-	};
+        static GUILayer* Create(GUIBackend gui);
+        static GUIBackend GetBackend();
+    };
 
 }

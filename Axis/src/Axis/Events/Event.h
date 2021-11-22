@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Axis/Core/Core.h"
+#include "Axis/Core/Base.h"
 
 namespace Axis{
 
@@ -9,7 +9,7 @@ namespace Axis{
     //For the future, a better strategy might be to buffer events in an event
     //bus and process them during the "event" part of the update stage.
 
-     enum class EventType
+    enum class EventType
     {
         None = 0,
         WindowClose, WindowResize, WindowFocused, WindowFocusLost, WindowMoved, WindowIconified, WindowRestored,

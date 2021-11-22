@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Axis/Core/Core.h"
+#include "Axis/Core/Base.h"
 #include "Axis/Core/KeyCodes.h"
 #include "Axis/Core/MouseCodes.h"
 

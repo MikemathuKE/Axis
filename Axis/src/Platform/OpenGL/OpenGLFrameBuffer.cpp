@@ -2,7 +2,7 @@
 
 #include "Platform/OpenGL/OpenGLFrameBuffer.h"
 
-#include <Glad/glad.h>
+#include <glad/glad.h>
 
 namespace Axis {
 
@@ -52,7 +52,7 @@ namespace Axis {
 
 	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
 	{
-		if (width == 0 || height == 0 || width > s_MaxFrameBufferSize || height > s_MaxFrameBufferSize) 
+		if (width == 0 || height == 0 || width > s_MaxFrameBufferSize || height > s_MaxFrameBufferSize)
 		{
 			AXIS_CORE_WARN("Attempted to Resize the FrameBuffer to ({0}, {1})", width, height);
 			return;

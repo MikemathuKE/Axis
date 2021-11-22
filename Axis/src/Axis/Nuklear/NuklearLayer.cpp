@@ -20,10 +20,9 @@
 #define NK_KEYSTATE_BASED_INPUT
 #define NK_INCLUDE_DEFAULT_SERIALIZATION
 
-#include <Nuklear/nuklear.h>
+#include "Axis/Nuklear/NuklearUtils.h"
 #include "nuklear_glfw_opengl_impl.h"
 
-#include <Nuklear/demo/overview.c>
 #include "nuklear_style.h"
 
 #include "Axis/Core/Application.h"
@@ -31,9 +30,14 @@ static struct nk_context* s_Context;
 
 namespace Axis {
 
-	NuklearLayer::NuklearLayer()
-		:GUILayer("NuklearLayer")
+	struct nk_context* Nuklear::GetContext()
 	{
+		return s_Context;
+	}
+
+	NuklearLayer::NuklearLayer()
+	{
+		m_DebugName = "NuklearLayer";
 	}
 
 	NuklearLayer::~NuklearLayer()
@@ -89,10 +93,6 @@ namespace Axis {
 	void NuklearLayer::Begin()
 	{
 		nk_glfw3_new_frame(&s_NKStruct);
-	}
-
-	void NuklearLayer::OnGUIRender()
-	{
 	}
 
 	void NuklearLayer::End()

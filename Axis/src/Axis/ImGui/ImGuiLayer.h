@@ -14,8 +14,6 @@ namespace Axis {
 		virtual void OnDetach() override;
 		virtual void OnEvent(Event& event) override;
 
-		virtual void OnGUIRender() override;
-
 		virtual void Begin() override;
 		virtual void End() override;
 

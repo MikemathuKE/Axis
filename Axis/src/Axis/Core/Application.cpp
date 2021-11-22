@@ -17,17 +17,17 @@ namespace Axis{
 
     Application* Application::s_Instance = nullptr;
 
-    Application::Application(const std::string& name)
+    Application::Application(const std::string& name, GUIBackend backend)
     {
         AXIS_PROFILE_FUNCTION();
-        
+
         AXIS_CORE_ASSERT(!s_Instance, "Application already Exists!");
         s_Instance = this;
 
         m_Window = (Scope<Window>)Window::Create(WindowProps(name));
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
 
-        m_GUILayer = GUILayer::Create(GUIBackend::Nuklear);
+        m_GUILayer = GUILayer::Create(backend);
         PushOverlay(m_GUILayer);
 
         Renderer::Init();
@@ -89,7 +89,7 @@ namespace Axis{
                     for (Layer* layer : m_LayerStack)
                         layer->OnUpdate(ts);
                 }
-                
+
                 m_GUILayer->Begin();
                 {
                     AXIS_PROFILE_SCOPE("GUI Rendering");
@@ -97,11 +97,8 @@ namespace Axis{
                         layer->OnGUIRender();
                 }
                 m_GUILayer->End();
-                
+
             }
-            
-
-
             m_Window->OnUpdate();
         }
     }

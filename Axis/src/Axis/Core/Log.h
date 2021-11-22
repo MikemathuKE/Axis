@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Axis/Core/Core.h"
+#include "Axis/Core/Base.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>

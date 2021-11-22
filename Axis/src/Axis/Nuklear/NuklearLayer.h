@@ -2,9 +2,6 @@
 
 #include "Axis/Core/GUILayer.h"
 
-#include "Axis/Events/KeyEvent.h"
-#include "Axis/Events/MouseEvent.h"
-
 struct nk_context;
 namespace Axis {
 
@@ -19,8 +16,6 @@ namespace Axis {
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnEvent(Event& event) override;
-
-		virtual void OnGUIRender() override;
 
 		virtual void Begin() override;
 		virtual void End() override;

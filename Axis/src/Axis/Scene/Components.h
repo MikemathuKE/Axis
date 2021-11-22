@@ -2,6 +2,11 @@
 
 #include <glm/glm.hpp>
 
+#include "Axis/Scene/SceneCamera.h"
+#include "Axis/Scene/ScriptableEntity.h"
+
+#include "Axis/Core/Timestep.h"
+
 namespace Axis {
 
 	struct TagComponent
@@ -38,6 +43,32 @@ namespace Axis {
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
+	};
+
+	struct CameraComponent
+	{
+		SceneCamera Camera;
+		bool Primary = false; // Todo : Think of moving to scene
+		bool FixedAspectRatio = false;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+	};
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity*(*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+		}
+
 	};
 
 }

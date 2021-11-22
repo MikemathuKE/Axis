@@ -43,7 +43,7 @@ namespace Axis {
 
         Renderer2D::Statistics Stats;
     };
-    static Renderer2DData s_Data;    
+    static Renderer2DData s_Data;
 
 	void Renderer2D::Init()
 	{
@@ -125,6 +125,21 @@ namespace Axis {
 
         s_Data.TextureSlotIndex = 1;
 	}
+
+    void Renderer2D::BeginScene(Camera& camera, const glm::mat4& transform)
+    {
+        AXIS_PROFILE_FUNCTION();
+
+        glm::mat4 viewproj = camera.GetProjection() * glm::inverse(transform);
+
+        s_Data.TextureShader->Bind();
+        s_Data.TextureShader->SetMat4("u_ViewProjection", viewproj);
+
+        s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+        s_Data.QuadIndexCount = 0;
+
+        s_Data.TextureSlotIndex = 1;
+    }
 
 	void Renderer2D::EndScene()
 	{
@@ -209,7 +224,7 @@ namespace Axis {
 
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
             FlushAndReset();
-        
+
         glm::vec2 texCoords[4];
         texCoords[0] = { 0.0f, 0.0f };
         texCoords[1] = { 1.0f, 0.0f };
@@ -349,7 +364,7 @@ namespace Axis {
     {
         DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, subTexture, tilingFactor, tintColor);
     }
-    
+
     void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotation, const Ref<SubTexture2D>& subTexture, const float tilingFactor, const glm::vec4& tintColor)
     {
         AXIS_PROFILE_FUNCTION();
