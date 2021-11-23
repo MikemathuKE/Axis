@@ -1,6 +1,6 @@
 #include <Axis.h>
 #include <Axis/Core/EntryPoint.h>
- 
+
 #include <imgui/imgui.h>
 #include <Nuklear/nuklear.h>
 
@@ -14,9 +14,9 @@ class SandBox : public Axis::Application
 {
 public:
     SandBox()
+        :Application("Sandbox", Axis::GUIBackend::ImGui)
     {
-        //PushLayer(new ExampleLayer3D());
-        PushLayer(new Sandbox2D());
+        PushLayer(new Sandbox3D());
     }
     ~SandBox()
     {

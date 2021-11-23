@@ -6,8 +6,6 @@
 #include <Nuklear/nuklear.h>
 #include <Axis/Nuklear/NuklearUtils.h>
 
-#define GUI_IMGUI 0
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -142,49 +140,22 @@ void Sandbox2D::OnGUIRender()
     AXIS_PROFILE_FUNCTION();
 
     auto stats = Axis::Renderer2D::GetStats();
+    switch (Axis::GUILayer::GetBackend()) {
+    case Axis::GUIBackend::ImGui:
+    {
+        ImGui::Begin("Settings");
 
-    #if GUI_IMGUI
+        ImGui::Text("Renderer2DStats:");
+        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+        ImGui::Text("Quads: %d", stats.QuadCount);
+        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-    ImGui::Begin("Settings");
-
-    ImGui::Text("Renderer2DStats:");
-    ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-    ImGui::Text("Quads: %d", stats.QuadCount);
-    ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-    ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-    ImGui::ColorEdit4("TriangleColor", glm::value_ptr(m_SquareColor));
-    ImGui::End();
-
-    #else
-
-    struct nk_context* ctx = Axis::NuklearLayer::GetContext();
-    if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
-        nk_colorf color;
-        color << m_SquareColor;
-        nk_layout_row_dynamic(ctx, 20, 1);
-        if (nk_combo_begin_color(ctx, nk_rgb_cf(color), nk_vec2(nk_widget_width(ctx), 400))) {
-            nk_layout_row_dynamic(ctx, 120, 1);
-            color = nk_color_picker(ctx, color, NK_RGBA);
-            nk_layout_row_dynamic(ctx, 25, 1);
-            color.r = nk_propertyf(ctx, "#R:", 0, color.r, 1.0f, 0.01f, 0.005f);
-            color.g = nk_propertyf(ctx, "#G:", 0, color.g, 1.0f, 0.01f, 0.005f);
-            color.b = nk_propertyf(ctx, "#B:", 0, color.b, 1.0f, 0.01f, 0.005f);
-            color.a = nk_propertyf(ctx, "#A:", 0, color.a, 1.0f, 0.01f, 0.005f);
-            nk_combo_end(ctx);
-        }
-        m_SquareColor << color;
-        
-        nk_label(ctx, "Renderer2D Stats:", NK_TEXT_CENTERED);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Draw Calls: %d", stats.DrawCalls);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Quads: %d", stats.QuadCount);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Vertices: %d", stats.GetTotalVertexCount());
-        nk_labelf(ctx, NK_TEXT_LEFT, "Indices: %d", stats.GetTotalIndexCount());
-
-        nk_layout_row_static(ctx, 720, 1280, 1);
+        ImGui::ColorEdit4("TriangleColor", glm::value_ptr(m_SquareColor));
+        ImGui::End();
     }
-    nk_end(ctx);
-    #endif //GUI_IMGUI
+    break;
+    }
 }
 
 void Sandbox2D::OnEvent(Axis::Event& e)

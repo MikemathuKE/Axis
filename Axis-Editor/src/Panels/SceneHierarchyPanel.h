@@ -19,7 +19,10 @@ namespace Axis {
 		void OnNuklearRender();
 	private:
 		void DrawEntityNodeImGui(Entity entity);
-		void DrawEntityNodeNuklear(Entity entity);
+		bool DrawEntityNodeNuklear(Entity entity);
+
+		void DrawComponentsImGui(Entity entity);
+		void DrawComponentsNuklear(Entity entity);
 	private:
 		Ref<Scene> m_Context;
 		Entity m_SelectionContext;

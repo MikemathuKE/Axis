@@ -26,6 +26,7 @@ namespace Axis{
 
         m_Window = (Scope<Window>)Window::Create(WindowProps(name));
         m_Window->SetEventCallback(AXIS_BIND_EVENT_FN(Application::OnEvent));
+        m_Window->SetIcon("assets/textures/AxisLogo.png");
 
         m_GUILayer = GUILayer::Create(backend);
         PushOverlay(m_GUILayer);

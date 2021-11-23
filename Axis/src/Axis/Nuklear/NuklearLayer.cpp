@@ -74,7 +74,7 @@ namespace Axis {
 			//nk_style_set_font(m_Context, &tiny->handle);
 		}
 
-		set_style(s_Context, THEME_AXIS);
+		set_style(s_Context, THEME_RED);
 	}
 
 	void NuklearLayer::OnDetach()

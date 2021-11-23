@@ -1,7 +1,35 @@
-[17:50:12] [info] AXIS: Creating Window Axis App (1280, 720)
-[17:50:12] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
-[17:50:12] [info] AXIS: OpenGL Info:
-[17:50:12] [info] AXIS:   VENDOR : Intel
-[17:50:12] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
-[17:50:12] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854
-[17:50:12] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[18:44:14] [info] AXIS: Creating Window Sandbox (1280, 720)
+[18:44:14] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
+[18:44:15] [info] AXIS: OpenGL Info:
+[18:44:15] [info] AXIS:   VENDOR : Intel
+[18:44:15] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
+[18:44:15] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854
+[18:44:15] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[18:44:51] [info] APP: Mesh Processed!
+[18:44:51] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:52] [info] APP: Mesh Processed!
+[18:44:53] [info] APP: Mesh Processed!
+[18:44:53] [info] APP: Mesh Processed!

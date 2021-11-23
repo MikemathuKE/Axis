@@ -39,7 +39,7 @@ namespace Axis {
         m_CameraEntity.AddComponent<CameraComponent>().Primary = true;
 
         m_SecondCamera = m_ActiveScene->CreateEntity("Clip - Space Camera");
-        m_SecondCamera.AddComponent<CameraComponent>();
+        m_SecondCamera.AddComponent<CameraComponent>().Camera.SetPerspective(true);
 
         class CameraController : public ScriptableEntity
         {
@@ -68,6 +68,8 @@ namespace Axis {
                 if (Input::IsKeyPressed(KeyCode::S))
                     transform[3][1] -= speed * ts;
             }
+        private:
+            float rotation = 0.0f;
         };
 
         m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();

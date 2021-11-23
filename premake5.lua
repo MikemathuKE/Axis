@@ -159,6 +159,7 @@ project "SandBox"
       "pthread",
       "Glad",
       "GLFW",
+      "zlib",
       "assimp"
     }
     
