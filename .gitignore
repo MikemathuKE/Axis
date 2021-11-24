@@ -1,9 +1,9 @@
 #directories
 */bin/
 */bin-int/
-vendor/
 *.vs
 */models
+Axis/vendor/Glad
 
 #solution
 *.sln
