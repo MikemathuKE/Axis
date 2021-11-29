@@ -53,12 +53,22 @@ namespace Axis {
 
 		if (mainCamera) {
 			Renderer2D::BeginScene(*mainCamera, *cameraTransform);
-
- 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-			for (auto entity : group)
 			{
-				auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+				for (auto entity : group)
+				{
+					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+					Renderer2D::DrawQuad(transform, sprite.Color);
+				}
+			}
+			{
+				/*				auto group = m_Registry.group<TransformComponent>(entt::get<ModelComponent>);
+				for (auto entity : group)
+				{
+					auto [transform, model] = group.get<TransformComponent, ModelComponent>(entity);
+					Renderer2D::DrawQuad(transform, sprite.Color);
+				}
+				*/
 			}
 
 			Renderer2D::EndScene();

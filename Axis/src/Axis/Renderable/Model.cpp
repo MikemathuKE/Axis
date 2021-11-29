@@ -18,10 +18,16 @@ namespace Axis {
 		for (unsigned int i = 0; i < m_Meshes.size(); i++)
 			m_Meshes[i]->Draw(shader);
 	}
-	
+
 	Axis::Ref<Model> Model::Create(const char* path)
 	{
 		return Axis::CreateRef<Model>(path);
+	}
+
+	void Model::SetPosition(const glm::vec3& position)
+	{
+		for (auto& mesh : m_Meshes)
+			mesh->SetPosition(position);
 	}
 
 	void Model::LoadModel(std::string path)

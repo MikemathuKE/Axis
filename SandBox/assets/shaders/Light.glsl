@@ -45,7 +45,6 @@ uniform Light light;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 
-uniform vec3 u_LightColor;
 uniform vec3 u_ViewPos;
             
 void main() 

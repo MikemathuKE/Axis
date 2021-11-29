@@ -12,6 +12,7 @@ namespace Axis {
 		Model(const char* path);
 		void Draw(Axis::Ref<Axis::Shader>& shader);
 		static Axis::Ref<Model> Create(const char* path);
+		void SetPosition(const glm::vec3& position);
 	private:
 		void LoadModel(std::string path);
 		void ProcessNode(aiNode* node, const aiScene* scene);

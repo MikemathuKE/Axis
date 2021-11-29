@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Sandbox3D::Sandbox3D()
-	:Layer(), m_CameraController(60.0f, 16.0f / 9.0f, 0.1f, 10.0f)
+    :Layer(), m_CameraController(60.0f, 16.0f / 9.0f, 0.1f, 10000.0f)
 {
 }
 
@@ -67,6 +67,18 @@ void Sandbox3D::OnAttach()
         {Axis::Texture2D::Create("assets/textures/Container_Spec.png"), Axis::TextureType::Specular}
     };
 
+    Axis::Ref<Axis::VertexArray> VA = Axis::VertexArray::Create();
+
+    Axis::Ref<Axis::VertexBuffer> VB;
+    VB = Axis::VertexBuffer::Create((float*)squareVertices.data(), (uint32_t)squareVertices.size() * sizeof(Axis::Vertex3D));
+
+    VB->SetLayout({
+           { Axis::ShaderDataType::Float3, "a_Position" },
+           { Axis::ShaderDataType::Float3, "a_Normal" },
+           { Axis::ShaderDataType::Float2, "a_TexCoord" }
+        });
+    VA->AddVertexBuffer(VB);
+
     m_Mesh = Axis::Mesh::Create(squareVertices, squareIndices, textures);
     m_Model = Axis::Model::Create("assets/models/surface/surface.obj");
 
@@ -82,6 +94,7 @@ void Sandbox3D::OnDetach()
 void Sandbox3D::OnUpdate(Axis::Timestep ts)
 {
     m_CameraController.OnUpdate(ts);
+    //AXIS_TRACE("Frame Rate: {0}", 1.0f / (float)ts);
 
     Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
     Axis::RenderCommand::Clear();
@@ -97,6 +110,7 @@ void Sandbox3D::OnUpdate(Axis::Timestep ts)
     m_LightShader->SetFloat3("light.position", m_LightPosition);
 
     m_LightShader->SetFloat3("u_ViewPos", m_CameraController.GetCamera().GetPosition());
+    m_Model->SetPosition({ 0, 0, 0 });
     m_Model->Draw(m_LightShader);
 
     m_FlatColorShader->Bind();
@@ -114,5 +128,5 @@ void Sandbox3D::OnGUIRender()
 
 void Sandbox3D::OnEvent(Axis::Event& e)
 {
-	m_CameraController.OnEvent(e);
+    m_CameraController.OnEvent(e);
 }

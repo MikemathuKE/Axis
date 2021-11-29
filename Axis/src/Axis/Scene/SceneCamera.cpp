@@ -36,7 +36,7 @@ namespace Axis {
 
 	void SceneCamera::RecalculateProjection()
 	{
-		if (m_IsOrthographic) {
+		if (m_ProjectionType == ProjectionType::Orthographic) {
 			float orthoLeft = -m_OrthographicSize * m_AspectRatio * 0.5f;
 			float orthoRight = m_OrthographicSize * m_AspectRatio * 0.5f;
 			float orthoBottom = -m_OrthographicSize * 0.5f;

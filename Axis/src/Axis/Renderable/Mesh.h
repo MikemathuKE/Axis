@@ -11,8 +11,8 @@ namespace Axis {
 
 	enum class TextureType
 	{
-		 None = 0,
-		 Diffuse, Specular
+		None = 0,
+		Diffuse, Specular
 	};
 
 	struct Vertex3D {
