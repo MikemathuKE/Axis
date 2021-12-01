@@ -9,12 +9,6 @@
 
 namespace Axis {
 
-	enum class TextureType
-	{
-		None = 0,
-		Diffuse, Specular
-	};
-
 	struct Vertex3D {
 		glm::vec3 Position;
 		glm::vec3 Normal;
@@ -31,8 +25,9 @@ namespace Axis {
 		Mesh(const std::vector<Vertex3D>& vertices, const std::vector<unsigned int>& indices,
 			const std::vector<TextureData>& textureData);
 		void Draw(Ref<Shader>& shader);
-
 		void SetPosition(const glm::vec3& pos) { m_Position = pos; }
+
+		const Ref<VertexArray>& GetVertexArray() const { return m_VertexArray; }
 
 		static Ref<Mesh> Create(const std::vector<Vertex3D>& vertices, const std::vector<unsigned int>& indices,
 			const std::vector<TextureData>& textureData);

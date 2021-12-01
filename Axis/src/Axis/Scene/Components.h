@@ -5,6 +5,8 @@
 #include "Axis/Scene/SceneCamera.h"
 #include "Axis/Scene/ScriptableEntity.h"
 
+#include "Axis/Renderable/Model.h"
+
 #include "Axis/Core/Timestep.h"
 
 namespace Axis {
@@ -43,6 +45,27 @@ namespace Axis {
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
 		SpriteRendererComponent(const glm::vec4& color)
 			: Color(color) {}
+	};
+
+	struct MeshComponent
+	{
+		Ref<VertexArray> VAO;
+
+		MeshComponent(const Ref<VertexArray>& vertexArray)
+			: VAO(vertexArray) {}
+		MeshComponent(const MeshComponent& other) = default;
+	};
+
+	struct ModelComponent
+	{
+		std::vector<MeshComponent> Meshes;
+
+		ModelComponent(const MeshComponent& mesh) { Meshes.push_back(mesh); }
+		ModelComponent(const std::vector<MeshComponent>& meshes)
+			: Meshes(meshes) {}
+		ModelComponent(const ModelComponent& other) = default;
+
+		void AddMeshComponent(const MeshComponent& mesh) { Meshes.push_back(mesh); }
 	};
 
 	struct CameraComponent

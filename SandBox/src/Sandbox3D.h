@@ -20,6 +20,10 @@ private:
 	Axis::Ref<Axis::Shader> m_LightShader;
 	Axis::Ref<Axis::Shader> m_FlatColorShader;
 
+	Axis::Ref<Axis::Shader> m_SkyBoxShader;
+	Axis::Ref<Axis::Shader> m_EnvironmentShader;
+	Axis::Ref<Axis::TextureCube> m_CubeMap;
+
 	Axis::Ref<Axis::Mesh> m_Mesh;
 	Axis::Ref<Axis::Model> m_Model;
 

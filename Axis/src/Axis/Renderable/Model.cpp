@@ -24,12 +24,6 @@ namespace Axis {
 		return Axis::CreateRef<Model>(path);
 	}
 
-	void Model::SetPosition(const glm::vec3& position)
-	{
-		for (auto& mesh : m_Meshes)
-			mesh->SetPosition(position);
-	}
-
 	void Model::LoadModel(std::string path)
 	{
 		Assimp::Importer import;
@@ -126,7 +120,7 @@ namespace Axis {
 			aiString str;
 			mat->GetTexture(type, i, &str);
 			Axis::TextureData texture;
-			texture.Texture = Axis::Texture2D::Create(std::string(str.C_Str()));
+			texture.Texture = Axis::Texture2D::Create(m_Directory + std::string(str.C_Str()));
 			texture.Type = typeName;
 			textures.push_back(texture);
 		}

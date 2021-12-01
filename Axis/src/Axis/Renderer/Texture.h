@@ -1,6 +1,13 @@
 #pragma once
 
 namespace Axis {
+
+    enum class TextureType
+    {
+        None = 0,
+        Diffuse, Specular
+    };
+
     class Texture
     {
     public:
@@ -21,6 +28,12 @@ namespace Axis {
     public:
         static Ref<Texture2D> Create(uint32_t width, uint32_t height);
         static Ref<Texture2D> Create(const std::string& path);
+    };
+
+    class TextureCube : public Texture
+    {
+    public:
+        static Ref<TextureCube> Create(const std::vector<std::string>& facePaths);
     };
 }
 

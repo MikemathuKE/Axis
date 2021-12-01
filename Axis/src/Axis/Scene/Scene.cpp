@@ -61,16 +61,6 @@ namespace Axis {
 					Renderer2D::DrawQuad(transform, sprite.Color);
 				}
 			}
-			{
-				/*				auto group = m_Registry.group<TransformComponent>(entt::get<ModelComponent>);
-				for (auto entity : group)
-				{
-					auto [transform, model] = group.get<TransformComponent, ModelComponent>(entity);
-					Renderer2D::DrawQuad(transform, sprite.Color);
-				}
-				*/
-			}
-
 			Renderer2D::EndScene();
 		}
 	}
