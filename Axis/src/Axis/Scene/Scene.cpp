@@ -4,13 +4,20 @@
 #include <glm/glm.hpp>
 
 #include "Axis/Scene/Entity.h"
-#include <Axis/Scene/Components.h>
-#include <Axis/Renderer/Renderer2D.h>
+#include "Axis/Scene/Components.h"
+
+#include "Axis/Renderer/Renderer2D.h""
+#include "Axis/Renderer/Renderer.h"
 
 namespace Axis {
 
+	Ref<Shader> s_FlatColorShader;
+
 	Scene::Scene()
 	{
+		s_FlatColorShader = Shader::Create("assets/shaders/FlatColor.glsl");
+		s_FlatColorShader->Bind();
+		s_FlatColorShader->SetFloat4("u_Color", glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
 	}
 
 	Scene::~Scene()
@@ -62,6 +69,18 @@ namespace Axis {
 				}
 			}
 			Renderer2D::EndScene();
+
+			Renderer::BeginScene(*mainCamera, *cameraTransform);
+			{
+				auto view = m_Registry.view<TransformComponent, ModelComponent>();
+				for (auto entity : view)
+				{
+					auto [transform, model] = view.get<TransformComponent, ModelComponent>(entity);
+					for (auto& mesh : model.Meshes)
+						Renderer::Submit(s_FlatColorShader, mesh.VAO, transform.Transform);
+				}
+			}
+			Renderer::EndScene();
 		}
 	}
 

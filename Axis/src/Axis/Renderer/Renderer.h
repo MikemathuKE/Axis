@@ -14,7 +14,7 @@ namespace Axis {
 
 		static void OnWindowResize(uint32_t width, uint32_t height);
 
-		static void BeginScene(Camera& camera, const glm::mat4& viewMatrix);
+		static void BeginScene(Camera& camera, const glm::mat4& transform);
 		static void EndScene();
 
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f));

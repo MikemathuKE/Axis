@@ -6,6 +6,7 @@
 #include "Axis/Scene/ScriptableEntity.h"
 
 #include "Axis/Renderable/Model.h"
+#include "Axis/Scene/ModelImporter.h"
 
 #include "Axis/Core/Timestep.h"
 
@@ -60,6 +61,7 @@ namespace Axis {
 	{
 		std::vector<MeshComponent> Meshes;
 
+		ModelComponent(const std::string& path) { *this = ModelImporter::Load(path); }
 		ModelComponent(const MeshComponent& mesh) { Meshes.push_back(mesh); }
 		ModelComponent(const std::vector<MeshComponent>& meshes)
 			: Meshes(meshes) {}

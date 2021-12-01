@@ -24,8 +24,9 @@ private:
 	Axis::Ref<Axis::Shader> m_EnvironmentShader;
 	Axis::Ref<Axis::TextureCube> m_CubeMap;
 
-	Axis::Ref<Axis::Mesh> m_Mesh;
-	Axis::Ref<Axis::Model> m_Model;
+	Axis::Ref<Axis::Model> m_Model; // Tests Teture Loading
+	Axis::Ref<Axis::MeshComponent> m_Mesh;
+	Axis::Ref<Axis::ModelComponent> m_ModelComponent;
 
 	glm::vec3 m_LightPosition = { 2.0f, 1.0f, 3.0f };
 	glm::vec3 m_LightColor = { 1.0f, 1.0f, 1.0f };

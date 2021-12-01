@@ -79,8 +79,13 @@ void Sandbox3D::OnAttach()
         });
     VA->AddVertexBuffer(VB);
 
-    m_Mesh = Axis::Mesh::Create(squareVertices, squareIndices, textures);
+    Axis::Ref<Axis::IndexBuffer> IB;
+    IB = Axis::IndexBuffer::Create((uint32_t*)squareIndices.data(), squareIndices.size());
+    VA->SetIndexBuffer(IB);
+
+    m_Mesh = Axis::CreateRef<Axis::MeshComponent>(VA);
     m_Model = Axis::Model::Create("assets/models/nano_textured/nanosuit.obj");
+    m_ModelComponent = Axis::CreateRef<Axis::ModelComponent>("assets/models/cube/cube.fbx");
 
     m_LightShader = (Axis::Shader::Create("assets/shaders/Light.glsl"));
     m_FlatColorShader = (Axis::Shader::Create("assets/shaders/FlatColor.glsl"));
@@ -110,7 +115,7 @@ void Sandbox3D::OnUpdate(Axis::Timestep ts)
     Axis::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1));
     Axis::RenderCommand::Clear();
 
-    Axis::Renderer::BeginScene(m_CameraController.GetCamera(), m_CameraController.GetCamera().GetViewMatrix());
+    Axis::Renderer::BeginScene(m_CameraController.GetCamera(), glm::inverse(m_CameraController.GetCamera().GetViewMatrix()));
 
     m_LightShader->Bind();
     m_LightShader->SetFloat("material.shininess", 32.0f);
@@ -129,22 +134,28 @@ void Sandbox3D::OnUpdate(Axis::Timestep ts)
 
     m_FlatColorShader->Bind();
     m_FlatColorShader->SetFloat4("u_Color", { m_LightColor.x, m_LightColor.y, m_LightColor.z, 1.0f });
-    m_Mesh->SetPosition(m_LightPosition);
-    m_Mesh->Draw(m_FlatColorShader);
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f), m_LightPosition);
+    Axis::Renderer::Submit(m_FlatColorShader, m_Mesh->VAO, translate);
+
+    m_FlatColorShader->Bind();
+    for (auto& mesh : m_ModelComponent->Meshes) {
+        m_FlatColorShader->SetFloat4("u_Color", { 0.4f, 0.4f, 0.4f, 1.0f });
+        glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2, -2));
+        Axis::Renderer::Submit(m_FlatColorShader, mesh.VAO, trans);
+    }
 
     m_SkyBoxShader->Bind();
     m_CubeMap->Bind(0);
     m_SkyBoxShader->SetInt("u_Skybox", 0);
-    m_Mesh->SetPosition({0, 0, 0});
     glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1000, 1000, 1000));
-    Axis::Renderer::Submit(m_SkyBoxShader, m_Mesh->GetVertexArray(), scale);
+    Axis::Renderer::Submit(m_SkyBoxShader, m_Mesh->VAO, scale);
 
     m_EnvironmentShader->Bind();
     m_CubeMap->Bind(0);
-    m_SkyBoxShader->SetInt("u_Skybox", 0);
-    m_SkyBoxShader->SetFloat3("u_ViewPos", m_CameraController.GetCamera().GetPosition());
-    m_Mesh->SetPosition({ 0, 0, -2 });
-    m_Mesh->Draw(m_EnvironmentShader);
+    m_EnvironmentShader->SetInt("u_Skybox", 0);
+    m_EnvironmentShader->SetFloat3("u_ViewPos", m_CameraController.GetCamera().GetPosition());
+    translate = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -2));
+    Axis::Renderer::Submit(m_SkyBoxShader, m_Mesh->VAO, translate);
 
     Axis::Renderer::EndScene();
 }
