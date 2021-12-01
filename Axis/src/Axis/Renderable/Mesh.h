@@ -20,23 +20,29 @@ namespace Axis {
 		TextureType Type;
 	};
 
+	struct Material {
+		Ref<Texture2D> Diffuse;
+		Ref<Texture2D> Specular;
+		float Shininess = 32.0f;
+	};
+
 	class Mesh {
 	public:
 		Mesh(const std::vector<Vertex3D>& vertices, const std::vector<unsigned int>& indices,
-			const std::vector<TextureData>& textureData);
+			const Material& material);
 		void Draw(Ref<Shader>& shader);
 		void SetPosition(const glm::vec3& pos) { m_Position = pos; }
 
 		const Ref<VertexArray>& GetVertexArray() const { return m_VertexArray; }
 
 		static Ref<Mesh> Create(const std::vector<Vertex3D>& vertices, const std::vector<unsigned int>& indices,
-			const std::vector<TextureData>& textureData);
+			const Material& material);
 	private:
 		void SetupMesh();
 	private:
 		std::vector<Vertex3D> m_Vertices;
 		std::vector<uint32_t> m_Indices;
-		std::vector<TextureData> m_TextureData;
+		Material m_Material;
 
 		glm::vec3 m_Position = { 0, 0, 0 };
 

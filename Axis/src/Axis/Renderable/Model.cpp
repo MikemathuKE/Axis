@@ -59,7 +59,7 @@ namespace Axis {
 	{
 		std::vector<Axis::Vertex3D> vertices;
 		std::vector<uint32_t> indices;
-		std::vector<Axis::TextureData> textures;
+		Material material;
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
@@ -99,32 +99,40 @@ namespace Axis {
 		// process material
 		if (mesh->mMaterialIndex >= 0)
 		{
-			if (mesh->mMaterialIndex >= 0)
-			{
-				aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-				std::vector<Axis::TextureData> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::Diffuse);
-				textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-				std::vector<Axis::TextureData> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::Specular);
-				textures.insert(textures.end(), specularMaps.begin(),
-					specularMaps.end());
-			}
+			aiMaterial* materialData = scene->mMaterials[mesh->mMaterialIndex];
+			material.Diffuse = LoadMaterialTextures(materialData, aiTextureType_DIFFUSE, TextureType::Diffuse);
+			material.Specular = LoadMaterialTextures(materialData, aiTextureType_SPECULAR, TextureType::Specular);
 		}
-		return Axis::CreateRef<Axis::Mesh>(vertices, indices, textures);
+
+		return Axis::CreateRef<Axis::Mesh>(vertices, indices, material);
 	}
 
-	std::vector<Axis::TextureData> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
+	Ref<Texture2D> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
 	{
-		std::vector<Axis::TextureData> textures;
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString str;
 			mat->GetTexture(type, i, &str);
-			Axis::TextureData texture;
-			texture.Texture = Axis::Texture2D::Create(m_Directory + std::string(str.C_Str()));
-			texture.Type = typeName;
-			textures.push_back(texture);
+			return Texture2D::Create(m_Directory + std::string(str.C_Str()));
 		}
-		return textures;
+
+		switch (type) {
+		case aiTextureType_DIFFUSE:
+		{
+			auto texture = Texture2D::Create( 1, 1);
+			uint32_t color = 0xcccccc;
+			texture->SetData( &color, sizeof(color));
+			return texture;
+		}
+		case aiTextureType_SPECULAR:
+		{
+			auto texture = Texture2D::Create(1, 1);
+			uint32_t color = 0x000000;
+			texture->SetData(&color, sizeof(color));
+			return texture;
+		}
+		}
+		return nullptr;
 	}
 
 }

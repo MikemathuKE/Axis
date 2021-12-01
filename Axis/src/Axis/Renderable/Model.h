@@ -20,7 +20,7 @@ namespace Axis {
 		void LoadModel(std::string path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		Axis::Ref<Axis::Mesh> ProcessMesh(aiMesh* mesh, const aiScene* scene);
-		std::vector<Axis::TextureData> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
+		Ref<Texture2D> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
 	private:
 		std::vector<Axis::Ref<Axis::Mesh>> m_Meshes;
 		std::string m_Directory;

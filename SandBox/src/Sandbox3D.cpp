@@ -84,7 +84,7 @@ void Sandbox3D::OnAttach()
     VA->SetIndexBuffer(IB);
 
     m_Mesh = Axis::CreateRef<Axis::MeshComponent>(VA);
-    m_Model = Axis::Model::Create("assets/models/nano_textured/nanosuit.obj");
+    m_Model = Axis::Model::Create("assets/models/cube/crate.fbx");
     m_ModelComponent = Axis::CreateRef<Axis::ModelComponent>("assets/models/cube/cube.fbx");
 
     m_LightShader = (Axis::Shader::Create("assets/shaders/Light.glsl"));
@@ -155,7 +155,7 @@ void Sandbox3D::OnUpdate(Axis::Timestep ts)
     m_EnvironmentShader->SetInt("u_Skybox", 0);
     m_EnvironmentShader->SetFloat3("u_ViewPos", m_CameraController.GetCamera().GetPosition());
     translate = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -2));
-    Axis::Renderer::Submit(m_SkyBoxShader, m_Mesh->VAO, translate);
+    Axis::Renderer::Submit(m_EnvironmentShader, m_Mesh->VAO, translate);
 
     Axis::Renderer::EndScene();
 }

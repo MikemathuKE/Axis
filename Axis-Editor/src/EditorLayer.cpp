@@ -38,7 +38,7 @@ namespace Axis {
         redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
         auto model = m_ActiveScene->CreateEntity("Model");
-        model.AddComponent<ModelComponent>("assets/models/nano_textured/nanosuit.obj");
+        model.AddComponent<ModelComponent>("assets/models/cube/crate.fbx");
 
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
         m_CameraEntity.AddComponent<CameraComponent>().Primary = true;

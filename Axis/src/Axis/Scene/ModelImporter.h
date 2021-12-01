@@ -1,6 +1,7 @@
 #pragma once
 
 #include <assimp/scene.h>
+#include "Axis/Renderer/Texture.h"
 
 namespace Axis {
 
@@ -14,7 +15,7 @@ namespace Axis {
 	private:
 		static void ProcessNode(aiNode* node, const aiScene* scene, std::vector<MeshComponent>& meshes);
 		static MeshComponent ProcessMesh(aiMesh* mesh, const aiScene* scene);
-		//static std::vector<Axis::TextureData> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
+		static Ref<Texture2D> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
 	};
 
 }

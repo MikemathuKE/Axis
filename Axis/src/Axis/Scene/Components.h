@@ -48,12 +48,25 @@ namespace Axis {
 			: Color(color) {}
 	};
 
+	struct MaterialComponent
+	{
+		Ref<Texture2D> DiffuseMap;
+		Ref<Texture2D> SpecularMap;
+		float Shininess = 32.0f;
+
+		MaterialComponent() = default;
+		MaterialComponent(const Ref<Texture2D>& diffuse, const Ref<Texture2D>& specular, float shine = 32.0f)
+			: DiffuseMap(diffuse), SpecularMap(specular), Shininess(shine) {}
+		MaterialComponent(const MaterialComponent& other) = default;
+	};
+
 	struct MeshComponent
 	{
 		Ref<VertexArray> VAO;
+		MaterialComponent Material;
 
-		MeshComponent(const Ref<VertexArray>& vertexArray)
-			: VAO(vertexArray) {}
+		MeshComponent(const Ref<VertexArray>& vertexArray, const MaterialComponent material)
+			: VAO(vertexArray), Material(material) {}
 		MeshComponent(const MeshComponent& other) = default;
 	};
 

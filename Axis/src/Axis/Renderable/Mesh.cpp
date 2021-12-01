@@ -19,8 +19,8 @@ namespace Axis {
 	}
 
 	Mesh::Mesh(const std::vector<Vertex3D>& vertices, const std::vector<unsigned int>& indices,
-		const std::vector<TextureData>& textureData)
-		:m_Vertices(vertices), m_Indices(indices), m_TextureData(textureData)
+		const Material& material)
+		:m_Vertices(vertices), m_Indices(indices), m_Material(material)
 	{
 		SetupMesh();
 	}
@@ -28,19 +28,23 @@ namespace Axis {
 	void Mesh::Draw(Ref<Shader>& shader)
 	{
 		shader->Bind();
-		for (unsigned int i = 0; i < m_TextureData.size(); i++)
-		{
-			m_TextureData[i].Texture->Bind(i);
-			shader->SetInt(TextureTypeToString(m_TextureData[i].Type), i);
-		}
+
+		m_Material.Diffuse->Bind(0);
+		shader->SetInt("material.diffuse", 0);
+
+		m_Material.Specular->Bind(1);
+		shader->SetInt("material.specular", 1);
+
+		shader->SetInt("material.shininess", m_Material.Shininess);
+
 		glm::mat4 translate = glm::translate(glm::mat4(1.0f), m_Position);
 		Renderer::Submit(shader, m_VertexArray, translate);
 	}
 
 	Ref<Mesh> Mesh::Create(const std::vector<Vertex3D>& vertices, const std::vector<unsigned int>& indices,
-		const std::vector<TextureData>& textureData)
+		const Material& material)
 	{
-		return CreateRef<Mesh>(vertices, indices, textureData);
+		return CreateRef<Mesh>(vertices, indices, material);
 	}
 
 	void Mesh::SetupMesh() {

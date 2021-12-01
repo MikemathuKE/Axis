@@ -11,13 +11,11 @@
 
 namespace Axis {
 
-	Ref<Shader> s_FlatColorShader;
+	Ref<Shader> s_MaterialShader;
 
 	Scene::Scene()
 	{
-		s_FlatColorShader = Shader::Create("assets/shaders/FlatColor.glsl");
-		s_FlatColorShader->Bind();
-		s_FlatColorShader->SetFloat4("u_Color", glm::vec4(0.4f, 0.4f, 0.4f, 1.0f));
+		s_MaterialShader = Shader::Create("assets/shaders/Material.glsl");
 	}
 
 	Scene::~Scene()
@@ -76,8 +74,18 @@ namespace Axis {
 				for (auto entity : view)
 				{
 					auto [transform, model] = view.get<TransformComponent, ModelComponent>(entity);
-					for (auto& mesh : model.Meshes)
-						Renderer::Submit(s_FlatColorShader, mesh.VAO, transform.Transform);
+					for (auto& mesh : model.Meshes) {
+						s_MaterialShader->Bind();
+
+						mesh.Material.DiffuseMap->Bind(0);
+						s_MaterialShader->SetInt("material.Diffuse", 0);
+
+						mesh.Material.SpecularMap->Bind(1);
+						s_MaterialShader->SetInt("material.Specular", 1);
+
+						s_MaterialShader->SetFloat("material.Shininess", mesh.Material.Shininess);
+						Renderer::Submit(s_MaterialShader, mesh.VAO, transform.Transform);
+					}
 				}
 			}
 			Renderer::EndScene();
