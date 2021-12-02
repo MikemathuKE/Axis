@@ -37,10 +37,6 @@
 #include "Axis/Renderer/PerspectiveCameraController.h"
 #include "Axis/Renderer/PerspectiveCamera.h"
 
-/* Renderable */
-#include "Axis/Renderable/Mesh.h"
-#include "Axis/Renderable/Model.h"
-
 /* Scene */
 #include "Axis/Scene/Scene.h"
 #include "Axis/Scene/Entity.h"

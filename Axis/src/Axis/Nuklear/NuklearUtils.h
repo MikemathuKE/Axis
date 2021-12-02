@@ -28,5 +28,8 @@ namespace Axis {
 	{
 	public:
 		static struct nk_context* GetContext();
+		static const int32_t widget_height = 18;
+		static const int32_t edit_height = 20;
+		static const int32_t color_height = edit_height;
 	};
 }

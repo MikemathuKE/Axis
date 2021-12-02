@@ -51,8 +51,8 @@ namespace Axis {
         public:
             void OnCreate()
             {
-                auto& transform = GetComponent<TransformComponent>().Transform;
-                transform[3][0] = rand() % 10 - 5.0f;
+                auto& tc = GetComponent<TransformComponent>();
+                tc.Translation.x = rand() % 10 - 5.0f;
             }
 
             void OnDestroy()
@@ -61,17 +61,17 @@ namespace Axis {
 
             void OnUpdate(Timestep ts)
             {
-                auto& transform = GetComponent<TransformComponent>().Transform;
+                auto& tc = GetComponent<TransformComponent>();
                 float speed = 5.0f;
 
                 if (Input::IsKeyPressed(KeyCode::A))
-                    transform[3][0] -= speed * ts;
+                    tc.Translation.x -= speed * ts;
                 if (Input::IsKeyPressed(KeyCode::D))
-                    transform[3][0] += speed * ts;
+                    tc.Translation.x += speed * ts;
                 if (Input::IsKeyPressed(KeyCode::W))
-                    transform[3][1] += speed * ts;
+                    tc.Translation.y += speed * ts;
                 if (Input::IsKeyPressed(KeyCode::S))
-                    transform[3][1] -= speed * ts;
+                    tc.Translation.y -= speed * ts;
             }
         private:
             float rotation = 0.0f;
@@ -211,7 +211,7 @@ namespace Axis {
             ImGui::Separator();
         }
 
-        ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
+        ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Translation));
         if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
         {
             m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
@@ -293,7 +293,7 @@ namespace Axis {
             }
 
             nk_layout_row_dynamic(ctx, 20, 3);
-            auto& vec = m_CameraEntity.GetComponent<TransformComponent>().Transform[3];
+            auto& vec = m_CameraEntity.GetComponent<TransformComponent>().Translation;
             nk_property_float(ctx, "X", -10.0f, &vec.x, 10.0f, 0.5f, 0.2f);
             nk_property_float(ctx, "Y", -10.0f, &vec.y, 10.0f, 0.5f, 0.2f);
             nk_property_float(ctx, "Z", -10.0f, &vec.z, 10.0f, 0.5f, 0.2f);

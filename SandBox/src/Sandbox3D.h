@@ -24,7 +24,7 @@ private:
 	Axis::Ref<Axis::Shader> m_EnvironmentShader;
 	Axis::Ref<Axis::TextureCube> m_CubeMap;
 
-	Axis::Ref<Axis::Model> m_Model; // Tests Teture Loading
+	Axis::Ref<Axis::ModelComponent> m_Model;
 	Axis::Ref<Axis::MeshComponent> m_Mesh;
 	Axis::Ref<Axis::ModelComponent> m_ModelComponent;
 

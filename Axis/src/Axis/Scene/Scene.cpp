@@ -6,7 +6,7 @@
 #include "Axis/Scene/Entity.h"
 #include "Axis/Scene/Components.h"
 
-#include "Axis/Renderer/Renderer2D.h""
+#include "Axis/Renderer/Renderer2D.h"
 #include "Axis/Renderer/Renderer.h"
 
 namespace Axis {
@@ -41,7 +41,7 @@ namespace Axis {
 
 		//Render2D
 		Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 		{
 			auto view = m_Registry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
@@ -50,25 +50,25 @@ namespace Axis {
 				if (camera.Primary)
 				{
 					mainCamera = &camera.Camera;
-					cameraTransform = &transform.Transform;
+					cameraTransform = transform.GetTransform();
 					break;
 				}
 			}
 		}
 
 		if (mainCamera) {
-			Renderer2D::BeginScene(*mainCamera, *cameraTransform);
+			Renderer2D::BeginScene(*mainCamera, cameraTransform);
 			{
 				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 				for (auto entity : group)
 				{
 					auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-					Renderer2D::DrawQuad(transform, sprite.Color);
+					Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
 				}
 			}
 			Renderer2D::EndScene();
 
-			Renderer::BeginScene(*mainCamera, *cameraTransform);
+			Renderer::BeginScene(*mainCamera, cameraTransform);
 			{
 				auto view = m_Registry.view<TransformComponent, ModelComponent>();
 				for (auto entity : view)
@@ -77,14 +77,14 @@ namespace Axis {
 					for (auto& mesh : model.Meshes) {
 						s_MaterialShader->Bind();
 
-						mesh.Material.DiffuseMap->Bind(0);
+						mesh.Material->DiffuseMap->Bind(0);
 						s_MaterialShader->SetInt("material.Diffuse", 0);
 
-						mesh.Material.SpecularMap->Bind(1);
+						mesh.Material->SpecularMap->Bind(1);
 						s_MaterialShader->SetInt("material.Specular", 1);
 
-						s_MaterialShader->SetFloat("material.Shininess", mesh.Material.Shininess);
-						Renderer::Submit(s_MaterialShader, mesh.VAO, transform.Transform);
+						s_MaterialShader->SetFloat("material.Shininess", mesh.Material->Shininess);
+						Renderer::Submit(s_MaterialShader, mesh.VAO, transform.GetTransform());
 					}
 				}
 			}

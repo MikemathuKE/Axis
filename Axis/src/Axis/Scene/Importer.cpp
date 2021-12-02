@@ -1,5 +1,5 @@
 #include "axispch.h"
-#include "Axis/Scene/ModelImporter.h"
+#include "Axis/Scene/Importer.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -11,7 +11,7 @@ namespace Axis {
 
 	std::string s_SearchDirectory;
 
-	ModelComponent ModelImporter::Load(const std::string& path)
+	ModelComponent Importer::LoadModel(const std::string& path)
 	{
 		Assimp::Importer import;
 		const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
@@ -24,14 +24,13 @@ namespace Axis {
 		return ModelComponent(meshes);
 	}
 
-	void ModelImporter::ProcessNode(aiNode* node, const aiScene* scene, std::vector<MeshComponent>& meshes)
+	void Importer::ProcessNode(aiNode* node, const aiScene* scene, std::vector<MeshComponent>& meshes)
 	{
 		// process all the node’s meshes (if any)
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 			meshes.push_back(ProcessMesh(mesh, scene));
-			AXIS_INFO("Mesh Processed!");
 		}
 		// then do the same for each of its children
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -40,11 +39,11 @@ namespace Axis {
 		}
 	}
 
-	MeshComponent ModelImporter::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+	MeshComponent Importer::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Axis::Vertex3D> vertices;
 		std::vector<uint32_t> indices;
-		MaterialComponent material;
+		Ref<MaterialComponent> material;
 
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
@@ -84,14 +83,15 @@ namespace Axis {
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* materialData = scene->mMaterials[mesh->mMaterialIndex];
-			material.DiffuseMap = LoadMaterialTextures(materialData, aiTextureType_DIFFUSE, TextureType::Diffuse);
-			material.SpecularMap = LoadMaterialTextures(materialData, aiTextureType_SPECULAR, TextureType::Specular);
+			auto diffuseMap = LoadMaterialTextures(materialData, aiTextureType_DIFFUSE, TextureType::Diffuse);
+			auto specularMap = LoadMaterialTextures(materialData, aiTextureType_SPECULAR, TextureType::Specular);
+			material = CreateRef<MaterialComponent>(diffuseMap, specularMap);
 		}
 
 		Ref<VertexArray> vertexArray = VertexArray::Create();
 
 		Ref<VertexBuffer> VB;
-		VB = VertexBuffer::Create((float*)vertices.data(), vertices.size() * sizeof(Vertex3D));
+		VB = VertexBuffer::Create((float*)vertices.data(), (uint32_t)vertices.size() * sizeof(Vertex3D));
 
 		VB->SetLayout({
 			   { ShaderDataType::Float3, "a_Position" },
@@ -101,13 +101,13 @@ namespace Axis {
 		vertexArray->AddVertexBuffer(VB);
 
 		Ref<IndexBuffer> IB;
-		IB = IndexBuffer::Create((uint32_t*)indices.data(), indices.size());
+		IB = IndexBuffer::Create((uint32_t*)indices.data(), (uint32_t)indices.size());
 		vertexArray->SetIndexBuffer(IB);
 
 		return MeshComponent(vertexArray, material);
 	}
 
-	Ref<Texture2D> ModelImporter::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
+	Ref<Texture2D> Importer::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName)
 	{
 		if (mat->GetTextureCount(type) > 0)
 		{

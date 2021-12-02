@@ -83,8 +83,8 @@ void Sandbox3D::OnAttach()
     IB = Axis::IndexBuffer::Create((uint32_t*)squareIndices.data(), squareIndices.size());
     VA->SetIndexBuffer(IB);
 
-    m_Mesh = Axis::CreateRef<Axis::MeshComponent>(VA);
-    m_Model = Axis::Model::Create("assets/models/cube/crate.fbx");
+    m_Mesh = Axis::CreateRef<Axis::MeshComponent>(VA, Axis::CreateRef<Axis::MaterialComponent>());
+    m_Model = Axis::CreateRef<Axis::ModelComponent>("assets/models/nano_textured/nanosuit.obj");
     m_ModelComponent = Axis::CreateRef<Axis::ModelComponent>("assets/models/cube/cube.fbx");
 
     m_LightShader = (Axis::Shader::Create("assets/shaders/Light.glsl"));
@@ -129,19 +129,27 @@ void Sandbox3D::OnUpdate(Axis::Timestep ts)
     m_LightShader->SetFloat("light.quadratic", 0.032f);
 
     m_LightShader->SetFloat3("u_ViewPos", m_CameraController.GetCamera().GetPosition());
-    m_Model->SetPosition({ 2, 0, -5 });
-    m_Model->Draw(m_LightShader);
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f), {2, 0, -5});
+    for (auto& mesh : m_Model->Meshes) {
+        mesh.Material->DiffuseMap->Bind(0);
+        m_LightShader->SetInt("material.diffuse", 0);
+
+        mesh.Material->SpecularMap->Bind(1);
+        m_LightShader->SetInt("material.specular", 1);
+
+        Axis::Renderer::Submit(m_LightShader, mesh.VAO, translate);
+    }
 
     m_FlatColorShader->Bind();
     m_FlatColorShader->SetFloat4("u_Color", { m_LightColor.x, m_LightColor.y, m_LightColor.z, 1.0f });
-    glm::mat4 translate = glm::translate(glm::mat4(1.0f), m_LightPosition);
+    translate = glm::translate(glm::mat4(1.0f), m_LightPosition);
     Axis::Renderer::Submit(m_FlatColorShader, m_Mesh->VAO, translate);
 
     m_FlatColorShader->Bind();
-    for (auto& mesh : m_ModelComponent->Meshes) {
-        m_FlatColorShader->SetFloat4("u_Color", { 0.4f, 0.4f, 0.4f, 1.0f });
-        glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2, -2));
-        Axis::Renderer::Submit(m_FlatColorShader, mesh.VAO, trans);
+    m_FlatColorShader->SetFloat4("u_Color", { 0.4f, 0.4f, 0.4f, 1.0f });
+    translate = glm::translate(glm::mat4(1.0f), glm::vec3(0, 2, -2));
+    for (auto& mesh : m_ModelComponent->Meshes) {      
+        Axis::Renderer::Submit(m_FlatColorShader, mesh.VAO, translate);
     }
 
     m_SkyBoxShader->Bind();
