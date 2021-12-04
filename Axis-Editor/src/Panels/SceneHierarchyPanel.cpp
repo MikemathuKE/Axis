@@ -10,6 +10,7 @@
 #include <Nuklear/demo/overview.c>
 
 #include <glm/gtc/type_ptr.hpp>
+#include <Axis/Core/Input.h>
 
 namespace Axis {
 
@@ -35,12 +36,42 @@ namespace Axis {
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 			m_SelectionContext = {};
 
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+			{
+				m_Context->CreateEntity("Empty Entity");
+			}
+
+			ImGui::EndPopup();
+		}
+
 		ImGui::End();
 
 		ImGui::Begin("Properties");
 		if (m_SelectionContext) 
 		{
 			DrawComponentsImGui(m_SelectionContext);
+
+			if (ImGui::Button("Add Component"))
+				ImGui::OpenPopup("Add Component");
+
+			if (ImGui::BeginPopup("Add Component"))
+			{
+				if (ImGui::MenuItem("Camera")) 
+				{
+					m_SelectionContext.AddComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::MenuItem("Sprite Renderer"))
+				{
+					m_SelectionContext.AddComponent<SpriteRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
 		}
 		ImGui::End();
 	}
@@ -61,13 +92,49 @@ namespace Axis {
 				DrawEntityNodeNuklear(entity);
 			});
 			nk_style_pop_vec2(ctx);
+			if (nk_contextual_begin(ctx, 0, nk_vec2(150, 200), nk_window_get_content_region(ctx)))
+			{
+				nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
+				if (nk_contextual_item_label(ctx, "Add Entity", NK_TEXT_CENTERED))
+				{
+					m_Context->CreateEntity("Empty Entity");
+					nk_contextual_close(ctx);
+				}
+				nk_contextual_end(ctx);
+			}
 		}
 		nk_end(ctx);
 
 		if (nk_begin(ctx, "Properties", { 0, 0, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE))
 		{
-			if (m_SelectionContext)
+			static bool add_component = false;
+			if (m_SelectionContext) {
 				DrawComponentsNuklear(m_SelectionContext);
+
+				nk_layout_row_static(ctx, Nuklear::widget_height, 100, 1);
+				if (nk_button_label(ctx, "Add Component"))
+					add_component = true;
+				else if (nk_input_is_mouse_click_down_in_rect(&ctx->input, NK_BUTTON_LEFT, nk_window_get_bounds(ctx), nk_true))
+					add_component = false;
+			}
+			if (add_component) 
+			{
+				if (nk_tree_push(ctx, NK_TREE_TAB, "New Component Type", NK_MAXIMIZED))
+				{
+					nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
+					if (nk_button_label(ctx, "Camera"))
+					{
+						m_SelectionContext.AddComponent<CameraComponent>();
+						add_component = false;
+					}
+					if (nk_button_label(ctx, "Sprite Renderer"))
+					{
+						m_SelectionContext.AddComponent<SpriteRendererComponent>();
+						add_component = false;
+					}
+					nk_tree_pop(ctx);
+				}
+			}
 		}
 		nk_end(ctx);
 
@@ -83,28 +150,67 @@ namespace Axis {
 		{
 			m_SelectionContext = entity;
 		}
+
+		bool entity_deleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+				entity_deleted = true;
+
+			ImGui::EndPopup();
+		}
+
 		if (opened)
 		{
 			ImGui::Text("%s", tag.c_str());
 			ImGui::TreePop();
 		}
+
+		if (entity_deleted) {
+			if (m_SelectionContext == entity)
+				m_SelectionContext = {};
+			m_Context->DestroyEntity(entity);
+		}
 	}
 
-	bool SceneHierarchyPanel::DrawEntityNodeNuklear(Entity entity)
+	void SceneHierarchyPanel::DrawEntityNodeNuklear(Entity entity)
 	{
 		auto ctx = Nuklear::GetContext();
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
-		int clicked = (m_SelectionContext == entity) ? 1 : 0;
-		if(nk_tree_element_push_id(ctx, NK_TREE_NODE, tag.c_str(), NK_MINIMIZED, &clicked, (uint32_t)entity))
+		int selected = (m_SelectionContext == entity) ? 1 : 0;
+		bool entity_deleted = false;
+
+		nk_bool opened = nk_tree_element_push_id(ctx, NK_TREE_NODE, tag.c_str(), NK_MINIMIZED, &selected, (uint32_t)entity);
+		auto text_len = (int)strlen(tag.c_str());
+		auto text_width = ctx->style.font->width(ctx->style.font->userdata, ctx->style.font->height, tag.c_str(), text_len);
+		struct nk_rect bounds = nk_widget_bounds(ctx);
+		auto row_height = ctx->style.font->height + 2;
+		bounds.y -= row_height;
+		bounds.w = text_width + 20;
+		if (nk_contextual_begin(ctx, 0, nk_vec2(150, 200), bounds))
+		{
+			nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
+			if (nk_contextual_item_label(ctx, "Delete Entity", NK_TEXT_CENTERED)) 
+			{
+				entity_deleted = true;
+				nk_contextual_close(ctx);
+			}
+			nk_contextual_end(ctx);
+		}
+		if (opened)
 		{
 			nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
 			nk_label(ctx, tag.c_str(), NK_TEXT_LEFT);
 			nk_tree_pop(ctx);
 		}
-		if (clicked) {
+		if (selected) {
 			m_SelectionContext = entity;
 		}
-		return clicked == 0 ? false : true;
+		if (entity_deleted) {
+			if (m_SelectionContext == entity)
+				m_SelectionContext = {};
+			m_Context->DestroyEntity(entity);
+		}
 	}
 
 	static void DrawImGuiVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
@@ -122,9 +228,9 @@ namespace Axis {
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.3f, 0.25f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.1f, 0.15f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.3f, 0.25f, 1.0f));
 		if (ImGui::Button("X", buttonSize))
 			values.x = resetValue;
 		ImGui::PopStyleColor(3);
@@ -146,9 +252,9 @@ namespace Axis {
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.45f, 0.8f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.9f, 1.0f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.45f, 0.8f, 1.0f));
 		if (ImGui::Button("Z", buttonSize))
 			values.z = resetValue;
 		ImGui::PopStyleColor(3);
@@ -179,9 +285,13 @@ namespace Axis {
 			}
 		}
 
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
+
 		if (entity.HasComponent<TransformComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
+			bool open = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treeNodeFlags, "Transform");
+
+			if (open)
 			{
 				auto& tc = entity.GetComponent<TransformComponent>();
 				DrawImGuiVec3Control("Translation", tc.Translation);
@@ -192,11 +302,12 @@ namespace Axis {
 
 				ImGui::TreePop();
 			}
+			
 		}
 
 		if (entity.HasComponent<CameraComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera"))
+			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), treeNodeFlags, "Camera"))
 			{
 				auto& cameraComponent = entity.GetComponent<CameraComponent>();
 				auto& camera = cameraComponent.Camera;
@@ -259,13 +370,36 @@ namespace Axis {
 
 		if (entity.HasComponent<SpriteRendererComponent>())
 		{
-			if (ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));\
+
+			bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), treeNodeFlags, "Sprite Renderer");
+			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
+			if (ImGui::Button("+", ImVec2(20, 20)))
+			{
+				ImGui::OpenPopup("Component Settings");
+			}
+
+			bool removeComponent = false;
+			if (ImGui::BeginPopup("Component Settings"))
+			{
+				if (ImGui::MenuItem("Remove Component"))
+					removeComponent = true;
+
+				ImGui::EndPopup();
+			}
+
+			if (open)
 			{
 				auto& src = entity.GetComponent<SpriteRendererComponent>();
 				ImGui::ColorEdit4("Color", glm::value_ptr(src.Color));
 
 				ImGui::TreePop();
 			}
+
+			if (removeComponent)
+				entity.RemoveComponent<SpriteRendererComponent>();
+
+			ImGui::PopStyleVar();
 		}
 	}
 
@@ -283,7 +417,6 @@ namespace Axis {
 
 		nk_label(ctx, label.c_str(), NK_TEXT_ALIGN_LEFT);
 		nk_style_push_float(ctx, &ctx->style.property.rounding, 0.0f);
-		nk_style_push_vec2(ctx, &ctx->style.property.padding, nk_vec2(2, 0));
 
 		nk_colorf normal = { 0.8f, 0.3f, 0.25f, 1.0f };
 		nk_colorf hover = { 0.9f, 0.2f, 0.2f, 1.0f };
@@ -315,7 +448,6 @@ namespace Axis {
 		nk_style_pop_color(ctx);
 		nk_style_pop_color(ctx);
 
-		nk_style_pop_vec2(ctx);
 		nk_style_pop_float(ctx);
 	}
 
@@ -347,7 +479,7 @@ namespace Axis {
 		
 		if (entity.HasComponent<TransformComponent>())
 		{
-			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Transform", NK_MAXIMIZED, typeid(TransformComponent).hash_code()))
+			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Transform", NK_MAXIMIZED, (int)typeid(TransformComponent).hash_code()))
 			{
 				auto& tc = entity.GetComponent<TransformComponent>();
 				DrawNuklearVec3Control("Translation", tc.Translation);
@@ -361,7 +493,7 @@ namespace Axis {
 
 		if (entity.HasComponent<CameraComponent>())
 		{
-			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Camera", NK_MAXIMIZED, typeid(CameraComponent).hash_code()))
+			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Camera", NK_MAXIMIZED, (int)typeid(CameraComponent).hash_code()))
 			{
 				auto& cameraComponent = entity.GetComponent<CameraComponent>();
 				auto& camera = cameraComponent.Camera;
@@ -395,7 +527,7 @@ namespace Axis {
 						camera.SetOrthographicFarClip(newFar);
 
 					nk_bool primaryCamera = cameraComponent.FixedAspectRatio ? nk_true : nk_false;
-					nk_checkbox_label(ctx, "Primary", &primaryCamera);
+					nk_checkbox_label(ctx, "Fixed Aspect Ratio", &primaryCamera);
 					cameraComponent.FixedAspectRatio = primaryCamera ? true : false;
 				}
 
@@ -423,7 +555,7 @@ namespace Axis {
 
 		if (entity.HasComponent<SpriteRendererComponent>())
 		{
-			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Color", NK_MAXIMIZED, typeid(SpriteRendererComponent).hash_code()))
+			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Color", NK_MAXIMIZED, (int)typeid(SpriteRendererComponent).hash_code()))
 			{
 				nk_colorf color;
 				auto& src = entity.GetComponent<SpriteRendererComponent>();

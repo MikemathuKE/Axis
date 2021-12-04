@@ -72,9 +72,11 @@ namespace Axis {
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			nk_style_load_all_cursors(s_Context, atlas->cursors);
 			//nk_style_set_font(m_Context, &tiny->handle);
+
+			s_Context->style.property.padding = nk_vec2(2, 0);
 		}
 
-		set_style(s_Context, THEME_RED);
+		//set_style(s_Context, THEME_NONE);
 	}
 
 	void NuklearLayer::OnDetach()

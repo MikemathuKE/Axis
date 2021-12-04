@@ -30,9 +30,11 @@ namespace Axis {
 
         m_ActiveScene = CreateRef<Scene>();
 
-        Entity square = m_ActiveScene->CreateEntity("Square");
-        square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
-        m_SquareEntity = square;
+        auto blueSquare = m_ActiveScene->CreateEntity("Blue Square");
+        blueSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+        auto greenSquare = m_ActiveScene->CreateEntity("Green Square");
+        greenSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
         auto redSquare = m_ActiveScene->CreateEntity("Red Square");
         redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
@@ -40,11 +42,11 @@ namespace Axis {
         auto model = m_ActiveScene->CreateEntity("Model");
         model.AddComponent<ModelComponent>("assets/models/cube/crate.fbx");
 
-        m_CameraEntity = m_ActiveScene->CreateEntity("Camera Entity");
-        m_CameraEntity.AddComponent<CameraComponent>().Primary = true;
+        auto cameraEntity = m_ActiveScene->CreateEntity("Camera A");
+        cameraEntity.AddComponent<CameraComponent>().Primary = true;
 
-        m_SecondCamera = m_ActiveScene->CreateEntity("Clip - Space Camera");
-        m_SecondCamera.AddComponent<CameraComponent>();
+        auto secondCamera = m_ActiveScene->CreateEntity("Camera B");
+        secondCamera.AddComponent<CameraComponent>();
 
         class CameraController : public ScriptableEntity
         {
@@ -77,8 +79,8 @@ namespace Axis {
             float rotation = 0.0f;
         };
 
-        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+        secondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+        cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
@@ -200,33 +202,10 @@ namespace Axis {
         ImGui::Text("Quads: %d", stats.QuadCount);
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-        if (m_SquareEntity) {
-            ImGui::Separator();
-            auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
-            ImGui::Text("%s", tag.c_str());
-
-            auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-            ImGui::ColorEdit4("TriangleColor", glm::value_ptr(squareColor));
-            ImGui::Separator();
-        }
-
-        ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Translation));
-        if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
-        {
-            m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-            m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-        }
-        {
-            auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
-            float orthoSize = camera.GetOrthographicSize();
-            if (ImGui::DragFloat("Camera B Size", &orthoSize))
-                camera.SetOrthographicSize(orthoSize);
-        }
-
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+
         ImGui::Begin("Viewport");
 
         m_ViewportFocused = ImGui::IsWindowFocused();
@@ -271,48 +250,6 @@ namespace Axis {
 
         if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE))
         {
-            if (m_SquareEntity) {
-                nk_layout_row_dynamic(ctx, 20, 1);
-                auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
-                nk_label(ctx, tag.c_str(), NK_TEXT_CENTERED);
-
-                nk_colorf color;
-                auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
-                color << squareColor;
-                if (nk_combo_begin_color(ctx, nk_rgb_cf(color), nk_vec2(nk_widget_width(ctx), 400))) {
-                    nk_layout_row_dynamic(ctx, 120, 1);
-                    color = nk_color_picker(ctx, color, NK_RGBA);
-                    nk_layout_row_dynamic(ctx, 25, 1);
-                    color.r = nk_propertyf(ctx, "#R:", 0, color.r, 1.0f, 0.01f, 0.005f);
-                    color.g = nk_propertyf(ctx, "#G:", 0, color.g, 1.0f, 0.01f, 0.005f);
-                    color.b = nk_propertyf(ctx, "#B:", 0, color.b, 1.0f, 0.01f, 0.005f);
-                    color.a = nk_propertyf(ctx, "#A:", 0, color.a, 1.0f, 0.01f, 0.005f);
-                    nk_combo_end(ctx);
-                }
-                squareColor << color;
-            }
-
-            nk_layout_row_dynamic(ctx, 20, 3);
-            auto& vec = m_CameraEntity.GetComponent<TransformComponent>().Translation;
-            nk_property_float(ctx, "X", -10.0f, &vec.x, 10.0f, 0.5f, 0.2f);
-            nk_property_float(ctx, "Y", -10.0f, &vec.y, 10.0f, 0.5f, 0.2f);
-            nk_property_float(ctx, "Z", -10.0f, &vec.z, 10.0f, 0.5f, 0.2f);
-            if (nk_checkbox_label(ctx, "Camera A", (nk_bool*)(&m_PrimaryCamera)))
-            {
-                m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-                m_SecondCamera.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-            }
-            {
-                auto& camera = m_SecondCamera.GetComponent<CameraComponent>().Camera;
-                float orthoSize = camera.GetOrthographicSize();
-                const float originalSize = orthoSize;
-                nk_layout_row_dynamic(ctx, 20, 1);
-                nk_property_float(ctx, "Camera B Size", 1.0f, &orthoSize, 100.0f, 0.5f, 0.2f);
-                if (orthoSize != originalSize) {
-                    camera.SetOrthographicSize(orthoSize);
-                }
-            }
-
             nk_layout_row_dynamic(ctx, 20, 1);
             nk_label(ctx, "Renderer2D Stats:", NK_TEXT_CENTERED);
             nk_labelf(ctx, NK_TEXT_LEFT, "Draw Calls: %d", stats.DrawCalls);
