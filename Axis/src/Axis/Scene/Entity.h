@@ -6,6 +6,8 @@
 
 namespace Axis {
 
+	struct CameraComponent;
+
 	class Entity
 	{
 	public:

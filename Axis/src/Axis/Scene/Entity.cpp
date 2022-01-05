@@ -1,6 +1,8 @@
 #include "axispch.h"
 #include "Axis/Scene/Entity.h"
 
+#include "Axis/Scene/Components.h"
+
 namespace Axis {
 
 	Entity::Entity(entt::entity handle, Scene* scene)

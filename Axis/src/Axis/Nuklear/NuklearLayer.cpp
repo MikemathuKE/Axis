@@ -27,12 +27,18 @@
 
 #include "Axis/Core/Application.h"
 static struct nk_context* s_Context;
+static struct nk_font_atlas* s_FontAtlas;
 
 namespace Axis {
 
 	struct nk_context* Nuklear::GetContext()
 	{
 		return s_Context;
+	}
+
+	struct nk_user_font* Nuklear::GetFont(uint32_t index)
+	{
+		return &s_FontAtlas->fonts[index].handle;
 	}
 
 	NuklearLayer::NuklearLayer()
@@ -61,22 +67,19 @@ namespace Axis {
 			struct nk_font_atlas* atlas;
 			
 			nk_glfw3_font_stash_begin(&s_NKStruct, &atlas);
-			//struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/DroidSans.ttf", 14, 0);
-			//struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/Roboto-Regular.ttf", 14, 0);
-			//struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/kenvector_future_thin.ttf", 13, 0);
-			//struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/ProggyClean.ttf", 12, 0);
-			//struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/ProggyTiny.ttf", 10, &nk_font_config(15));
-			//struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../Axis/vendor/Nuklear/extra_font/Cousine-Regular.ttf", 13, 0);
+			struct nk_font *opensansBold = nk_font_atlas_add_from_file(atlas, "assets/fonts/OpenSans/OpenSans-Bold.ttf", 17, 0);
+			struct nk_font *opensans = nk_font_atlas_add_from_file(atlas, "assets/fonts/OpenSans/OpenSans-Regular.ttf", 17, 0);
 			nk_glfw3_font_stash_end(&s_NKStruct);
 			
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			nk_style_load_all_cursors(s_Context, atlas->cursors);
-			//nk_style_set_font(m_Context, &tiny->handle);
-
-			s_Context->style.property.padding = nk_vec2(2, 0);
+			nk_style_set_font(s_Context, &opensans->handle);
 		}
 
-		//set_style(s_Context, THEME_NONE);
+		s_FontAtlas = &s_NKStruct.atlas;
+		SetDarkThemeColors();
+
+		s_Context->style.property.padding = nk_vec2(2, 0);
 	}
 
 	void NuklearLayer::OnDetach()
@@ -100,6 +103,51 @@ namespace Axis {
 	void NuklearLayer::End()
 	{
 		nk_glfw3_render(&s_NKStruct, NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER);
+	}
+
+	void NuklearLayer::SetDarkThemeColors()
+	{
+		struct nk_color table[NK_COLOR_COUNT];
+		table[NK_COLOR_TEXT] = nk_rgba(255, 255, 255, 255);
+
+		table[NK_COLOR_WINDOW] = nk_rgba(29, 30, 31, 255);
+		table[NK_COLOR_HEADER] = nk_rgba(42, 43, 44, 255);
+		table[NK_COLOR_BORDER] = nk_rgba(56, 56, 56, 255);
+
+		table[NK_COLOR_BUTTON] = nk_rgba(50, 58, 61, 225);
+		table[NK_COLOR_BUTTON_HOVER] = nk_rgba(60, 68, 71, 225);
+		table[NK_COLOR_BUTTON_ACTIVE] = nk_rgba(70, 78, 71, 225);
+
+		table[NK_COLOR_TOGGLE] = nk_rgba(50, 58, 61, 255);
+		table[NK_COLOR_TOGGLE_HOVER] = nk_rgba(45, 90, 100, 255);
+		table[NK_COLOR_TOGGLE_CURSOR] = nk_rgba(48, 103, 181, 255);
+
+		table[NK_COLOR_SELECT] = table[NK_COLOR_WINDOW];
+		table[NK_COLOR_SELECT_ACTIVE] = nk_rgba(48, 50, 52, 255);
+
+		table[NK_COLOR_SLIDER] = nk_rgba(50, 58, 61, 255);
+		table[NK_COLOR_SLIDER_CURSOR] = nk_rgba(48, 103, 181, 255);
+		table[NK_COLOR_SLIDER_CURSOR_HOVER] = nk_rgba(52, 123, 201, 255);
+		table[NK_COLOR_SLIDER_CURSOR_ACTIVE] = table[NK_COLOR_SLIDER_CURSOR_HOVER];
+
+		table[NK_COLOR_PROPERTY] = nk_rgba(50, 58, 61, 255);
+
+		table[NK_COLOR_EDIT] = nk_rgba(50, 58, 61, 225);
+		table[NK_COLOR_EDIT_CURSOR] = nk_rgba(210, 210, 210, 255);
+
+		table[NK_COLOR_COMBO] = nk_rgba(50, 58, 61, 255);
+
+		table[NK_COLOR_CHART] = nk_rgba(50, 58, 61, 255);
+		table[NK_COLOR_CHART_COLOR] = nk_rgba(48, 103, 181, 255);
+		table[NK_COLOR_CHART_COLOR_HIGHLIGHT] = nk_rgba(255, 0, 0, 255);
+
+		table[NK_COLOR_SCROLLBAR] = nk_rgba(50, 58, 61, 255);
+		table[NK_COLOR_SCROLLBAR_CURSOR] = nk_rgba(108, 113, 116, 255);
+		table[NK_COLOR_SCROLLBAR_CURSOR_HOVER] = nk_rgba(128, 133, 136, 255);
+		table[NK_COLOR_SCROLLBAR_CURSOR_ACTIVE] = table[NK_COLOR_SCROLLBAR_CURSOR_HOVER];
+
+		table[NK_COLOR_TAB_HEADER] = nk_rgba(48, 50, 52, 255);
+		nk_style_from_table(s_Context, table);
 	}
 
 }

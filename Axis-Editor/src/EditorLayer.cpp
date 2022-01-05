@@ -10,6 +10,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Axis/Scene/SceneSerializer.h"
+
 namespace Axis {
 
     EditorLayer::EditorLayer()
@@ -26,10 +28,9 @@ namespace Axis {
         fbSpec.Height = 720;
         m_FrameBuffer = FrameBuffer::Create(fbSpec);
 
-        m_CameraController.SetZoomLevel(5.0f);
-
         m_ActiveScene = CreateRef<Scene>();
 
+        #if 0
         auto blueSquare = m_ActiveScene->CreateEntity("Blue Square");
         blueSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
@@ -82,6 +83,8 @@ namespace Axis {
         secondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
         cameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 
+        #endif
+
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
@@ -95,6 +98,16 @@ namespace Axis {
         AXIS_PROFILE_FUNCTION();
 
         //AXIS_TRACE("Frame rate: {0}fps", 1 / (float)ts);
+        if (FrameBufferSpecification spec = m_FrameBuffer->GetSpecification();
+            m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && //zero sized framebuffer is invalid
+            (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
+        {
+            m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);            
+            m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
+            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        }
+
 
         if (m_ViewportFocused)
             m_CameraController.OnUpdate(ts);
@@ -166,65 +179,84 @@ namespace Axis {
         // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
         if (!opt_padding)
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", &dockspace_open, window_flags);
-        if (!opt_padding)
-            ImGui::PopStyleVar();
-
-        if (opt_fullscreen)
-            ImGui::PopStyleVar(2);
-
-        // DockSpace
-        ImGuiIO& io = ImGui::GetIO();
-        if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+        ImGui::Begin("DockSpace", &dockspace_open, window_flags);
         {
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-        }
+            if (!opt_padding)
+                ImGui::PopStyleVar();
 
-        if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
+            if (opt_fullscreen)
+                ImGui::PopStyleVar(2);
+
+            // DockSpace
+            ImGuiIO& io = ImGui::GetIO();
+            ImGuiStyle& style = ImGui::GetStyle();
+            float minWinSizeX = style.WindowMinSize.x;
+            style.WindowMinSize.x = 370.0f;
+
+            if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
             {
-                // Disabling fullscreen would allow the window to be moved to the front of other windows,
-                // which we can't undo at the moment without finer window depth/z control.
-                if (ImGui::MenuItem("Exit")) Application::Get().Close();
-                ImGui::EndMenu();
+                ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+                ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
             }
 
-            ImGui::EndMenuBar();
+            style.WindowMinSize.x = minWinSizeX;
+
+            if (ImGui::BeginMenuBar())
+            {
+                if (ImGui::BeginMenu("File"))
+                {
+                    // Disabling fullscreen would allow the window to be moved to the front of other windows,
+                    // which we can't undo at the moment without finer window depth/z control.
+
+                    if (ImGui::MenuItem("Serialize"))
+                    {
+                        SceneSerializer serializer(m_ActiveScene);
+                        serializer.Serialize("assets/scenes/Example.axis");
+                    }
+
+                    if (ImGui::MenuItem("Deserialize"))
+                    {
+                        SceneSerializer serializer(m_ActiveScene);
+                        _mkdir("assets/scenes");
+                        serializer.Deserialize("assets/scenes/Example.axis");
+                    }
+
+                    if (ImGui::MenuItem("Exit")) Application::Get().Close();
+                    ImGui::EndMenu();
+                }
+
+                ImGui::EndMenuBar();
+            }
+
+            m_SceneHierarchyPanel.OnImGuiRender();
+
+            ImGui::Begin("Settings");
+            {
+                ImGui::Text("Renderer2DStats:");
+                ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+                ImGui::Text("Quads: %d", stats.QuadCount);
+                ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+                ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+            }
+            ImGui::End();
+
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+            ImGui::Begin("Viewport");
+            {
+
+                m_ViewportFocused = ImGui::IsWindowFocused();
+                m_ViewportHovered = ImGui::IsWindowHovered();
+                Application::Get().GetGUILayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
+                ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+                m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+
+                uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
+                ImGui::Image((void*)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            }
+            ImGui::End();
+            ImGui::PopStyleVar();
         }
-
-        m_SceneHierarchyPanel.OnImGuiRender();
-
-        ImGui::Begin("Settings");
-        ImGui::Text("Renderer2DStats:");
-        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        ImGui::Text("Quads: %d", stats.QuadCount);
-        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-        ImGui::End();
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-
-        ImGui::Begin("Viewport");
-
-        m_ViewportFocused = ImGui::IsWindowFocused();
-        m_ViewportHovered = ImGui::IsWindowHovered();
-        Application::Get().GetGUILayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-
-        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
-        {
-            m_FrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-            m_ActiveScene->OnViewportResize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-        }
-        uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
-        ImGui::Image((void*)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-        ImGui::End();
-        ImGui::PopStyleVar();
-
         ImGui::End();
     }
 
@@ -233,51 +265,59 @@ namespace Axis {
         auto stats = Renderer2D::GetStats();
         struct nk_context* ctx = NuklearLayer::GetContext();
 
-        if (nk_begin(ctx, "Menu", { 0, 0, 200, 25 }, NK_WINDOW_DOCK_MENU))
+        if (Nuklear::Begin("Menu", { 0, 0, 200, 25 }, NK_WINDOW_DOCK_MENU))
         {
-            nk_layout_row_static(ctx, 20, 45, 1);
-            if (nk_menu_begin_label(ctx, "MENU", NK_TEXT_CENTERED, nk_vec2(120, 200)))
+            Nuklear::SetStaticLayout(45);
+            if (Nuklear::MenuLabelBegin("Menu", NK_TEXT_CENTERED, nk_vec2(120, 200)))
             {
-                nk_layout_row_dynamic(ctx, 25, 1);
-                if (nk_menu_item_label(ctx, "Exit", NK_TEXT_LEFT))
+                Nuklear::SetDynamicLayout();
+
+                if (Nuklear::MenuItemLabel("Serialize"))
+                {
+                    SceneSerializer serializer(m_ActiveScene);
+                    serializer.Serialize("assets/scenes/Example.axis");
+                }
+
+                if (Nuklear::MenuItemLabel("Deserialize"))
+                {
+                    SceneSerializer serializer(m_ActiveScene);
+                    _mkdir("assets/scenes");
+                    serializer.Deserialize("assets/scenes/Example.axis");
+                }
+
+                if (Nuklear::MenuItemLabel("Exit"))
                     Application::Get().Close();
-                nk_menu_end(ctx);
+                Nuklear::MenuEnd();
             }
         }
-        nk_end(ctx);
+        Nuklear::End();
 
         m_SceneHierarchyPanel.OnNuklearRender();
 
-        if (nk_begin(ctx, "Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE))
+        if (Nuklear::Begin("Settings", { 25, 25, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE))
         {
-            nk_layout_row_dynamic(ctx, 20, 1);
-            nk_label(ctx, "Renderer2D Stats:", NK_TEXT_CENTERED);
-            nk_labelf(ctx, NK_TEXT_LEFT, "Draw Calls: %d", stats.DrawCalls);
-            nk_labelf(ctx, NK_TEXT_LEFT, "Quads: %d", stats.QuadCount);
-            nk_labelf(ctx, NK_TEXT_LEFT, "Vertices: %d", stats.GetTotalVertexCount());
-            nk_labelf(ctx, NK_TEXT_LEFT, "Indices: %d", stats.GetTotalIndexCount());
+            Nuklear::SetDynamicLayout();
+            Nuklear::Label("Renderer2D Stats:", NK_TEXT_CENTERED);
+            Nuklear::Labelf(NK_TEXT_LEFT, "Draw Calls: %d", stats.DrawCalls);
+            Nuklear::Labelf(NK_TEXT_LEFT, "Quads: %d", stats.QuadCount);
+            Nuklear::Labelf(NK_TEXT_LEFT, "Vertices: %d", stats.GetTotalVertexCount());
+            Nuklear::Labelf(NK_TEXT_LEFT, "Indices: %d", stats.GetTotalIndexCount());
         }
-        nk_end(ctx);
+        Nuklear::End();
 
-        if (nk_begin(ctx, "Viewport", { 25, 25, 1280, 720 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_NO_SCROLLBAR))
+        if (Nuklear::Begin("Viewport", { 25, 25, 1280, 720 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_NO_SCROLLBAR))
         {
             m_ViewportFocused = nk_window_has_focus(ctx);
             m_ViewportHovered = nk_window_is_hovered(ctx);
             Application::Get().GetGUILayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
             auto viewportPanelSize = nk_window_get_content_region_size(ctx);
-            if (m_ViewportSize.x != viewportPanelSize.x || m_ViewportSize.y != viewportPanelSize.y)
-            {
-                m_FrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-                m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+            m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-                m_ActiveScene->OnViewportResize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
-            }
-
-            nk_layout_row_static(ctx, (float)m_ViewportSize.y, (int)m_ViewportSize.x, 1);
-            nk_image(ctx, nk_image_id(m_FrameBuffer->GetColorAttachmentRendererID()), nk_true);
+            Nuklear::SetStaticLayout((int)m_ViewportSize.x, 1, (float)m_ViewportSize.y);
+            Nuklear::Image(nk_image_id(m_FrameBuffer->GetColorAttachmentRendererID()), nk_true);
         }
-        nk_end(ctx);
+        Nuklear::End();
     }
 
 }

@@ -18,3 +18,6 @@
 [submodule "Axis/vendor/assimp"]
 	path = Axis/vendor/assimp
 	url = https://github.com/MikemathuKE/assimp.git
+[submodule "Axis/vendor/yaml"]
+	path = Axis/vendor/yaml
+	url = https://github.com/MikemathuKE/yaml-cpp.git

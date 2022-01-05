@@ -7,7 +7,7 @@ namespace Axis {
 
 	SceneCamera::SceneCamera()
 	{
-
+		RecalculateProjection();
 	}
 
 	void SceneCamera::SetOrthographic(float size, float nearClip, float farClip)

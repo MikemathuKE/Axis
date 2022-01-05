@@ -37,8 +37,8 @@ namespace Axis {
 		WindowMode Mode;
 
 		WindowProps(const std::string& title = "Axis Engine",
-			uint32_t width = 1280,
-			uint32_t height = 720,
+			uint32_t width = 1600,
+			uint32_t height = 900,
 			WindowMode mode = WindowMode::WINDOWED,
 			bool resizable = true)
 			:Title(title), Width(width), Height(height), Mode(mode), Resizable(resizable)

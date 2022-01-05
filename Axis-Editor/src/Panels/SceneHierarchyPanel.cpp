@@ -3,7 +3,6 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
-#define NK_INCLUDE_STANDARD_VARARGS
 #include <Axis/Nuklear/NuklearUtils.h>
 
 #include <Axis/Scene/Components.h>
@@ -52,91 +51,48 @@ namespace Axis {
 		if (m_SelectionContext) 
 		{
 			DrawComponentsImGui(m_SelectionContext);
-
-			if (ImGui::Button("Add Component"))
-				ImGui::OpenPopup("Add Component");
-
-			if (ImGui::BeginPopup("Add Component"))
-			{
-				if (ImGui::MenuItem("Camera")) 
-				{
-					m_SelectionContext.AddComponent<CameraComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-
-				if (ImGui::MenuItem("Sprite Renderer"))
-				{
-					m_SelectionContext.AddComponent<SpriteRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-
-				ImGui::EndPopup();
-			}
 		}
 		ImGui::End();
 	}
 
 	void SceneHierarchyPanel::OnNuklearRender()
 	{
+		nk_flags flags = NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE;
 		auto ctx = Nuklear::GetContext();
-		if (nk_begin(ctx, "Scene_Hierarchy", { 0, 0, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE)) 
+
+		if (Nuklear::Begin("Scene Hierarchy", { 0, 0, 250, 250 }, flags)) 
 		{
 			bool selection_found = false;
-			if (nk_window_is_hovered(ctx) && nk_input_is_mouse_pressed(&ctx->input, NK_BUTTON_LEFT))
+			if (Nuklear::IsWindowHovered() && Nuklear::IsMousePressed(NK_BUTTON_LEFT))
 			{
 				m_SelectionContext = {};
 			}
-			nk_style_push_vec2(ctx, &ctx->style.tab.padding, nk_vec2( 0, 0 ));
+			Nuklear::PushVec2(&ctx->style.tab.padding, nk_vec2( 0, 0 ));
 			m_Context->m_Registry.each([&](auto entityID) {
 				Entity entity{ entityID, m_Context.get() };
 				DrawEntityNodeNuklear(entity);
 			});
-			nk_style_pop_vec2(ctx);
-			if (nk_contextual_begin(ctx, 0, nk_vec2(150, 200), nk_window_get_content_region(ctx)))
+			Nuklear::PopVec2();
+			if (Nuklear::ContextualBegin(0, nk_vec2(150, 200), Nuklear::GetContentRegion()))
 			{
-				nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
-				if (nk_contextual_item_label(ctx, "Add Entity", NK_TEXT_CENTERED))
+				Nuklear::SetDynamicLayout();
+				if (Nuklear::ContextualLabel("Add Entity", NK_TEXT_CENTERED))
 				{
 					m_Context->CreateEntity("Empty Entity");
-					nk_contextual_close(ctx);
+					Nuklear::ContextualClose();
 				}
-				nk_contextual_end(ctx);
+				Nuklear::ContextualEnd();
 			}
 		}
-		nk_end(ctx);
+		Nuklear::End();
 
-		if (nk_begin(ctx, "Properties", { 0, 0, 250, 250 }, NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE))
+		if (Nuklear::Begin("Properties", { 0, 0, 250, 250 }, flags))
 		{
-			static bool add_component = false;
 			if (m_SelectionContext) {
 				DrawComponentsNuklear(m_SelectionContext);
-
-				nk_layout_row_static(ctx, Nuklear::widget_height, 100, 1);
-				if (nk_button_label(ctx, "Add Component"))
-					add_component = true;
-				else if (nk_input_is_mouse_click_down_in_rect(&ctx->input, NK_BUTTON_LEFT, nk_window_get_bounds(ctx), nk_true))
-					add_component = false;
-			}
-			if (add_component) 
-			{
-				if (nk_tree_push(ctx, NK_TREE_TAB, "New Component Type", NK_MAXIMIZED))
-				{
-					nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
-					if (nk_button_label(ctx, "Camera"))
-					{
-						m_SelectionContext.AddComponent<CameraComponent>();
-						add_component = false;
-					}
-					if (nk_button_label(ctx, "Sprite Renderer"))
-					{
-						m_SelectionContext.AddComponent<SpriteRendererComponent>();
-						add_component = false;
-					}
-					nk_tree_pop(ctx);
-				}
 			}
 		}
-		nk_end(ctx);
+		Nuklear::End();
 
 		overview(ctx);
 	}
@@ -145,6 +101,7 @@ namespace Axis {
 	{
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 		ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
@@ -175,33 +132,27 @@ namespace Axis {
 
 	void SceneHierarchyPanel::DrawEntityNodeNuklear(Entity entity)
 	{
-		auto ctx = Nuklear::GetContext();
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 		int selected = (m_SelectionContext == entity) ? 1 : 0;
 		bool entity_deleted = false;
 
-		nk_bool opened = nk_tree_element_push_id(ctx, NK_TREE_NODE, tag.c_str(), NK_MINIMIZED, &selected, (uint32_t)entity);
-		auto text_len = (int)strlen(tag.c_str());
-		auto text_width = ctx->style.font->width(ctx->style.font->userdata, ctx->style.font->height, tag.c_str(), text_len);
-		struct nk_rect bounds = nk_widget_bounds(ctx);
-		auto row_height = ctx->style.font->height + 2;
-		bounds.y -= row_height;
-		bounds.w = text_width + 20;
-		if (nk_contextual_begin(ctx, 0, nk_vec2(150, 200), bounds))
+		nk_bool opened = Nuklear::TreeElementPushId(NK_TREE_NODE, tag.c_str(), NK_MINIMIZED, &selected, (uint32_t)entity);
+		struct nk_rect bounds = Nuklear::GetWidgetBounds();
+		if (Nuklear::ContextualBegin(0, nk_vec2(150, 200), bounds))
 		{
-			nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
-			if (nk_contextual_item_label(ctx, "Delete Entity", NK_TEXT_CENTERED)) 
+			Nuklear::SetDynamicLayout();
+			if (Nuklear::ContextualLabel("Delete Entity", NK_TEXT_CENTERED)) 
 			{
 				entity_deleted = true;
-				nk_contextual_close(ctx);
+				Nuklear::ContextualClose();
 			}
-			nk_contextual_end(ctx);
+			Nuklear::ContextualEnd();
 		}
 		if (opened)
 		{
-			nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
-			nk_label(ctx, tag.c_str(), NK_TEXT_LEFT);
-			nk_tree_pop(ctx);
+			Nuklear::SetDynamicLayout();
+			Nuklear::Label(tag.c_str(), NK_TEXT_LEFT);
+			Nuklear::TreePop();
 		}
 		if (selected) {
 			m_SelectionContext = entity;
@@ -215,6 +166,9 @@ namespace Axis {
 
 	static void DrawImGuiVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
 	{
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
 		ImGui::PushID(label.c_str());
 
 		ImGui::Columns(2);
@@ -231,8 +185,10 @@ namespace Axis {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.3f, 0.25f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.8f, 0.3f, 0.25f, 1.0f));
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("X", buttonSize))
 			values.x = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
@@ -243,8 +199,10 @@ namespace Axis {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.3f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.3f, 1.0f));
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Y", buttonSize))
 			values.y = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
@@ -255,8 +213,10 @@ namespace Axis {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.45f, 0.8f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.9f, 1.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.45f, 0.8f, 1.0f));
+		ImGui::PushFont(boldFont);
 		if (ImGui::Button("Z", buttonSize))
 			values.z = resetValue;
+		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
@@ -269,112 +229,25 @@ namespace Axis {
 		ImGui::PopID();
 	}
 
-	void SceneHierarchyPanel::DrawComponentsImGui(Entity entity)
+	template<typename T, typename UIFunction>
+	static void DrawComponentImGui(const std::string& name, Entity entity, UIFunction uiFunction)
 	{
-		if (entity.HasComponent<TagComponent>())
+		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+
+		if (entity.HasComponent<T>())
 		{
-			auto& tag = entity.GetComponent<TagComponent>().Tag;
+			auto& component = entity.GetComponent<T>();
+			ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
-			char buffer[256];
-			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+			float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+			ImGui::Separator();
 
-			if (ImGui::InputText("Tag", buffer, sizeof(buffer)))
-			{
-				tag = std::string(buffer);
-			}
-		}
+			bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+			ImGui::PopStyleVar();
 
-		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
-
-		if (entity.HasComponent<TransformComponent>())
-		{
-			bool open = ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), treeNodeFlags, "Transform");
-
-			if (open)
-			{
-				auto& tc = entity.GetComponent<TransformComponent>();
-				DrawImGuiVec3Control("Translation", tc.Translation);
-				glm::vec3 rotation = glm::degrees(tc.Rotation);
-				DrawImGuiVec3Control("Rotation", rotation);
-				tc.Rotation = glm::radians(rotation);
-				DrawImGuiVec3Control("Scale", tc.Scale, 1.0f);
-
-				ImGui::TreePop();
-			}
-			
-		}
-
-		if (entity.HasComponent<CameraComponent>())
-		{
-			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), treeNodeFlags, "Camera"))
-			{
-				auto& cameraComponent = entity.GetComponent<CameraComponent>();
-				auto& camera = cameraComponent.Camera;
-
-				ImGui::Checkbox("Primary", &cameraComponent.Primary);
-
-				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-				const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
-				if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
-				{
-					for (int i = 0; i < 2; i++) 
-					{
-						bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-						if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
-							currentProjectionTypeString = projectionTypeStrings[i];
-							cameraComponent.Camera.SetProjectionType((SceneCamera::ProjectionType)i);
-						}
-
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
-					}
-					ImGui::EndCombo();
-				}
-
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
-				{
-					float orthoSize = camera.GetOrthographicSize();
-					if (ImGui::DragFloat("Size", &orthoSize))
-						camera.SetOrthographicSize(orthoSize);
-
-					float orthoNear = camera.GetOrthographicNearClip();
-					if (ImGui::DragFloat("Near", &orthoNear))
-						camera.SetOrthographicNearClip(orthoNear);
-
-					float orthoFar = camera.GetOrthographicFarClip();
-					if (ImGui::DragFloat("Far", &orthoFar))
-						camera.SetOrthographicFarClip(orthoFar);
-
-					ImGui::Checkbox("Fixed AspectRatio", &cameraComponent.FixedAspectRatio);
-				}
-
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-				{
-					float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
-					if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
-						camera.SetPerspectiveVerticalFOV(glm::radians(verticalFOV));
-
-					float perspectiveNear = camera.GetPerspectiveNearClip();
-					if (ImGui::DragFloat("Near", &perspectiveNear))
-						camera.SetPerspectiveNearClip(perspectiveNear);
-
-					float perspectiveFar = camera.GetPerspectiveFarClip();
-					if (ImGui::DragFloat("Far", &perspectiveFar))
-						camera.SetPerspectiveFarClip(perspectiveFar);
-				}
-
-				ImGui::TreePop();
-			}
-		}
-
-		if (entity.HasComponent<SpriteRendererComponent>())
-		{
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));\
-
-			bool open = ImGui::TreeNodeEx((void*)typeid(SpriteRendererComponent).hash_code(), treeNodeFlags, "Sprite Renderer");
-			ImGui::SameLine(ImGui::GetWindowWidth() - 25.0f);
-			if (ImGui::Button("+", ImVec2(20, 20)))
+			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+			if (ImGui::Button("+", ImVec2(lineHeight, lineHeight)))
 			{
 				ImGui::OpenPopup("Component Settings");
 			}
@@ -390,17 +263,124 @@ namespace Axis {
 
 			if (open)
 			{
-				auto& src = entity.GetComponent<SpriteRendererComponent>();
-				ImGui::ColorEdit4("Color", glm::value_ptr(src.Color));
+				uiFunction(component);
 
 				ImGui::TreePop();
 			}
 
 			if (removeComponent)
-				entity.RemoveComponent<SpriteRendererComponent>();
-
-			ImGui::PopStyleVar();
+				entity.RemoveComponent<T>();			
 		}
+	}
+
+	void SceneHierarchyPanel::DrawComponentsImGui(Entity entity)
+	{
+		if (entity.HasComponent<TagComponent>())
+		{
+			auto& tag = entity.GetComponent<TagComponent>().Tag;
+
+			char buffer[256];
+			memset(buffer, 0, sizeof(buffer));
+			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+
+			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+			{
+				tag = std::string(buffer);
+			}
+		}
+
+		ImGui::SameLine();
+		ImGui::PushItemWidth(-1);
+
+		if (ImGui::Button("Add Component"))
+			ImGui::OpenPopup("Add Component");
+
+		if (ImGui::BeginPopup("Add Component"))
+		{
+			if (ImGui::MenuItem("Camera"))
+			{
+				m_SelectionContext.AddComponent<CameraComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (ImGui::MenuItem("Sprite Renderer"))
+			{
+				m_SelectionContext.AddComponent<SpriteRendererComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::PopItemWidth();
+
+		DrawComponentImGui<CameraComponent>("Camera", entity, [](auto& component) {
+			auto& camera = component.Camera;
+
+			ImGui::Checkbox("Primary", &component.Primary);
+
+			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+			const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
+			if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
+					if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
+						currentProjectionTypeString = projectionTypeStrings[i];
+						component.Camera.SetProjectionType((SceneCamera::ProjectionType)i);
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
+			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
+			{
+				float orthoSize = camera.GetOrthographicSize();
+				if (ImGui::DragFloat("Size", &orthoSize))
+					camera.SetOrthographicSize(orthoSize);
+
+				float orthoNear = camera.GetOrthographicNearClip();
+				if (ImGui::DragFloat("Near", &orthoNear))
+					camera.SetOrthographicNearClip(orthoNear);
+
+				float orthoFar = camera.GetOrthographicFarClip();
+				if (ImGui::DragFloat("Far", &orthoFar))
+					camera.SetOrthographicFarClip(orthoFar);
+
+				ImGui::Checkbox("Fixed AspectRatio", &component.FixedAspectRatio);
+			}
+
+			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+			{
+				float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
+				if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
+					camera.SetPerspectiveVerticalFOV(glm::radians(verticalFOV));
+
+				float perspectiveNear = camera.GetPerspectiveNearClip();
+				if (ImGui::DragFloat("Near", &perspectiveNear))
+					camera.SetPerspectiveNearClip(perspectiveNear);
+
+				float perspectiveFar = camera.GetPerspectiveFarClip();
+				if (ImGui::DragFloat("Far", &perspectiveFar))
+					camera.SetPerspectiveFarClip(perspectiveFar);
+			}
+		});
+
+		DrawComponentImGui<TransformComponent>("Transform", entity, [](auto& component) {
+			DrawImGuiVec3Control("Translation", component.Translation);
+			glm::vec3 rotation = glm::degrees(component.Rotation);
+			DrawImGuiVec3Control("Rotation", rotation);
+			component.Rotation = glm::radians(rotation);
+			DrawImGuiVec3Control("Scale", component.Scale, 1.0f);
+		});
+
+		DrawComponentImGui<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component) {
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+		});
 	}
 
 	static void DrawNuklearVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
@@ -408,54 +388,88 @@ namespace Axis {
 		auto ctx = Nuklear::GetContext();
 		const float maxPropertyStep = 1000.0f;
 
-		nk_layout_row_template_begin(ctx, Nuklear::widget_height);
-		nk_layout_row_template_push_static(ctx, 80);
-		nk_layout_row_template_push_dynamic(ctx);
-		nk_layout_row_template_push_dynamic(ctx);
-		nk_layout_row_template_push_dynamic(ctx);
-		nk_layout_row_template_end(ctx);
+		auto boldFont = Nuklear::GetFont(0);
 
-		nk_label(ctx, label.c_str(), NK_TEXT_ALIGN_LEFT);
-		nk_style_push_float(ctx, &ctx->style.property.rounding, 0.0f);
+		Nuklear::LayoutTemplateBegin();
+		Nuklear::LayoutTemplatePushStatic(80);
+		Nuklear::LayoutTemplatePushDynamic();
+		Nuklear::LayoutTemplatePushDynamic();
+		Nuklear::LayoutTemplatePushDynamic();
+		Nuklear::LayoutTemplateEnd();
 
-		nk_colorf normal = { 0.8f, 0.3f, 0.25f, 1.0f };
-		nk_colorf hover = { 0.9f, 0.2f, 0.2f, 1.0f };
-		nk_style_push_color(ctx, &ctx->style.property.label_normal, nk_rgb_cf(normal));
-		nk_style_push_color(ctx, &ctx->style.property.hover.data.color, nk_rgb_cf(hover));
-		nk_style_push_color(ctx, &ctx->style.property.active.data.color, nk_rgb_cf(normal));
-		values.x = nk_propertyf(ctx, "#X", values.x - maxPropertyStep, values.x, values.x + maxPropertyStep, 0.5f, 0.1f);
-		nk_style_pop_color(ctx);
-		nk_style_pop_color(ctx);
-		nk_style_pop_color(ctx);
+		Nuklear::Label(label.c_str(), NK_TEXT_ALIGN_LEFT);
+		Nuklear::PushFloat(&ctx->style.property.rounding, 0.0f);
+		Nuklear::PushFont(FontType::Bold);
+
+		glm::vec4 normal = { 0.8f, 0.3f, 0.25f, 1.0f };
+		glm::vec4 hover = { 0.9f, 0.2f, 0.2f, 1.0f };
+		Nuklear::PushColor(&ctx->style.property.label_normal, normal);
+		Nuklear::PushColor(&ctx->style.property.hover.data.color, hover);
+		Nuklear::PushColor(&ctx->style.property.active.data.color, normal);
+		values.x = Nuklear::PropertyFloat("#X", values.x);
+		Nuklear::PopColor();
+		Nuklear::PopColor();
+		Nuklear::PopColor();
 
 		normal = { 0.2f, 0.7f, 0.3f, 1.0f };
 		hover = { 0.3f, 0.8f, 0.3f, 1.0f };
-		nk_style_push_color(ctx, &ctx->style.property.label_normal, nk_rgb_cf(normal));
-		nk_style_push_color(ctx, &ctx->style.property.hover.data.color, nk_rgb_cf(hover));
-		nk_style_push_color(ctx, &ctx->style.property.active.data.color, nk_rgb_cf(normal));
-		values.y = nk_propertyf(ctx, "#Y", values.y - maxPropertyStep, values.y, values.y + maxPropertyStep, 0.5f, 0.1f);
-		nk_style_pop_color(ctx);
-		nk_style_pop_color(ctx);
-		nk_style_pop_color(ctx);
+		Nuklear::PushColor(&ctx->style.property.label_normal, normal);
+		Nuklear::PushColor(&ctx->style.property.hover.data.color, hover);
+		Nuklear::PushColor(&ctx->style.property.active.data.color, normal);
+		values.y = Nuklear::PropertyFloat("#Y", values.y);
+		Nuklear::PopColor();
+		Nuklear::PopColor();
+		Nuklear::PopColor();
 
 		normal = { 0.1f, 0.45f, 0.8f, 1.0f };
 		hover = { 0.2f, 0.35f, 0.9f, 1.0f };
-		nk_style_push_color(ctx, &ctx->style.property.label_normal, nk_rgb_cf(normal));
-		nk_style_push_color(ctx, &ctx->style.property.hover.data.color, nk_rgb_cf(hover));
-		nk_style_push_color(ctx, &ctx->style.property.active.data.color, nk_rgb_cf(normal));
-		values.z = nk_propertyf(ctx, "#Z", values.z - maxPropertyStep, values.z, values.z + maxPropertyStep, 0.5f, 0.1f);
-		nk_style_pop_color(ctx);
-		nk_style_pop_color(ctx);
-		nk_style_pop_color(ctx);
+		Nuklear::PushColor(&ctx->style.property.label_normal, normal);
+		Nuklear::PushColor(&ctx->style.property.hover.data.color, hover);
+		Nuklear::PushColor(&ctx->style.property.active.data.color, normal);
+		values.z = Nuklear::PropertyFloat("#Z", values.z);
+		Nuklear::PopColor();
+		Nuklear::PopColor();
+		Nuklear::PopColor();
 
-		nk_style_pop_float(ctx);
+		Nuklear::PopFont();
+		Nuklear::PopFloat();
+	}
+
+	template<typename T, typename UIFunction>
+	static void DrawComponentNuklear(const std::string& name, Entity entity, UIFunction uiFunction)
+	{
+		if (entity.HasComponent<T>())
+		{
+			auto& component = entity.GetComponent<T>();
+
+			nk_bool open = Nuklear::TreePushId(NK_TREE_NODE, name.c_str(), NK_MAXIMIZED, (int)typeid(T).hash_code());
+			bool removeComponent = false;
+
+			struct nk_rect bounds = Nuklear::GetWidgetBounds();
+			if (Nuklear::ContextualBegin(0, nk_vec2(150, 200), bounds))
+			{
+				Nuklear::SetDynamicLayout();
+				if (Nuklear::ContextualLabel("Delete Component", NK_TEXT_CENTERED))
+				{
+					removeComponent = true;
+					Nuklear::ContextualClose();
+				}
+				Nuklear::ContextualEnd();
+			}
+
+			if (open)
+			{
+				uiFunction(component);
+				Nuklear::TreePop();
+			}
+
+			if (removeComponent)
+				entity.RemoveComponent<T>();
+		}
 	}
 
 	void SceneHierarchyPanel::DrawComponentsNuklear(Entity entity)
 	{
-		auto ctx = Nuklear::GetContext();
-		const float maxPropertyStep = 1000.0f;
-
 		if (entity.HasComponent<TagComponent>())
 		{
 			auto& tag = entity.GetComponent<TagComponent>().Tag;
@@ -465,115 +479,108 @@ namespace Axis {
 			memset(buffer, 0, sizeof(buffer));
 			strcpy_s(buffer, sizeof(buffer), tag.c_str());
 
-			nk_layout_row_template_begin(ctx, Nuklear::edit_height);
-			nk_layout_row_template_push_static(ctx, 30);
-			nk_layout_row_template_push_dynamic(ctx);
-			nk_layout_row_template_end(ctx);
-			nk_label(ctx, "Tag", NK_TEXT_ALIGN_LEFT);
-			edit_mode = nk_edit_string_zero_terminated(ctx, NK_EDIT_SIMPLE | NK_EDIT_SELECTABLE | NK_EDIT_GOTO_END_ON_ACTIVATE, buffer, 256, nk_filter_default);
+			Nuklear::LayoutTemplateBegin(Nuklear::edit_height);
+			Nuklear::LayoutTemplatePushStatic(Nuklear::GetTextWidth("Tag"));
+			Nuklear::LayoutTemplatePushDynamic();
+			Nuklear::LayoutTemplatePushStatic(120);
+			Nuklear::LayoutTemplateEnd();
+			Nuklear::Label("Tag", NK_TEXT_ALIGN_LEFT);
+			edit_mode = Nuklear::EditStringZeroTerminated( NK_EDIT_SIMPLE | NK_EDIT_SELECTABLE | NK_EDIT_GOTO_END_ON_ACTIVATE, buffer, nk_filter_default);
 			if (edit_mode & NK_EDIT_ACTIVE) {
 				tag = std::string(buffer);
 			}
-			
 		}
-		
-		if (entity.HasComponent<TransformComponent>())
+
+		Nuklear::ButtonLabel("Add Component");
+		struct nk_rect bounds = Nuklear::GetWidgetBounds();
+		bounds.x += bounds.w - 120;
+		bounds.w = 120;
+
+		if (Nuklear::ContextualBegin(0, nk_vec2(150, 200), bounds, NK_BUTTON_LEFT))
 		{
-			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Transform", NK_MAXIMIZED, (int)typeid(TransformComponent).hash_code()))
+			Nuklear::SetDynamicLayout();
+			if (Nuklear::ContextualLabel("Camera"))
 			{
-				auto& tc = entity.GetComponent<TransformComponent>();
-				DrawNuklearVec3Control("Translation", tc.Translation);
-				glm::vec3 rotation = glm::degrees(tc.Rotation);
+				m_SelectionContext.AddComponent<CameraComponent>();
+			}
+			if (Nuklear::ContextualLabel("Sprite Renderer"))
+			{
+				m_SelectionContext.AddComponent<SpriteRendererComponent>();
+			}
+			Nuklear::ContextualEnd();
+		}
+
+		DrawComponentNuklear<TransformComponent>("Transform", entity, [](auto& component) {
+			Nuklear::SetDynamicLayout(Nuklear::widget_height * 4, 1);
+			if (Nuklear::GroupBegin("Transforms", NK_WINDOW_BORDER | NK_WINDOW_NO_SCROLLBAR))
+			{
+				DrawNuklearVec3Control("Translation", component.Translation);
+				glm::vec3 rotation = glm::degrees(component.Rotation);
 				DrawNuklearVec3Control("Rotation", rotation);
-				tc.Rotation = glm::radians(rotation);
-				DrawNuklearVec3Control("Scale", tc.Scale, 1.0f);
-				nk_tree_pop(ctx);
+				component.Rotation = glm::radians(rotation);
+				DrawNuklearVec3Control("Scale", component.Scale, 1.0f);
 			}
-		}
+			Nuklear::GroupEnd();
+		});
 
-		if (entity.HasComponent<CameraComponent>())
-		{
-			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Camera", NK_MAXIMIZED, (int)typeid(CameraComponent).hash_code()))
+		DrawComponentNuklear<CameraComponent>("Camera", entity, [](auto& component) {
+			auto& camera = component.Camera;
+
+			nk_bool primaryCamera = component.Primary ? nk_true : nk_false;
+			Nuklear::CheckboxLabel("Primary", &primaryCamera);
+			component.Primary = primaryCamera ? true : false;
+
+			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
+			const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
+			Nuklear::SetDynamicLayout();
+			int selected = Nuklear::Combo(projectionTypeStrings, 2, (int)camera.GetProjectionType(), nk_vec2(Nuklear::GetWidgetWidth(), 55));
+			if (selected != (int)camera.GetProjectionType())
+				component.Camera.SetProjectionType((SceneCamera::ProjectionType)selected);
+
+			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 			{
-				auto& cameraComponent = entity.GetComponent<CameraComponent>();
-				auto& camera = cameraComponent.Camera;
+				float orthoSize = camera.GetOrthographicSize();
+				float newSize = Nuklear::PropertyFloat("Size", orthoSize);
+				if (orthoSize != newSize)
+					camera.SetOrthographicSize(newSize);
 
-				nk_bool primaryCamera = cameraComponent.Primary ? nk_true : nk_false;
-				nk_checkbox_label(ctx, "Primary", &primaryCamera);
-				cameraComponent.Primary = primaryCamera ? true : false;
+				float orthoNear = camera.GetOrthographicNearClip();
+				float newNear = Nuklear::PropertyFloat("Near", orthoNear);
+				if (orthoNear != newNear)
+					camera.SetOrthographicNearClip(newNear);
 
-				const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-				const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
-				nk_layout_row_dynamic(ctx, Nuklear::widget_height, 1);
-				int selected = nk_combo(ctx, projectionTypeStrings, 2, (int)camera.GetProjectionType(), Nuklear::widget_height, nk_vec2(nk_widget_width(ctx), 55));
-				if (selected != (int)camera.GetProjectionType())
-					cameraComponent.Camera.SetProjectionType((SceneCamera::ProjectionType)selected);
+				float orthoFar = camera.GetOrthographicFarClip();
+				float newFar = Nuklear::PropertyFloat("Far", orthoFar);
+				if (orthoFar != newFar)
+					camera.SetOrthographicFarClip(newFar);
 
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
-				{
-					float orthoSize = camera.GetOrthographicSize();
-					float newSize = nk_propertyf(ctx, "Size", orthoSize - maxPropertyStep, orthoSize, orthoSize + maxPropertyStep, 0.5f, 0.2f);
-					if (orthoSize != newSize)
-						camera.SetOrthographicSize(newSize);
-
-					float orthoNear = camera.GetOrthographicNearClip();
-					float newNear = nk_propertyf(ctx, "Near", orthoNear - maxPropertyStep, orthoNear, orthoNear + maxPropertyStep, 0.5f, 0.2f);
-					if (orthoNear != newNear)
-						camera.SetOrthographicNearClip(newNear);
-
-					float orthoFar = camera.GetOrthographicFarClip();
-					float newFar = nk_propertyf(ctx, "Far", orthoFar - maxPropertyStep, orthoFar, orthoFar + maxPropertyStep, 0.5f, 0.2f);
-					if (orthoFar != newFar)
-						camera.SetOrthographicFarClip(newFar);
-
-					nk_bool primaryCamera = cameraComponent.FixedAspectRatio ? nk_true : nk_false;
-					nk_checkbox_label(ctx, "Fixed Aspect Ratio", &primaryCamera);
-					cameraComponent.FixedAspectRatio = primaryCamera ? true : false;
-				}
-
-				if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-				{
-					float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
-					float newFOV = nk_propertyf(ctx, "Vertical FOV", verticalFOV - maxPropertyStep, verticalFOV, verticalFOV + maxPropertyStep, 0.5f, 0.2f);
-					if (verticalFOV != newFOV)
-						camera.SetPerspectiveVerticalFOV(glm::radians(newFOV));
-
-					float perspectiveNear = camera.GetPerspectiveNearClip();
-					float newNear = nk_propertyf(ctx, "Near", perspectiveNear - maxPropertyStep, perspectiveNear, perspectiveNear + maxPropertyStep, 0.5f, 0.2f);
-					if (perspectiveNear != newNear)
-						camera.SetPerspectiveNearClip(newNear);
-
-					float perspectiveFar = camera.GetPerspectiveFarClip();
-					float newFar = nk_propertyf(ctx, "Far", perspectiveFar - maxPropertyStep, perspectiveFar, perspectiveFar + maxPropertyStep, 0.5f, 0.2f);
-					if (perspectiveFar != newFar)
-						camera.SetPerspectiveFarClip(newFar);
-				}
-
-				nk_tree_pop(ctx);
+				nk_bool primaryCamera = component.FixedAspectRatio ? nk_true : nk_false;
+				Nuklear::CheckboxLabel("Fixed Aspect Ratio", &primaryCamera);
+				component.FixedAspectRatio = primaryCamera ? true : false;
 			}
-		}
 
-		if (entity.HasComponent<SpriteRendererComponent>())
-		{
-			if (nk_tree_push_id(ctx, NK_TREE_NODE, "Color", NK_MAXIMIZED, (int)typeid(SpriteRendererComponent).hash_code()))
+			if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
 			{
-				nk_colorf color;
-				auto& src = entity.GetComponent<SpriteRendererComponent>();
-				color << src.Color;
-				nk_layout_row_dynamic(ctx, Nuklear::color_height, 1);
-				if (nk_combo_begin_color(ctx, nk_rgb_cf(color), nk_vec2(nk_widget_width(ctx), 450))) {
-					nk_layout_row_dynamic(ctx, 120, 1);
-					color = nk_color_picker(ctx, color, NK_RGBA);
-					nk_layout_row_dynamic(ctx, 20, 2);
-					color.r = nk_propertyf(ctx, "#R:", 0, color.r, 1.0f, 0.01f, 0.005f);
-					color.g = nk_propertyf(ctx, "#G:", 0, color.g, 1.0f, 0.01f, 0.005f);
-					color.b = nk_propertyf(ctx, "#B:", 0, color.b, 1.0f, 0.01f, 0.005f);
-					color.a = nk_propertyf(ctx, "#A:", 0, color.a, 1.0f, 0.01f, 0.005f);
-					nk_combo_end(ctx);
-				}
-				src.Color << color;
-				nk_tree_pop(ctx);
+				float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
+				float newFOV = Nuklear::PropertyFloat("Vertical FOV", verticalFOV, 45, 75, 0.5f, 0.2f);
+				if (verticalFOV != newFOV)
+					camera.SetPerspectiveVerticalFOV(glm::radians(newFOV));
+
+				float perspectiveNear = camera.GetPerspectiveNearClip();
+				float newNear = Nuklear::PropertyFloat("Near", perspectiveNear);
+				if (perspectiveNear != newNear)
+					camera.SetPerspectiveNearClip(newNear);
+
+				float perspectiveFar = camera.GetPerspectiveFarClip();
+				float newFar = Nuklear::PropertyFloat("Far", perspectiveFar);
+				if (perspectiveFar != newFar)
+					camera.SetPerspectiveFarClip(newFar);
 			}
-		}
+		});
+
+		DrawComponentNuklear<SpriteRendererComponent>("Color", entity, [](auto& component) {
+			Nuklear::SetDynamicLayout(Nuklear::color_height);
+			Nuklear::ColorEdit(component.Color);
+		});
 	}
 }

@@ -26,12 +26,14 @@ IncludeDir["ImGui"] = "%{wks.location}/Axis/vendor/imgui"
 IncludeDir["glm"] = "%{wks.location}/Axis/vendor/glm"
 IncludeDir["assimp"] = "%{wks.location}/Axis/vendor/assimp/include"
 IncludeDir["entt"] = "%{wks.location}/Axis/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "%{wks.location}/Axis/vendor/yaml/include"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
   include "Axis/vendor/Glad"
   include "Axis/vendor/imgui"
   include "Axis/vendor/assimp"
+  include "Axis/vendor/yaml"
 group ""
 
 project "Axis"
@@ -64,7 +66,8 @@ project "Axis"
     "%{IncludeDir.ImGui}",
     "%{IncludeDir.glm}",
     "%{IncludeDir.assimp}",
-    "%{IncludeDir.entt}"
+    "%{IncludeDir.entt}",
+    "%{IncludeDir.yaml_cpp}"
   }
   
   links
@@ -72,7 +75,8 @@ project "Axis"
     "GLFW",
     "Glad",
     "imgui",
-    "assimp"
+    "assimp",
+    "yaml-cpp"
   }
   
   defines

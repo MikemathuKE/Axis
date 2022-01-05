@@ -18,6 +18,8 @@ namespace Axis {
 		virtual void End() override;
 
 		virtual void BlockEvents(bool block) override { m_BlockEvents = block; }
+
+		void SetDarkThemeColors();
 	private:
 		bool m_BlockEvents = false;
 	};
