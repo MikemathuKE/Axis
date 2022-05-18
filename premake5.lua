@@ -228,7 +228,8 @@ project "Axis-Editor"
       "pthread",
       "Glad",
       "GLFW",
-      "imgui"
+      "imgui",
+      "yaml-cpp"
     }
     
   filter "system:windows"

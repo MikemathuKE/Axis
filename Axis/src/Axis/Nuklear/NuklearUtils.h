@@ -58,7 +58,7 @@ namespace Axis {
 		static void ContextualClose() { nk_contextual_close(GetContext()); }
 
 		//Color
-		static void ColorEdit(glm::vec4& src_Color) 
+		static void ColorEdit(glm::vec4& src_Color)
 		{
 			struct nk_context* ctx = GetContext();
 			nk_colorf color;
@@ -90,13 +90,13 @@ namespace Axis {
 		//Input
 		static nk_bool IsMousePressed(nk_buttons button) { return nk_input_is_mouse_pressed(&GetContext()->input, button); }
 		static nk_bool IsMouseClickedDownInRect(nk_buttons button, struct nk_rect b, nk_bool down) { return nk_input_is_mouse_click_down_in_rect(&GetContext()->input, button, b, down); }
-		
+
 		//Style
 		static void PushVec2(struct nk_vec2* address, struct nk_vec2 value) { nk_style_push_vec2(GetContext(), address, value); }
 		static void PopVec2() { nk_style_pop_vec2(GetContext()); }
 		static void PushFloat(float* address, float value) { nk_style_push_float(GetContext(), address, value); }
 		static void PopFloat() { nk_style_pop_float(GetContext()); }
-		static void PushColor(struct nk_color* address, struct glm::vec4 c) { nk_colorf color = { c.r, c.g, c.b, c.a }; nk_style_push_color(GetContext(), address, nk_rgb_cf(color)); }
+		static void PushColor(struct nk_color* address, glm::vec4 c) { nk_colorf color = { c.r, c.g, c.b, c.a }; nk_style_push_color(GetContext(), address, nk_rgb_cf(color)); }
 		static void PopColor() { nk_style_pop_color(GetContext()); }
 		static void PushFont(FontType type) {
 			nk_style_push_font(GetContext(), GetFont(type));

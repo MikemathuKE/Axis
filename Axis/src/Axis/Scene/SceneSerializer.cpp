@@ -2,7 +2,7 @@
 #include "Axis/Scene/SceneSerializer.h"
 
 #include "Axis/Scene/Entity.h"
-#include "Axis/Scene/Components.h"	
+#include "Axis/Scene/Components.h"
 
 #include <fstream>
 #include <yaml-cpp/yaml.h>
@@ -227,7 +227,7 @@ namespace Axis {
 				{
 					auto& cc = deserializedEntity.AddComponent<CameraComponent>();
 
-					auto& cameraProps = cameraComponent["Camera"];
+					auto cameraProps = cameraComponent["Camera"];
 					cc.Camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
 
 					cc.Camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());

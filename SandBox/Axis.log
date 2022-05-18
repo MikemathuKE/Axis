@@ -1,7 +1,36 @@
-[13:06:47] [info] AXIS: Creating Window Sandbox (1280, 720)
-[13:06:48] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
-[13:06:48] [info] AXIS: OpenGL Info:
-[13:06:48] [info] AXIS:   VENDOR : Intel
-[13:06:48] [info] AXIS:   RENDERER : Intel(R) HD Graphics 520
-[13:06:48] [info] AXIS:   VERSION : 4.6.0 - Build 27.20.100.8854
-[13:06:48] [trace] AXIS: Changing window mode from Null to Windowed: [1280, 720]
+[10:05:47] [info] AXIS: Creating Window Sandbox (1280, 720)
+[10:05:47] [trace] AXIS: Storing underlying OS video mode: 1920x1080@60Hz (r8g8b8)
+[10:05:47] [info] AXIS: OpenGL Info:
+[10:05:47] [info] AXIS:   VENDOR : Intel
+[10:05:47] [info] AXIS:   RENDERER : Mesa Intel(R) HD Graphics 520 (SKL GT2)
+[10:05:47] [info] AXIS:   VERSION : 4.6 (Compatibility Profile) Mesa 21.2.6
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [error] AXIS: Assertion failed: Failed to load image! D:\\Documents\\Blender Projects\\Breakfast\\Textures\\StoneMarbleCalacatta004_COL_2K.jpg.
+[10:05:56] [error] AXIS: Assertion failed: Image Format not supported! - (D:\\Documents\\Blender Projects\\Breakfast\\Textures\\StoneMarbleCalacatta004_COL_2K.jpg)
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!
+[10:05:56] [info] APP: Mesh Processed!

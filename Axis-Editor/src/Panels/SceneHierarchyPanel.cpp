@@ -11,6 +11,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <Axis/Core/Input.h>
 
+#include <string.h>
+
 namespace Axis {
 
 	SceneHierarchyPanel::SceneHierarchyPanel(const Ref<Scene>& scene)
@@ -21,6 +23,7 @@ namespace Axis {
 	void SceneHierarchyPanel::SetContext(const Ref<Scene>& scene)
 	{
 		m_Context = scene;
+		m_SelectionContext = {};
 	}
 
 	void SceneHierarchyPanel::OnImGuiRender()
@@ -48,7 +51,7 @@ namespace Axis {
 		ImGui::End();
 
 		ImGui::Begin("Properties");
-		if (m_SelectionContext) 
+		if (m_SelectionContext)
 		{
 			DrawComponentsImGui(m_SelectionContext);
 		}
@@ -60,10 +63,10 @@ namespace Axis {
 		nk_flags flags = NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE;
 		auto ctx = Nuklear::GetContext();
 
-		if (Nuklear::Begin("Scene Hierarchy", { 0, 0, 250, 250 }, flags)) 
+		if (Nuklear::Begin("Scene Hierarchy", { 0, 0, 250, 250 }, flags))
 		{
 			bool selection_found = false;
-			if (Nuklear::IsWindowHovered() && Nuklear::IsMousePressed(NK_BUTTON_LEFT))
+			if (Nuklear::IsMouseClickedDownInRect(NK_BUTTON_LEFT, Nuklear::GetContentRegion(), true))
 			{
 				m_SelectionContext = {};
 			}
@@ -141,7 +144,7 @@ namespace Axis {
 		if (Nuklear::ContextualBegin(0, nk_vec2(150, 200), bounds))
 		{
 			Nuklear::SetDynamicLayout();
-			if (Nuklear::ContextualLabel("Delete Entity", NK_TEXT_CENTERED)) 
+			if (Nuklear::ContextualLabel("Delete Entity", NK_TEXT_CENTERED))
 			{
 				entity_deleted = true;
 				Nuklear::ContextualClose();
@@ -222,7 +225,7 @@ namespace Axis {
 		ImGui::SameLine();
 		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
 		ImGui::PopItemWidth();
-		
+
 		ImGui::PopStyleVar();
 		ImGui::Columns(1);
 
@@ -269,7 +272,7 @@ namespace Axis {
 			}
 
 			if (removeComponent)
-				entity.RemoveComponent<T>();			
+				entity.RemoveComponent<T>();
 		}
 	}
 
@@ -281,7 +284,7 @@ namespace Axis {
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+			strcpy(buffer, tag.c_str());
 
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 			{
@@ -477,7 +480,7 @@ namespace Axis {
 
 			static char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+			strcpy(buffer, tag.c_str());
 
 			Nuklear::LayoutTemplateBegin(Nuklear::edit_height);
 			Nuklear::LayoutTemplatePushStatic(Nuklear::GetTextWidth("Tag"));

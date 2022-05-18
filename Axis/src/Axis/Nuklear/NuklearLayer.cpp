@@ -80,6 +80,7 @@ namespace Axis {
 		SetDarkThemeColors();
 
 		s_Context->style.property.padding = nk_vec2(2, 0);
+		s_Context->style.window.min_size.x = 370;
 	}
 
 	void NuklearLayer::OnDetach()

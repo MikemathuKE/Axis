@@ -11,6 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Axis/Scene/SceneSerializer.h"
+#include "Axis/utils/PlatformUtils.h"
 
 namespace Axis {
 
@@ -106,6 +107,7 @@ namespace Axis {
             m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            AXIS_INFO("Resizing Controllers");
         }
 
 
@@ -137,6 +139,70 @@ namespace Axis {
     void EditorLayer::OnEvent(Event& e)
     {
         m_CameraController.OnEvent(e);
+
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<KeyPressedEvent>(AXIS_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+    }
+
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+    {
+        // Shortcuts
+        if (e.GetRepeatCount() > 0)
+            return false;
+
+        bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+        bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+
+        switch (e.GetKeyCode())
+        {
+        case Key::N:
+        {
+            if (control)
+                NewScene();
+            break;
+        }
+        case Key::O:
+        {
+            if (control)
+                OpenScene();
+            break;
+        }
+        case Key::S:
+        {
+            if (control && shift)
+                SaveSceneAs();
+            break;
+        }
+        }
+    }
+
+    void EditorLayer::NewScene()
+    {
+        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+    }
+
+    void EditorLayer::OpenScene()
+    {
+        std::string filePath = FileDialogs::OpenFile("Axis Scene (*.axis)\0*.axis\0");
+
+        if (!filePath.empty()) {
+
+            NewScene();
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Deserialize(filePath);
+            m_FrameBuffer->Resize(m_ViewportSize.x - 1.0f, m_ViewportSize.y - 1.0f);
+        }
+    }
+
+    void EditorLayer::SaveSceneAs()
+    {
+        std::string filePath = FileDialogs::SaveFile("Axis Scene (*.axis)\0*.axis\0");
+        if (!filePath.empty()) {
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize(filePath);
+        }
     }
 
     void EditorLayer::OnImGuiRender()
@@ -208,17 +274,19 @@ namespace Axis {
                     // Disabling fullscreen would allow the window to be moved to the front of other windows,
                     // which we can't undo at the moment without finer window depth/z control.
 
-                    if (ImGui::MenuItem("Serialize"))
+                    if (ImGui::MenuItem("New", "Ctrl+N"))
                     {
-                        SceneSerializer serializer(m_ActiveScene);
-                        serializer.Serialize("assets/scenes/Example.axis");
+                        NewScene();
                     }
 
-                    if (ImGui::MenuItem("Deserialize"))
+                    if (ImGui::MenuItem("Open...", "Ctrl+O"))
                     {
-                        SceneSerializer serializer(m_ActiveScene);
-                        _mkdir("assets/scenes");
-                        serializer.Deserialize("assets/scenes/Example.axis");
+                        OpenScene();
+                    }
+
+                    if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+                    {
+                        SaveSceneAs();
                     }
 
                     if (ImGui::MenuItem("Exit")) Application::Get().Close();
@@ -248,8 +316,8 @@ namespace Axis {
                 m_ViewportHovered = ImGui::IsWindowHovered();
                 Application::Get().GetGUILayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
-                ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-                m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+                ImVec2 viewportPanelSize =                       ImGui::GetContentRegionAvail();
+                m_ViewportSize = { viewportPanelSize.x,          viewportPanelSize.y };
 
                 uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
                 ImGui::Image((void*)textureID, ImVec2(m_ViewportSize.x, m_ViewportSize.y), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -268,21 +336,23 @@ namespace Axis {
         if (Nuklear::Begin("Menu", { 0, 0, 200, 25 }, NK_WINDOW_DOCK_MENU))
         {
             Nuklear::SetStaticLayout(45);
-            if (Nuklear::MenuLabelBegin("Menu", NK_TEXT_CENTERED, nk_vec2(120, 200)))
+            if (Nuklear::MenuLabelBegin("Menu", NK_TEXT_CENTERED, nk_vec2(200, 200)))
             {
                 Nuklear::SetDynamicLayout();
 
-                if (Nuklear::MenuItemLabel("Serialize"))
+                if (Nuklear::MenuItemLabel("New"))
                 {
-                    SceneSerializer serializer(m_ActiveScene);
-                    serializer.Serialize("assets/scenes/Example.axis");
+                    NewScene();
                 }
 
-                if (Nuklear::MenuItemLabel("Deserialize"))
+                if (Nuklear::MenuItemLabel("Open..."))
                 {
-                    SceneSerializer serializer(m_ActiveScene);
-                    _mkdir("assets/scenes");
-                    serializer.Deserialize("assets/scenes/Example.axis");
+                    OpenScene();
+                }
+
+                if (Nuklear::MenuItemLabel("Save As..."))
+                {
+                    SaveSceneAs();
                 }
 
                 if (Nuklear::MenuItemLabel("Exit"))
@@ -310,7 +380,7 @@ namespace Axis {
             m_ViewportFocused = nk_window_has_focus(ctx);
             m_ViewportHovered = nk_window_is_hovered(ctx);
             Application::Get().GetGUILayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-
+            
             auto viewportPanelSize = nk_window_get_content_region_size(ctx);
             m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 

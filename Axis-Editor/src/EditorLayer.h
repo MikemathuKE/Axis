@@ -20,6 +20,12 @@ namespace Axis {
 	private:
 		void OnImGuiRender();
 		void OnNuklearRender();
+
+		void NewScene();
+		void OpenScene();
+		void SaveSceneAs();
+
+		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
 		OrthographicCameraController m_CameraController;
 
