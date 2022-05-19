@@ -21,3 +21,6 @@
 [submodule "Axis/vendor/yaml"]
 	path = Axis/vendor/yaml
 	url = https://github.com/MikemathuKE/yaml-cpp.git
+[submodule "Axis/vendor/nativefiledialog"]
+	path = Axis/vendor/nativefiledialog
+	url = https://github.com/MikemathuKE/nativefiledialog.git

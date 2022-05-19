@@ -27,6 +27,7 @@ IncludeDir["glm"] = "%{wks.location}/Axis/vendor/glm"
 IncludeDir["assimp"] = "%{wks.location}/Axis/vendor/assimp/include"
 IncludeDir["entt"] = "%{wks.location}/Axis/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Axis/vendor/yaml/include"
+IncludeDir["nfd"] = "%{wks.location}/Axis/vendor/nativefiledialog/src/include"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
@@ -34,6 +35,7 @@ group "Dependencies"
   include "Axis/vendor/imgui"
   include "Axis/vendor/assimp"
   include "Axis/vendor/yaml"
+  include "Axis/vendor/nativefiledialog"
 group ""
 
 project "Axis"
@@ -67,7 +69,8 @@ project "Axis"
     "%{IncludeDir.glm}",
     "%{IncludeDir.assimp}",
     "%{IncludeDir.entt}",
-    "%{IncludeDir.yaml_cpp}"
+    "%{IncludeDir.yaml_cpp}",
+    "%{IncludeDir.nfd}"
   }
   
   links
@@ -95,7 +98,8 @@ project "Axis"
       "Xi",
       "GL",
       "X11",
-      "OpenGL"
+      "OpenGL",
+      "nfd"
     }
  
   filter "system:windows"
@@ -229,7 +233,8 @@ project "Axis-Editor"
       "Glad",
       "GLFW",
       "imgui",
-      "yaml-cpp"
+      "yaml-cpp",
+      "nfd"
     }
     
   filter "system:windows"

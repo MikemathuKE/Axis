@@ -5,21 +5,50 @@
 
 #ifdef AXIS_PLATFORM_LINUX
 
-#include <GLFW/glfw3.h>
-// #define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
-
-#include "Axis/Core/Application.h"
+#include "nfd.h"
+#include <fstream>
 
 namespace Axis {
 
-	std::string FileDialogs::OpenFile(const char* filter)
+    const char* FileDialogs::FileTypeToString(FileType type)
+    {
+        switch (type)
+        {
+        case Axis::AxisScene:
+            return "axis\0";
+        default:
+            return "\0";
+        }
+    }
+
+	std::string FileDialogs::OpenFile(FileType type)
 	{
+        const char* filter = FileTypeToString(type);
+
+        nfdchar_t *outPath = NULL;
+        nfdresult_t result = NFD_OpenDialog( filter, NULL, &outPath );
+        if ( result == NFD_OKAY )
+        {
+            std::string filePath(outPath);
+            free(outPath);
+            return filePath;
+        }
+        // result == NFD_CANCEL or error occured Print using NFD_GETError()
         return std::string();
 	}
 
-	std::string FileDialogs::SaveFile(const char* filter)
+	std::string FileDialogs::SaveFile(FileType type)
 	{
+        const char* filter = FileTypeToString(type);
+
+        nfdchar_t *savePath = NULL;
+        nfdresult_t result = NFD_SaveDialog( filter, NULL, &savePath );
+        if ( result == NFD_OKAY )
+        {
+            std::string filePath(savePath);
+            free(savePath);
+            return filePath;
+        }
         return std::string();
 	}
 

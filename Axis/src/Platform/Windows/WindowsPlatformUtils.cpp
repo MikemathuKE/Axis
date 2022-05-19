@@ -15,8 +15,21 @@
 
 namespace Axis {
 
-	std::string FileDialogs::OpenFile(const char* filter)
+	const char* FileDialogs::FileTypeToString(FileType type)
 	{
+		switch (type)
+		{
+		case Axis::AxisScene:
+			return "Axis Scene (*.axis)\0*.axis\0";
+		default:
+			return "\0";
+		}
+	}
+
+	std::string FileDialogs::OpenFile(FileType type)
+	{
+		const char* filter = FileTypeToString(type);
+
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		CHAR currentDir[256] = { 0 };
@@ -37,8 +50,10 @@ namespace Axis {
 		return std::string();
 	}
 
-	std::string FileDialogs::SaveFile(const char* filter)
+	std::string FileDialogs::SaveFile(FileType type)
 	{
+		const char* filter = FileTypeToString(type);
+
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
 		CHAR currentDir[256] = { 0 };

@@ -2,28 +2,28 @@ Scene: Untitled
 Entities:
   - Entity: 12837192831273
     TagComponent:
-      Tag: Blue Square
+      Tag: Side
     TransformComponent:
-      Translation: [2.29999995, 0.100000001, 0]
-      Rotation: [0, 0, 0]
+      Translation: [0.600000024, 0.400000036, 0]
+      Rotation: [0.785398185, 0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0, 0, 1, 1]
+      Color: [0.873949587, 0.0468126647, 0.00289388862, 0.873949587]
   - Entity: 12837192831273
     TagComponent:
-      Tag: Green Square
+      Tag: Front
     TransformComponent:
-      Translation: [0, 0.800000012, -9.5]
-      Rotation: [0, 0, 0]
+      Translation: [-0.100000888, 0.400000006, 0]
+      Rotation: [0.785398185, -0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0, 1, 0, 1]
+      Color: [0.487394929, 0.0622093193, 0.0145250065, 1]
   - Entity: 12837192831273
     TagComponent:
-      Tag: Red Square
+      Tag: Top
     TransformComponent:
-      Translation: [1.29999995, 0.400000006, -3]
-      Rotation: [0, 0, 0]
+      Translation: [0.25, 1.01999998, 0]
+      Rotation: [0.87266463, 0, 0.785398185]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [1, 0, 0, 1]
@@ -31,7 +31,7 @@ Entities:
     TagComponent:
       Tag: Camera A
     TransformComponent:
-      Translation: [0, 0, 12.1000004]
+      Translation: [0, 0, 7.10000086]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:

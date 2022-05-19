@@ -103,7 +103,7 @@ namespace Axis {
             m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && //zero sized framebuffer is invalid
             (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
         {
-            m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);            
+            m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -185,7 +185,7 @@ namespace Axis {
 
     void EditorLayer::OpenScene()
     {
-        std::string filePath = FileDialogs::OpenFile("Axis Scene (*.axis)\0*.axis\0");
+        std::string filePath = FileDialogs::OpenFile(FileType::AxisScene);
 
         if (!filePath.empty()) {
 
@@ -198,7 +198,7 @@ namespace Axis {
 
     void EditorLayer::SaveSceneAs()
     {
-        std::string filePath = FileDialogs::SaveFile("Axis Scene (*.axis)\0*.axis\0");
+        std::string filePath = FileDialogs::SaveFile(FileType::AxisScene);
         if (!filePath.empty()) {
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize(filePath);
@@ -380,7 +380,7 @@ namespace Axis {
             m_ViewportFocused = nk_window_has_focus(ctx);
             m_ViewportHovered = nk_window_is_hovered(ctx);
             Application::Get().GetGUILayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-            
+
             auto viewportPanelSize = nk_window_get_content_region_size(ctx);
             m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
