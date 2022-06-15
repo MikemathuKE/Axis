@@ -28,6 +28,7 @@ IncludeDir["assimp"] = "%{wks.location}/Axis/vendor/assimp/include"
 IncludeDir["entt"] = "%{wks.location}/Axis/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Axis/vendor/yaml/include"
 IncludeDir["nfd"] = "%{wks.location}/Axis/vendor/nativefiledialog/src/include"
+IncludeDir["tinygizmo"] = "%{wks.location}/Axis/vendor/tinygizmo"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
@@ -36,6 +37,7 @@ group "Dependencies"
   include "Axis/vendor/assimp"
   include "Axis/vendor/yaml"
   include "Axis/vendor/nativefiledialog"
+  include "Axis/vendor/tinygizmo"
 group ""
 
 project "Axis"
@@ -70,7 +72,8 @@ project "Axis"
     "%{IncludeDir.assimp}",
     "%{IncludeDir.entt}",
     "%{IncludeDir.yaml_cpp}",
-    "%{IncludeDir.nfd}"
+    "%{IncludeDir.nfd}",
+    "%{IncludeDir.tinygizmo}"
   }
   
   links
@@ -79,7 +82,8 @@ project "Axis"
     "Glad",
     "imgui",
     "assimp",
-    "yaml-cpp"
+    "yaml-cpp",
+    "tinygizmo"
   }
   
   defines
@@ -148,7 +152,8 @@ project "SandBox"
     "%{IncludeDir.spdlog}",
     "%{IncludeDir.glm}",
     "%{IncludeDir.assimp}",
-    "%{IncludeDir.entt}"
+    "%{IncludeDir.entt}",
+    "%{IncludeDir.tinygizmo}"
   }
   
   links
@@ -168,7 +173,8 @@ project "SandBox"
       "Glad",
       "GLFW",
       "zlib",
-      "assimp"
+      "assimp",
+      "tinygizmo"
     }
     
   filter "system:windows"

@@ -2,31 +2,22 @@ Scene: Untitled
 Entities:
   - Entity: 12837192831273
     TagComponent:
-      Tag: Side
+      Tag: Camera B
     TransformComponent:
-      Translation: [0.600000024, 0.400000036, 0]
-      Rotation: [0.785398185, 0.785398185, 0]
+      Translation: [2, 0, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.873949587, 0.0468126647, 0.00289388862, 0.873949587]
-  - Entity: 12837192831273
-    TagComponent:
-      Tag: Front
-    TransformComponent:
-      Translation: [-0.100000888, 0.400000006, 0]
-      Rotation: [0.785398185, -0.785398185, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.487394929, 0.0622093193, 0.0145250065, 1]
-  - Entity: 12837192831273
-    TagComponent:
-      Tag: Top
-    TransformComponent:
-      Translation: [0.25, 1.01999998, 0]
-      Rotation: [0.87266463, 0, 0.785398185]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: false
+      FixedAspectRatio: false
   - Entity: 12837192831273
     TagComponent:
       Tag: Camera A
@@ -47,19 +38,28 @@ Entities:
       FixedAspectRatio: false
   - Entity: 12837192831273
     TagComponent:
-      Tag: Camera B
+      Tag: Top
     TransformComponent:
-      Translation: [2, 0, 0]
-      Rotation: [0, 0, 0]
+      Translation: [0.25, 1.01999998, 0]
+      Rotation: [0.87266463, 0, 0.785398185]
       Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 1
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: false
-      FixedAspectRatio: false
+    SpriteRendererComponent:
+      Color: [1, 0, 0, 1]
+  - Entity: 12837192831273
+    TagComponent:
+      Tag: Front
+    TransformComponent:
+      Translation: [-0.100000888, 0.400000006, 0]
+      Rotation: [0.785398185, -0.785398185, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.487394929, 0.0622093193, 0.0145250065, 1]
+  - Entity: 12837192831273
+    TagComponent:
+      Tag: Side
+    TransformComponent:
+      Translation: [0.600000024, 0.400000036, 0]
+      Rotation: [0.785398185, 0.785398185, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.873949587, 0.0468126647, 0.00289388862, 0.873949587]
