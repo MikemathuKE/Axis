@@ -27,11 +27,7 @@ namespace Axis {
 
 		bool OnKeyPressed(KeyPressedEvent& e);
 	private:
-		OrthographicCameraController m_CameraController;
-
 		Ref<Scene> m_ActiveScene;
-
-		bool m_PrimaryCamera = true;
 
 		Ref<FrameBuffer> m_FrameBuffer;
 
@@ -39,6 +35,8 @@ namespace Axis {
 		bool m_ViewportHovered = false;
 
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+
+		int m_GizmoType = -1;
 
 		//Panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;

@@ -28,7 +28,7 @@ IncludeDir["assimp"] = "%{wks.location}/Axis/vendor/assimp/include"
 IncludeDir["entt"] = "%{wks.location}/Axis/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Axis/vendor/yaml/include"
 IncludeDir["nfd"] = "%{wks.location}/Axis/vendor/nativefiledialog/src/include"
-IncludeDir["tinygizmo"] = "%{wks.location}/Axis/vendor/tinygizmo"
+IncludeDir["im3d"] = "%{wks.location}/Axis/vendor/ImGuizmo"
 
 group "Dependencies"
   include "Axis/vendor/GLFW"
@@ -37,7 +37,6 @@ group "Dependencies"
   include "Axis/vendor/assimp"
   include "Axis/vendor/yaml"
   include "Axis/vendor/nativefiledialog"
-  include "Axis/vendor/tinygizmo"
 group ""
 
 project "Axis"
@@ -57,7 +56,9 @@ project "Axis"
   {
     "%{prj.name}/src/**.h",
     "%{prj.name}/src/**.cpp",
-    "%{prj.name}/vendor/stb_image/stb_image.cpp"
+    "%{prj.name}/vendor/stb_image/stb_image.cpp",
+    "%{prj.name}/vendor/ImGuizmo/ImGuizmo.h",
+    "%{prj.name}/vendor/ImGuizmo/ImGuizmo.cpp"
   }
  
   includedirs
@@ -73,7 +74,7 @@ project "Axis"
     "%{IncludeDir.entt}",
     "%{IncludeDir.yaml_cpp}",
     "%{IncludeDir.nfd}",
-    "%{IncludeDir.tinygizmo}"
+    "%{IncludeDir.ImGuizmo}"
   }
   
   links
@@ -82,8 +83,7 @@ project "Axis"
     "Glad",
     "imgui",
     "assimp",
-    "yaml-cpp",
-    "tinygizmo"
+    "yaml-cpp"
   }
   
   defines
@@ -91,6 +91,9 @@ project "Axis"
     "GLFW_INCLUDE_NONE",
     "_CRT_SECURE_NO_WARNINGS"
   }
+  
+  filter "files:vendor/ImGuizmo/**.cpp"
+    flags { "NoPCH" }
  
   filter "system:linux"
     pic "on"
@@ -153,7 +156,7 @@ project "SandBox"
     "%{IncludeDir.glm}",
     "%{IncludeDir.assimp}",
     "%{IncludeDir.entt}",
-    "%{IncludeDir.tinygizmo}"
+    "%{IncludeDir.ImGuizmo}"
   }
   
   links
@@ -173,8 +176,7 @@ project "SandBox"
       "Glad",
       "GLFW",
       "zlib",
-      "assimp",
-      "tinygizmo"
+      "assimp"
     }
     
   filter "system:windows"

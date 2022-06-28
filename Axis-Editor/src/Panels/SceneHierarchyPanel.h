@@ -17,6 +17,8 @@ namespace Axis {
 
 		void OnImGuiRender();
 		void OnNuklearRender();
+
+		Entity GetSelectedEntity() const { return m_SelectionContext; }
 	private:
 		void DrawEntityNodeImGui(Entity entity);
 		void DrawEntityNodeNuklear(Entity entity);

@@ -30,6 +30,8 @@ namespace Axis{
         GUILayer* GetGUILayer() { return m_GUILayer; }
 
         inline static Application& Get() { return *s_Instance; }
+
+        float GetDeltaTime();
     private:
         bool OnWindowClose(WindowCloseEvent& e);
         bool OnWindowResize(WindowResizeEvent& e);

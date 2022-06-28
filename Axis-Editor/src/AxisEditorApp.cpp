@@ -9,7 +9,7 @@ namespace Axis {
     {
     public:
         HazelEditor()
-            :Application("Axis Editor", GUIBackend::Nuklear)
+            :Application("Axis Editor", GUIBackend::ImGui)
         {
             PushLayer(new EditorLayer());
         }

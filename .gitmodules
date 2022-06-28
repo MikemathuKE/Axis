@@ -24,3 +24,6 @@
 [submodule "Axis/vendor/nativefiledialog"]
 	path = Axis/vendor/nativefiledialog
 	url = https://github.com/MikemathuKE/nativefiledialog.git
+[submodule "Axis/vendor/ImGuizmo"]
+	path = Axis/vendor/ImGuizmo
+	url = https://github.com/MikemathuKE/ImGuizmo.git

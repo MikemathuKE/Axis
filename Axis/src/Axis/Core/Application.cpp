@@ -104,6 +104,11 @@ namespace Axis{
         }
     }
 
+    float Application::GetDeltaTime() {
+        float time = (float)glfwGetTime();
+        return time - m_LastFrameTime;
+    }
+
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
         m_Running = false;

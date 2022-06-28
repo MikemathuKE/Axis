@@ -40,17 +40,17 @@ Entities:
     TagComponent:
       Tag: Red Square
     TransformComponent:
-      Translation: [0.25, 1.01999998, 0]
-      Rotation: [0.87266463, 0, 0.785398185]
-      Scale: [1, 1, 1]
+      Translation: [0, 0, 0]
+      Rotation: [0, -0.785398185, 0]
+      Scale: [0.999996901, 0.999991059, 0.999999285]
     SpriteRendererComponent:
       Color: [1, 0, 0, 1]
   - Entity: 12837192831273
     TagComponent:
       Tag: Green Square
     TransformComponent:
-      Translation: [-0.100000888, 0.400000006, 0]
-      Rotation: [0.785398185, -0.785398185, 0]
+      Translation: [1.5, 0.5, 0]
+      Rotation: [0, 0.785398185, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [0, 1, 0, 1]
@@ -58,8 +58,8 @@ Entities:
     TagComponent:
       Tag: Blue Square
     TransformComponent:
-      Translation: [0.600000024, 0.400000036, 0]
-      Rotation: [0.785398185, 0.785398185, 0]
+      Translation: [0, 1.5, 0]
+      Rotation: [0, 0, 0.785398185]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Color: [0, 0, 1, 1]
