@@ -1,0 +1,29 @@
+[submodule "Axis/vendor/spdlog"]
+	path = Axis/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Axis/vendor/GLFW"]
+	path = Axis/vendor/GLFW
+	url = https://github.com/MikemathuKE/glfw.git
+[submodule "Axis/vendor/imgui"]
+	path = Axis/vendor/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+[submodule "Axis/vendor/glm"]
+	path = Axis/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "Axis/vendor/Nuklear"]
+	path = Axis/vendor/Nuklear
+	url = https://github.com/MikemathuKE/Nuklear.git
+	branch = docking
+[submodule "Axis/vendor/assimp"]
+	path = Axis/vendor/assimp
+	url = https://github.com/MikemathuKE/assimp.git
+[submodule "Axis/vendor/yaml"]
+	path = Axis/vendor/yaml
+	url = https://github.com/MikemathuKE/yaml-cpp.git
+[submodule "Axis/vendor/nativefiledialog"]
+	path = Axis/vendor/nativefiledialog
+	url = https://github.com/MikemathuKE/nativefiledialog.git
+[submodule "Axis/vendor/ImGuizmo"]
+	path = Axis/vendor/ImGuizmo
+	url = https://github.com/MikemathuKE/ImGuizmo.git

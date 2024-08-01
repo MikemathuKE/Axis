@@ -1,0 +1,41 @@
+#directories
+*/bin/
+*/bin-int/
+*.vs
+*/models
+
+#solution
+*.sln
+*.workspace
+
+#VS Project Files
+*.vcxproj
+*.filters
+*.user
+
+#CB Project Files
+*.cbp
+*.layout
+*.depend
+Makefile
+
+#build log
+*.html
+
+#text files
+*.txt
+
+#modules
+*.modules
+
+#json
+*.json
+
+#ini files
+*.ini
+
+#log files
+*.log
+
+#Compiled Files
+*.d
