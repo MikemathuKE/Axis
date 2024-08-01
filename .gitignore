@@ -39,3 +39,5 @@ Makefile
 
 #Compiled Files
 *.d
+*.tlog
+*.idb
