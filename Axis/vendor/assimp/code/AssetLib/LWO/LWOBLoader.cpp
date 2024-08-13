@@ -153,9 +153,9 @@ void LWOImporter::CountVertsAndFacesLWOB(unsigned int& verts, unsigned int& face
         verts += numIndices;
         faces++;
         cursor += numIndices;
-        int16_t surface;
-        ::memcpy(&surface, cursor++, 2);
-        if (surface < 0)
+        int16_t m_WindowSurface;
+        ::memcpy(&m_WindowSurface, cursor++, 2);
+        if (m_WindowSurface < 0)
         {
             // there are detail polygons
             ::memcpy(&numIndices, cursor++, 2);
@@ -197,11 +197,11 @@ void LWOImporter::CopyFaceIndicesLWOB(FaceList::iterator& it,
         } else {
             ASSIMP_LOG_WARN("LWOB: Face has 0 indices");
         }
-        int16_t surface;
-        ::memcpy(&surface, cursor++, 2);
-        if (surface < 0)
+        int16_t m_WindowSurface;
+        ::memcpy(&m_WindowSurface, cursor++, 2);
+        if (m_WindowSurface < 0)
         {
-            surface = -surface;
+            m_WindowSurface = -m_WindowSurface;
 
             // there are detail polygons.
             uint16_t numPolygons;
@@ -211,7 +211,7 @@ void LWOImporter::CopyFaceIndicesLWOB(FaceList::iterator& it,
                 CopyFaceIndicesLWOB(it,cursor,end,numPolygons);
             }
         }
-        face.surfaceIndex = surface-1;
+        face.surfaceIndex = m_WindowSurface-1;
     }
 }
 

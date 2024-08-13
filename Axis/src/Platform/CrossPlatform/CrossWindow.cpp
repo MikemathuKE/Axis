@@ -7,6 +7,7 @@
 #include "Axis/Events/MouseEvent.h"
 
 #include "Platform/OpenGL/OpenGLContext.h"
+#include "Platform/Vulkan/VulkanContext.h"
 #include <stb_image/stb_image.h>
 
 namespace Axis {

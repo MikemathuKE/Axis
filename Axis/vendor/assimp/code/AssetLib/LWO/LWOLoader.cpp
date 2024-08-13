@@ -466,7 +466,7 @@ void LWOImporter::InternReadFile(const std::string &pFile,
 
 // ------------------------------------------------------------------------------------------------
 void LWOImporter::ComputeNormals(aiMesh *mesh, const std::vector<unsigned int> &smoothingGroups,
-        const LWO::Surface &surface) {
+        const LWO::Surface &m_WindowSurface) {
     // Allocate output storage
     mesh->mNormals = new aiVector3D[mesh->mNumVertices];
 
@@ -475,7 +475,7 @@ void LWOImporter::ComputeNormals(aiMesh *mesh, const std::vector<unsigned int> &
     std::vector<aiVector3D> faceNormals;
 
     // ... in some cases that's already enough
-    if (!surface.mMaximumSmoothAngle)
+    if (!m_WindowSurface.mMaximumSmoothAngle)
         out = mesh->mNormals;
     else {
         faceNormals.resize(mesh->mNumVertices);
@@ -499,7 +499,7 @@ void LWOImporter::ComputeNormals(aiMesh *mesh, const std::vector<unsigned int> &
         for (unsigned int i = 0; i < face.mNumIndices; ++i)
             out[face.mIndices[i]] = vNor;
     }
-    if (!surface.mMaximumSmoothAngle) return;
+    if (!m_WindowSurface.mMaximumSmoothAngle) return;
     const float posEpsilon = ComputePositionEpsilon(mesh);
 
     // Now generate the spatial sort tree
@@ -519,8 +519,8 @@ void LWOImporter::ComputeNormals(aiMesh *mesh, const std::vector<unsigned int> &
 
     // Generate vertex normals. We have O(logn) for the binary lookup, which we need
     // for n elements, thus the EXPECTED complexity is O(nlogn)
-    if (surface.mMaximumSmoothAngle < 3.f && !configSpeedFlag) {
-        const float fLimit = std::cos(surface.mMaximumSmoothAngle);
+    if (m_WindowSurface.mMaximumSmoothAngle < 3.f && !configSpeedFlag) {
+        const float fLimit = std::cos(m_WindowSurface.mMaximumSmoothAngle);
 
         for (begin = mesh->mFaces, it = smoothingGroups.begin(); begin != end; ++begin, ++it) {
             const aiFace &face = *begin;

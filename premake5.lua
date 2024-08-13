@@ -112,8 +112,19 @@ project "Axis"
   filter "system:windows"
     systemversion "latest"
     
+    includedirs
+    {
+      "C:/VulkanSDK/1.3.290.0/Include"
+    }
+    
+    libdirs
+    {
+      "C:/VulkanSDK/1.3.290.0/Lib"
+    }
+    
     links
     {
+      "vulkan-1.lib",
       "opengl32.lib"
     }
     
