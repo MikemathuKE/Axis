@@ -1,9 +1,8 @@
 #include "axispch.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Platform/Vulkan/VulkanShader.h"
 
 #include "Axis/Core/Log.h"
 
-#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
@@ -13,9 +12,9 @@ namespace Axis{
     static GLenum ShaderTypeFromString(const std::string& type)
     {
         if(type == "vertex")
-            return GL_VERTEX_SHADER;
+            return VK_SHADER_STAGE_VERTEX_BIT;
         if(type == "fragment" || type == "pixel")
-            return GL_FRAGMENT_SHADER;
+            return VK_SHADER_STAGE_FRAGMENT_BIT;
 
         AXIS_CORE_ASSERT(false, "Unknown Shader type!");
         return 0;
@@ -23,260 +22,178 @@ namespace Axis{
 
     static std::string ShaderTypeToString(const GLenum type)
     {
-        if (type == GL_VERTEX_SHADER)
+        if (type == VK_SHADER_STAGE_VERTEX_BIT)
             return "Vertex";
-        if (type == GL_FRAGMENT_SHADER)
+        if (type == VK_SHADER_STAGE_FRAGMENT_BIT)
             return "Fragment";
 
         AXIS_CORE_ASSERT(false, "Unknown Shader type!");
         return 0;
     }
 
-    OpenGLShader::OpenGLShader(const std::string& filePath)
-    {
-        AXIS_PROFILE_FUNCTION();
-
-        auto lastSlash = filePath.find_last_of("/\\");
-        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-        auto lastDot = filePath.rfind(".");
-        auto count = lastDot == std::string::npos ? filePath.size() - lastSlash : lastDot - lastSlash;
-        m_Name = filePath.substr(lastSlash, count);
-
-        std::string source = ReadFile(filePath);
-        auto shaderSources = PreProcess(source);
-        Compile(shaderSources);
-    }
-
-    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+    VulkanShader::VulkanShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, VkDevice& device)
         :m_Name(name)
     {
         AXIS_PROFILE_FUNCTION();
 
-        std::unordered_map<GLenum, std::string> sources;
-        sources[GL_VERTEX_SHADER] = vertexSrc;
-        sources[GL_FRAGMENT_SHADER] = fragmentSrc;
-        Compile(sources);
+        auto vertShaderCode = ReadFile(vertexSrc);
+        auto fragShaderCode = ReadFile(fragmentSrc);
+
+        VkShaderModule vertShaderModule = CreateShaderModule(vertShaderCode, device);
+        VkShaderModule fragShaderModule = CreateShaderModule(fragShaderCode, device);
+
+        VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
+        vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+        vertShaderStageInfo.module = vertShaderModule;
+        vertShaderStageInfo.pName = "main";
+        vertShaderStageInfo.pSpecializationInfo = nullptr; // Optional // Used for constants
+
+        VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
+        fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+        fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+        fragShaderStageInfo.module = fragShaderModule;
+        fragShaderStageInfo.pName = "main";
+
+        m_ShaderStages = { vertShaderStageInfo, fragShaderStageInfo };
     }
 
-    OpenGLShader::~OpenGLShader()
+    VulkanShader::~VulkanShader()
     {
         AXIS_PROFILE_FUNCTION();
 
-        glDeleteProgram(m_RendererID);
+        
     }
 
-    std::string OpenGLShader::ReadFile(const std::string& filePath)
-    {
+    VkShaderModule VulkanShader::CreateShaderModule(const std::vector<char>& code, VkDevice& device) {
+        VkShaderModuleCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+        createInfo.codeSize = code.size();
+        createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+        VkShaderModule shaderModule;
+        AXIS_CORE_ASSERT(vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS, "Failed to Create Shader Module!");
+
+        return shaderModule;
+    }
+
+    std::vector<char> VulkanShader::ReadFile(const std::string& filename) {
         AXIS_PROFILE_FUNCTION();
 
-        std::string result;
-        std::ifstream in(filePath, std::ios::in | std::ios::binary);
+        std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
-        if(in)
-        {
-            in.seekg(0, std::ios::end);
-            result.resize(in.tellg());
-            in.seekg(0, std::ios::beg);
-            in.read(&result[0], result.size());
-            in.close();
-        }else{
-            AXIS_CORE_ERROR("Could not open {0} file", filePath);
+        if (!file.is_open()) {
+            AXIS_CORE_ERROR("Could not open {0} file", filename);
         }
 
-        return result;
+        size_t fileSize = (size_t)file.tellg();
+        std::vector<char> buffer(fileSize);
+
+        file.seekg(0);
+        file.read(buffer.data(), fileSize);
+
+        file.close();
+        return buffer;
     }
 
-    std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
+    std::string VulkanShader::Compile(const std::string& shaderSource)
     {
         AXIS_PROFILE_FUNCTION();
 
-        std::unordered_map<GLenum, std::string> shaderSources;
-
-        const char* typeToken = "#type";
-        size_t typeTokenLength = strlen(typeToken);
-        size_t pos = source.find(typeToken, 0);
-
-        while(pos != std::string::npos)
-        {
-            size_t eol = source.find_first_of("\r\n", pos);
-            AXIS_CORE_ASSERT(eol != std::string::npos, "Syntax Error");
-            size_t begin = pos + typeTokenLength + 1;
-            std::string type = source.substr(begin, eol - begin);
-            AXIS_CORE_ASSERT(ShaderTypeFromString(type), "Invalid Shader type Specified!");
-
-            size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-            pos = source.find(typeToken, nextLinePos);
-            shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
-                        pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
-        }
-
-        return shaderSources;
+        // Compile glsl to spir-v
+        return ""; // Name of compiled shader
     }
 
-    void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
+    void VulkanShader::Bind() const
     {
         AXIS_PROFILE_FUNCTION();
 
-        GLuint program = glCreateProgram();
-        AXIS_CORE_ASSERT((shaderSources.size() <= 2), "Only 2Shaders supported currently!");
-        std::array<GLenum, 2> glShaderIDs;
-        int glShaderIDIndex = 0;
-        for (auto& keyValue : shaderSources)
-        {
-            GLenum type = keyValue.first;
-            std::string source = keyValue.second;
-
-            GLuint shader = glCreateShader(type);
-
-            const GLchar* sourceCStr = source.c_str();
-            glShaderSource(shader, 1, &sourceCStr, 0);
-
-            glCompileShader(shader);
-
-            GLint isCompiled = 0;
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-            if(isCompiled == GL_FALSE)
-            {
-                GLint maxLength = 0;
-                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-                std::vector<GLchar> infoLog(maxLength);
-                glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-                glDeleteShader(shader);
-                AXIS_CORE_ASSERTs(false, " {0} Shader Compilation failure! {1}", ShaderTypeToString(type), infoLog.data());
-                break;
-
-            }
-
-            glAttachShader(program, shader);
-            glShaderIDs[glShaderIDIndex++] = shader;
-        }
-
-        glLinkProgram(program);
-
-        GLint isLinked = 0;
-        glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-        if (isLinked == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-
-            std::vector<GLchar> infoLog(maxLength);
-            glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-
-            glDeleteProgram(program);
-
-            for(auto& id : glShaderIDs)
-                glDeleteShader(id);
-
-            return;
-        }
-
-        for(auto& id : glShaderIDs)
-            glDetachShader(program, id);
-
-        m_RendererID = program;
     }
 
-    void OpenGLShader::Bind() const
+    void VulkanShader::Unbind() const
     {
         AXIS_PROFILE_FUNCTION();
 
-        glUseProgram(m_RendererID);
     }
 
-    void OpenGLShader::Unbind() const
-    {
-        glUseProgram(0);
-    }
-
-    void OpenGLShader::SetMat4(const std::string name, const glm::mat4& value)
+    void VulkanShader::SetMat4(const std::string name, const glm::mat4& value)
     {
         AXIS_PROFILE_FUNCTION();
 
         UploadUniformMat4(name, value);
     }
 
-    void OpenGLShader::SetFloat4(const std::string name, const glm::vec4& value)
+    void VulkanShader::SetFloat4(const std::string name, const glm::vec4& value)
     {
         AXIS_PROFILE_FUNCTION();
 
         UploadUniformFloat4(name, value);
     }
 
-    void OpenGLShader::SetFloat3(const std::string name, const glm::vec3& value)
+    void VulkanShader::SetFloat3(const std::string name, const glm::vec3& value)
     {
         AXIS_PROFILE_FUNCTION();
 
         UploadUniformFloat3(name, value);
     }
 
-    void OpenGLShader::SetFloat(const std::string name, const float& value)
+    void VulkanShader::SetFloat(const std::string name, const float& value)
     {
         AXIS_PROFILE_FUNCTION();
 
         UploadUniformFloat(name, value);
     }
 
-    void OpenGLShader::SetInt(const std::string name, int value)
+    void VulkanShader::SetInt(const std::string name, int value)
     {
         AXIS_PROFILE_FUNCTION();
 
         UploadUniformInt(name, value);
     }
 
-    void OpenGLShader::SetIntArray(const std::string name, int* values, int32_t count)
+    void VulkanShader::SetIntArray(const std::string name, int* values, int32_t count)
     {
         UploadUniformIntArray(name, values, count);
     }
 
-    void OpenGLShader::UploadUniformInt(const std::string& name, const int& value)
+    void VulkanShader::UploadUniformInt(const std::string& name, const int& value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform1i(location, value);
+        
     }
 
-    void OpenGLShader::UploadUniformIntArray(const std::string& name, int* values, int32_t count)
+    void VulkanShader::UploadUniformIntArray(const std::string& name, int* values, int32_t count)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform1iv(location, count, values);
+        
     }
 
-    void OpenGLShader::UploadUniformFloat(const std::string& name, const float& value)
+    void VulkanShader::UploadUniformFloat(const std::string& name, const float& value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform1f(location, value);
+        
     }
 
-    void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
+    void VulkanShader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform2f(location, value.x, value.y);
+        
     }
 
-    void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
+    void VulkanShader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform3f(location, value.x, value.y, value.z);
+        
     }
 
-    void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
+    void VulkanShader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform4f(location, value.x, value.y, value.z, value.w);
+        
     }
 
-    void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
+    void VulkanShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+        
     }
 
-    void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+    void VulkanShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+        
     }
 
 }

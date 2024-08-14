@@ -21,6 +21,7 @@ namespace Axis {
 		bool IsResizable() const override { return m_Data.Resizable; }
 
 		virtual void* GetNativeWindow() override { return m_Window; }
+		virtual GraphicsContext* GetContext() override { return m_Context; }
 
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;

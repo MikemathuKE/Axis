@@ -4,15 +4,6 @@
 
 struct GLFWwindow;
 
-//struct VkSurfaceCapabilitiesKHR;
-//struct VkSurfaceFormatKHR;
-//struct VkPresentModeKHR;
-//struct VkDebugUtilsMessengerCreateInfoEXT;
-//struct VkPhysicalDevice;
-//struct VkInstance;
-//struct VkDebugUtilsMessengerEXT;
-//struct VkSurfaceKHR;
-
 #include <vulkan/vulkan.h>
 
 namespace Axis
@@ -23,7 +14,7 @@ namespace Axis
 		std::optional<uint32_t> presentFamily;
 		// Can add transfer family if for transfer queue
 
-		bool isComplete() {
+		bool IsComplete() {
 			return graphicsFamily.has_value() && presentFamily.has_value();
 		}
 	};
@@ -45,8 +36,13 @@ namespace Axis
 	private:
 		void CreateVulkanInstance();
 		void SetupDebugMessenger();
-		void CreateSurface();
+		void CreateWindowSurface();
 		void PickPhysicalDevice();
+		void CreateLogicalDevice();
+		void CreateSwapChain();
+		void CreateImageViews();
+		void CreateRenderPass();
+		void CreateDescriptorSetLayout();
 
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
 		std::vector<const char*> GetRequiredExtensions();
@@ -55,6 +51,12 @@ namespace Axis
 		bool IsDeviceSuitable(VkPhysicalDevice device);
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 		SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+		VkImageView CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
+		VkFormat FindDepthFormat();
+		VkFormat FindSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 		
 
 	private:
@@ -63,6 +65,16 @@ namespace Axis
 		VkDebugUtilsMessengerEXT m_DebugMessenger = NULL;
 		VkSurfaceKHR m_WindowSurface = NULL;
 		VkPhysicalDevice m_PhysicalDevice = NULL;
+		VkDevice m_Device = NULL;
+		VkQueue m_GraphicsQueue = NULL;
+		VkQueue m_PresentQueue = NULL;
+		VkSwapchainKHR m_SwapChain = NULL;
+		std::vector<VkImage> m_SwapChainImages;
+		VkFormat m_SwapChainImageFormat;
+		VkExtent2D m_SwapChainExtent;
+		std::vector<VkImageView> m_SwapChainImageViews;
+		VkRenderPass m_RenderPass;
+		VkDescriptorSetLayout m_DescriptorSetLayout;
 	};
 
 }

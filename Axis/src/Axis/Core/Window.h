@@ -4,6 +4,7 @@
 
 #include "Axis/Core/Base.h"
 #include "Axis/Events/Event.h"
+#include "Axis/Renderer/GraphicsContext.h"
 
 namespace Axis {
 
@@ -68,6 +69,7 @@ namespace Axis {
 		virtual bool IsResizable() const = 0;
 
 		virtual void* GetNativeWindow() = 0;
+		virtual GraphicsContext* GetContext() = 0;
 
 		static Window* Create(const WindowProps& props = WindowProps());
 	};

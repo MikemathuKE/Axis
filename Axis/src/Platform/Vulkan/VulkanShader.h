@@ -1,22 +1,21 @@
-#ifndef OPENGL_SHADER_AXIS_H
-#define OPENGL_SHADER_AXIS_H
+#pragma once
 
 /* OpenGL Shaders */
 
 #include <Axis/Renderer/Shader.h>
 #include <glm/glm.hpp>
+#include <vulkan/vulkan.h>
 
 //TODO remove
 typedef unsigned int GLenum;
 
 namespace Axis{
 
-    class OpenGLShader : public Shader
+    class VulkanShader : public Shader
     {
     public:
-          OpenGLShader(const std::string& filePath);
-          OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
-          virtual ~OpenGLShader();
+          VulkanShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc, VkDevice& device);
+          virtual ~VulkanShader();
 
           virtual void Bind() const override;
           virtual void Unbind() const override;
@@ -28,8 +27,8 @@ namespace Axis{
           virtual void SetInt(const std::string name, int value) override;
           virtual void SetIntArray(const std::string name, int* values, int32_t count) override;
 
-
           virtual const std::string& GetName() const override {return m_Name;}
+          std::vector<VkPipelineShaderStageCreateInfo> GetShaderStages() { return m_ShaderStages; }
 
           void UploadUniformInt(const std::string& name, const int& value);
           void UploadUniformIntArray(const std::string& name, int* values, int32_t count);
@@ -42,15 +41,13 @@ namespace Axis{
           void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
           void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
     private:
-        std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
-        std::string ReadFile(const std::string& filePath);
-        void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
+        std::vector<char> ReadFile(const std::string& filename);
+        std::string Compile(const std::string& shaderSource);
+        VkShaderModule CreateShaderModule(const std::vector<char>& code, VkDevice& device);
     private:
-        uint32_t m_RendererID;
+        std::vector<VkPipelineShaderStageCreateInfo> m_ShaderStages;
         std::string m_Name;
     };
 
 }
-
-#endif // OPENGL_SHADER_AXIS_H
 
